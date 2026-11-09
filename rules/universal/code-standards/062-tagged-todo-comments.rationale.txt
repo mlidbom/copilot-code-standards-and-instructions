@@ -1,0 +1,15 @@
+# Why tagged todo comments (Magnus, 2026-11-09, in JAStudio)
+
+Magnus: "when a todo clearly relates to a piece of code I find comments like this very helpful", and agreed to everything in
+the proposal this rule records. Before it, what an agent found and didn't fix went into its end-of-task summary only, where
+it was read once and lost; the documents' todo lists suit work that spans files, not a duplication in one method.
+
+What decided it:
+- A comment at the code is seen exactly when it matters: by whoever reads or changes that code next, human or agent.
+- It moves with the code when the code is refactored.
+- Rider lists every one in its TODO window, filtered by tag, so Magnus sees them without asking.
+- An agent finds them all with one grep using the same patterns. Rider's MCP has no tool for the TODO window (checked
+  2026-11-09), and none is needed.
+
+The meanings of `review:`, `wip:` and `urgent:` are Magnus's own, as he uses them (2026-11-09). `review:rebuttal:` and
+`todo:docs:` exist in his Rider patterns; their use wasn't discussed, so the rule leaves them to him.
