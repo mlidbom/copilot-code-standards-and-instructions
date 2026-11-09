@@ -6,8 +6,8 @@
 # Windows) materializes committed symlinks as plain text files containing the target path — which Claude Code
 # would then load as garbage rules/skills without complaint.
 #
-# POSIX sh + git only, no PowerShell dependency. Mount-agnostic: derives the repo root from git via this
-# script's own location. Silent on success; on failure exits non-zero with fix instructions on stderr — the
+# POSIX sh + git only, no PowerShell dependency. Mount-agnostic: derives the consuming repository's root from
+# git via this script's own location. Silent on success; on failure exits non-zero with fix instructions on stderr — the
 # right contract for a build/CI gate. NOTE for SessionStart hooks: a SessionStart hook reaches the agent ONLY
 # via stdout on exit 0 (stderr on a non-zero exit goes to the user, never the agent, and cannot block the
 # session), so the hook is wired through the adapter verify-claude-symlinks.sessionstart-hook.sh, which
@@ -15,7 +15,13 @@
 set -eu
 
 script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-repo=$(git -C "$script_dir" rev-parse --show-toplevel)
+# The catalog is a git submodule of the consuming repository, and the .claude/ symlinks to check are that
+# repository's — so the root to check is the superproject's, not this checkout's own top level.
+repo=$(git -C "$script_dir" rev-parse --show-superproject-working-tree)
+if [ -z "$repo" ]; then
+   echo "$script_dir is not inside a git submodule. This verifier checks the .claude/ symlinks of the repository that mounts the shared Claude config catalog as a submodule." >&2
+   exit 2
+fi
 
 # The committed tree (HEAD) — not the index — is the source of truth for which paths are symlinks. A degraded
 # checkout can leave the index ALSO recording a path as a plain file (mode 100644, once the materialized plain

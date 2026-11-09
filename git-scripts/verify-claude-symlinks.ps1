@@ -6,7 +6,13 @@
 # load as garbage rules/skills without complaint.
 #
 # Silent on success; throws with fix instructions on failure.
-$repoRoot = git -C $PSScriptRoot rev-parse --show-toplevel
+
+# The catalog is a git submodule of the consuming repository, and the .claude/ symlinks to check are that
+# repository's — so the root to check is the superproject's, not this checkout's own top level.
+$repoRoot = git -C $PSScriptRoot rev-parse --show-superproject-working-tree
+if (-not $repoRoot) {
+   throw "$PSScriptRoot is not inside a git submodule. This verifier checks the .claude/ symlinks of the repository that mounts the shared Claude config catalog as a submodule."
+}
 
 # The committed tree (HEAD) — not the index — is the source of truth for which paths are symlinks. A degraded
 # checkout can leave the index ALSO recording a path as a plain file (mode 100644, once the materialized plain

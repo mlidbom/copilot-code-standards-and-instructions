@@ -4,10 +4,14 @@
 # STDOUT on exit 0; stderr on a non-zero exit reaches the user, never the agent, and cannot block the session.
 # So run the verifier and, on failure, re-emit its message on stdout (with agent-directed framing) and exit 0,
 # so the warning actually lands in the agent's context at session start.
+#
+# The consuming repository's SessionStart hook calls this once it has confirmed the catalog submodule is
+# initialized (see copy-into-consuming-repository/). The verifier is run through sh, not executed directly, so it
+# works whether or not the checkout kept the file's executable bit.
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-if report=$("$dir/verify-claude-symlinks.sh" 2>&1); then
+if report=$(sh "$dir/verify-claude-symlinks.sh" 2>&1); then
    exit 0
 fi
 printf '%s\n%s\n' \
-  'STOP: this checkout is degraded — symlinked .claude rules/skills have materialized as plain text files. Do NOT trust loaded rules or skills; tell Magnus immediately and surface the message below.' \
+  'STOP: this checkout is degraded — .claude/ symlinks into the shared Claude config are broken. Do NOT trust loaded rules or skills; tell Magnus immediately and surface the message below.' \
   "$report"
