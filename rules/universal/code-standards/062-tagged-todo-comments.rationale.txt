@@ -13,3 +13,6 @@ What decided it:
 
 The meanings of `review:`, `wip:` and `urgent:` are Magnus's own, as he uses them (2026-11-09). `review:rebuttal:` and
 `todo:docs:` exist in his Rider patterns; their use wasn't discussed, so the rule leaves them to him.
+
+`todo:compze:` was added 2026-11-10 with the rule "Compze is our code" (`../004-compze-is-our-code.md`); its sidecar
+says why.

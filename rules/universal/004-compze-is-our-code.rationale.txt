@@ -1,0 +1,22 @@
+# Why Compze is treated as our code (Magnus, 2026-11-10, in Deskmancer)
+
+Magnus: "Compze is our/my set of tools and libraries, so I want them treated as our code. Whenever something would have
+trigged a refactoring or addition etc in code in this project itself, I would like for you to prominently give me the
+recommendation that it should be added to compze." He agreed to the proposal this rule records, keeping the todo marker.
+
+What prompted it, in the same session:
+- Compze's `Endpoint.DisposeAsync` awaits with `.caf()` and disposes the container in a `finally`, so in Deskmancer's
+  observation-endpoint launches the whole graph was torn down on a thread-pool thread. The agent worked around it in
+  Deskmancer (`ApplicationBootstrapper.DisposeGraph` tears the application root down on the UI thread first) and raised
+  the real fix, stopping the endpoint separately from disposing the container, only as "that's your call" near the end
+  of a report.
+- Compze.Contracts has `True()` and no `False()`. The agent asserted a negation with `Contract.State.Assert(!flag, …)` and
+  never mentioned the gap.
+
+Before this rule, the only instruction about Compze was Deskmancer's local rule to explore it "like any nuget library",
+which framed it as someone else's code.
+
+The `todo:compze:` marker revives an older Deskmancer convention, `//todo: Compze. Get this into Compze` on code staged
+in a `Deskmancer.Core.CompzeStaging` namespace (still visible in the refactor-to-code-standards skill's
+affinity-cache-god-class-split example). It now follows the tagged-todo-comment form, a sub-tag like `todo:docs:`, so
+Rider's `todo:` pattern lists it.

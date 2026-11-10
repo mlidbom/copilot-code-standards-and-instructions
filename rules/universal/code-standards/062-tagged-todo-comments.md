@@ -14,6 +14,8 @@ them in its TODO window (Rider: Settings > Editor > TODO; a solution's own patte
 - `refactor:` design that should change: code that implements the same thing as other code, a name that tells less than
   the truth, a responsibility in the wrong place.
 - `todo:` a change that is decided and not yet made. Say who decided it and when, such as "(Magnus, 2026-11-09)".
+- `todo:compze:` a workaround for something Compze should change: the Compze change it waits for, and what to do here
+  once it lands. See the rule "Compze is our code".
 - `urgent:` a todo of top priority.
 - `performance:` code that is slow enough to matter, with what was measured or observed.
 - `wip:` an aspect of the code that is the way it is because of work in progress, and will or should change when the work
