@@ -42,6 +42,18 @@ Each is a candidate for a tool. JAStudio's MCP server is the example: once built
 editing the corpus, rebuilding and analyzing that had waited on the human each time ran in seconds without
 him. An agent should have proposed it long before he did.
 
+## Commit whenever it helps: agreed work needs no go-ahead to be committed
+
+Work toward a goal agreed with the user is yours to commit, whenever committing helps you be effective: at the end of
+each increment, before a risky step, to keep one change apart from the next. Don't juggle a pile of uncommitted
+changes waiting for a go-ahead. In the user's words: "As long as you are working towards a goal we have agreed on you
+are always free to commit when that helps you be effective."
+
+- **What still needs the user's word:** work the user hasn't agreed to, and pushing, which changes an external
+  environment (see [never change an external environment without approval](003-never-change-external-environments-without-approval.md)).
+- **Don't write instructions that gate commits on the user's word** unless the user asks for one. Such gates, added by
+  agents on their own, were the reason agents sat on finished work.
+
 ## When given full delegation ("use your own judgment, keep going until it is actually good")
 
 Take it literally: make the design calls; work in increments that each build clean and pass the full suite;
