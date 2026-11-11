@@ -24,3 +24,11 @@ insisted on the fully-qualified `_globalHotkeys` / `GlobalHotkeys`, with: "make 
 hotkeys, globalHotkeys. Do not fear typing. Readability and being unambiguous is king." The agent had also
 initially argued *for* dropping the "Global" qualifier as redundant (because "hotkey" already implies global)
 — a textbook instance of force #2: redundant to the agent, load-bearing for the human.
+
+## Amended 2026-11-11 (JAStudio): a qualifier the context already gives is the exception
+
+The agent applied "carry the disambiguating qualifier even when it feels redundant" where the namespace already said it,
+prefixing every type in a format namespace (`Archiving.Format.ArchivedNoteLine` and the like); the user called it
+`strName` again. So the rule now excepts a qualifier the name's own context gives, and 032-naming says a type doesn't
+repeat its namespace. The `GlobalHotkeys` case stands: there, "global" was in no context the reader saw, only implied by
+the word "hotkey" to the agent. See 007-ubiquitous-language.rationale.txt for the whole episode.

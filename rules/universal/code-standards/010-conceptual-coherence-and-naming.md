@@ -2,7 +2,7 @@
 
 Every type and member is one clear concept, held at a consistent level of abstraction, and its **name tells
 the truth about what it is**. A type name that implies something untrue is not polish — it is a fatal design error. 
-A `User` must be a user; a value object holding a user's registration details is `UserRegistrationData`, never `User`.
+A `User` must be a user; a value object holding a user's registration details is `UserRegistrationData`, or `Users.RegistrationData`, never just `User`.
 
 Because a name *is* the abstraction's interface, **renaming is the most important refactoring there is** — the
 primary act that restores coherence, and a truer name is a fix to make now, never cosmetic
@@ -19,6 +19,13 @@ The how-to lives in [everything-in-its-place](031-everything-in-its-place.md) an
 [naming](032-naming.md). The one truthful name a concept earns is then the project's single word for it — its
 [ubiquitous language](007-ubiquitous-language.md) (DDD) term, spoken identically in every artifact: code,
 comments, tests, docs, and on screen, never a synonym. This file only ranks it: it outranks everything below.
+
+## General guidelines
+
+### Prefer the obvious term if it fits
+If there is a standard term that will almost certainly be understood intuitively in context, that is a strong signal in favor of using that over inventing something new.
+A word being in use elsewhere in the codebase is no reason to avoid it: the context tells the meanings apart (see
+[ubiquitous language](007-ubiquitous-language.md)).
 
 ## Traps. Never trade the above for these.
 

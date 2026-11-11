@@ -1,0 +1,27 @@
+# Provenance
+
+## 2026-11-11: context disambiguates; uniqueness across the codebase taken out (JAStudio)
+
+The rule used to end its "How" list with "A distinct word must mean a distinct concept", and to say of the inverse
+that "identical type names are more iffy though. If there is any risk of them being confused for each other, it is
+better to add something to the name to make them unique."
+
+The agent read those as "a word may mean only one thing in the whole codebase". Writing the code that brings Anki decks
+into JAStudio's sentence reservoir, it avoided "import", because the corpus's `Importing` namespace already used it, and
+named the action "keep", then "archive", neither of which says what's done. It also prefixed every type in the format's
+namespace (`Kept…`, then `Archived…`), though the namespace already said it. The user: "this feels like we are trying to
+apply the impossible rule of never ever reusing a word that is very common in computer science, such as import or store
+or save", and of the prefixes, "this feels to me like intAge, strName".
+
+Asked why, the agent's account was two rules over-applied (this one, and the qualifier advice in
+013-name-for-the-human-who-must-look-it-up) and a habit of its own: it finds code by searching text, so a name unique
+across the codebase suits it, at the human reader's cost.
+
+So the user rewrote the inverse ("multiple namespaces having types with the same name etc. is perfectly fine"), made the
+fully qualified name the unit of meaning ("A fully qualified name defines one unique concept, and that is the only
+definition of that concept"), and added "Prefer the obvious term if it fits" to 010-conceptual-coherence-and-naming. The
+agent added the reason (that's how language works) and the "never avoid the obvious word" sentence here, the
+"a type doesn't repeat its namespace" paragraph to 032-naming, and the matching exception to 013.
+
+**Don't reintroduce uniqueness across the codebase:** the same word meaning different things in different contexts is
+how language works, and a rarer word chosen to dodge a common one costs every reader.

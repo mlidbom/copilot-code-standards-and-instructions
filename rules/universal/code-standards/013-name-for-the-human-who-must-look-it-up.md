@@ -20,7 +20,8 @@ Two forces push you the wrong way. Treat both as suspect signals, not as taste:
 Operationally: **do not fear typing.** A name is as long as it must be to be understood with no lookup, never
 shorter; brevity is only a tie-breaker between equally clear names. Carry the disambiguating qualifier even
 when it feels redundant *to you* — `GlobalHotkeys`, not `Hotkeys`, when "global" is the word that removes the
-ambiguity *for the user*. Keep distinct domain words distinct (a `chord` is the key combination; a `hotkey` is the
+ambiguity *for the user*. The exception is a qualifier the name's own context already gives: a type doesn't repeat
+its namespace (see [naming](032-naming.md)). Keep distinct domain words distinct (a `chord` is the key combination; a `hotkey` is the
 bound, globally-caught action) rather than collapsing them because you can tell which is meant from context.
 
 Pairs with [conceptual coherence](010-conceptual-coherence-and-naming.md),
