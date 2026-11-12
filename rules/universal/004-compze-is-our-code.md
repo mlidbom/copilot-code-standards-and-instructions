@@ -9,8 +9,10 @@ refactoring, a fix or an addition in that repository's own code triggers a recom
 - **An API that forces awkward code on its consumers,** or a name that tells less than the truth.
 - **A bug or surprising behavior.** Disposing an endpoint also disposes the container, on a thread-pool thread, so a
   host cannot stop serving and then tear its graph down on the thread that built it.
-- **General-purpose code written here that belongs in Compze,** such as a locking, contract or collection helper with
-  nothing about this repository in it.
+- **Code written here that belongs in one of Compze's libraries:** it fits the domain of a library Compze already has,
+  such as a locking primitive for Compze.Threading or an assertion for Compze.Contracts, and it's something we'd publish
+  to the world. Having nothing about this repository in it isn't enough: Compze isn't the home for everything
+  general-purpose.
 
 ## How to recommend it
 
