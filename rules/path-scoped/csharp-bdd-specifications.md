@@ -199,6 +199,12 @@ subject you pick and the assertion you write are the failure message.** In order
    `BeFalse` are for a bool that is itself what the specification is about, such as the result of an `==` operator
    under specification.
 
+**Pick a subject that serializes as data:** names, values, records, lists of them. A failing assertion serializes its
+subject into the message, and an object graph that reaches services, such as a domain object holding the services it
+uses, or a view model, has crashed the whole test process (Compze.Must, 2026-11-12). Assert on what describes such an
+object instead, such as its tags, its parsed words or its id. For several objects, an anonymous object names each part
+in the message: `new { Home = TagsOf(home), School = TagsOf(school) }.Must().Satisfy(...)`.
+
 A custom assertion (`RunAssertion`) earns its place when it names a domain concept many specifications check, and its
 name says more than the predicate would.
 
