@@ -181,9 +181,26 @@ Use the custom **`Must`** assertion library — not xUnit `Assert` or FluentAsse
 ```csharp
 value.Must().Be(expected);
 value.Must().NotBeNull();
-value.Must().BeTrue();
 collection.Must().HaveCount(5);
+words.Must().Satisfy(it => !it.Contains("は雨だ"));
 ```
+
+A failing assertion's message shows its own source text and the serialized state of the value it asserts on, so **the
+subject you pick and the assertion you write are the failure message.** In order of preference:
+
+1. **A built-in assertion that fits:** `Be`, `DeepEqual`, `SequenceEqual`, `Contain`, `HaveCount`, `BeGreaterThan`
+   and the rest. Each is there because its message is better for its case, such as `Be`'s diff.
+2. **Otherwise `Satisfy`, with a one-line predicate, on the value whose state explains a failure.**
+   `words.Must().Satisfy(it => !it.Contains("は雨だ"))` fails showing the predicate and every word. So a missing
+   built-in, such as `NotContain` for collections, is no gap to work around or ask for, and a condition that's trivial
+   to write needs no custom assertion method.
+3. **Never compute a bool and assert on it.** `words.Contains("は雨だ").Must().BeFalse()` or
+   `(known <= built).Must().BeTrue()` fails with "was True", and nothing about the words or the counts. `BeTrue` and
+   `BeFalse` are for a bool that is itself what the specification is about, such as the result of an `==` operator
+   under specification.
+
+A custom assertion (`RunAssertion`) earns its place when it names a domain concept many specifications check, and its
+name says more than the predicate would.
 
 ### Exception assertions
 Import `using static Compze.Must.MustActions;` then:
