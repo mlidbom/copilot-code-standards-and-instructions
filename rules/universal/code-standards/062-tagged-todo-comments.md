@@ -8,7 +8,8 @@ with it when it's refactored, and is listed by the IDE.
 ## The tags
 
 A tag is a word and a colon, at the start of the comment. The IDE's TODO patterns match them case-insensitively and list
-them in its TODO window (Rider: Settings > Editor > TODO; a solution's own patterns are in its `.DotSettings`).
+them in its TODO window (Rider: Settings > Editor > TODO; they're in the user's own settings, which cover every solution, and a solution's
+`.DotSettings` may hold patterns too).
 
 - `bug:` behavior that is wrong, found and not fixed.
 - `refactor:` design that should change: code that implements the same thing as other code, a name that tells less than
@@ -25,7 +26,7 @@ them in its TODO window (Rider: Settings > Editor > TODO; a solution's own patte
   answer the user about it.
 - `review-naming:` a review comment that is only about the name of something: a name you chose or changed on your own, or
   a name you doubt, for the user's pass over the names. An area may follow it, to make such comments searchable, such as
-  `review-naming:matching:`. The `review:` pattern doesn't match it, so a solution needs a TODO pattern of its own for it.
+  `review-naming:matching:`. The `review:` pattern doesn't match it, so the IDE needs a TODO pattern of its own for it.
 
 The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user's to use.
 

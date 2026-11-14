@@ -19,7 +19,13 @@ its own with `review:` comments for his pass: "Use //review-naming: for this fro
 is only about the name of something would use this new tag. If you want to clarify an area to make the comments more
 searchable you could add it after the : //review-naming:matching:". The agent first saved it as a memory; Magnus: "It
 should be in rules, not a memory I figure." Rider's `review:` pattern requires the colon right after "review", so it
-doesn't list these: each solution needs a pattern for the tag, such as `(?<=\W|^)(?<TAG>REVIEW-NAMING:)(.*)`.
+doesn't list these: Rider needs a pattern for the tag, such as `(?<=\W|^)(?<TAG>REVIEW-NAMING:)(.*)`.
+
+Where the patterns are (read from the files, 2026-11-14): Magnus's own are at user level, in Rider's settings for this
+computer (`%APPDATA%\JetBrains\Rider<version>\resharper-host\GlobalSettingsStorage.DotSettings`), so one pattern added
+there covers every solution. Some solutions' settings files (`JAStudio.slnx.DotSettings`,
+`CompzeResharperSettings.DotSettings`) also carry an older copy of his patterns. The agent first wrote that each solution
+needs the pattern, having read only the solution's file.
 
 `todo:compze:` was added 2026-11-10 with the rule "Compze is our code" (`../004-compze-is-our-code.md`); its sidecar
 says why.
