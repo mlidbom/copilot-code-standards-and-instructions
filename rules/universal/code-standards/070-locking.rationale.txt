@@ -4,6 +4,11 @@ Until 2026-11-14 the rule was one line: "Always use the locking primitives in Co
 IAwaitableMonitor, IMutex etc. NEVER raw lock, Monitor, Mutex etc." Rewritten that day at the user's word, in JAStudio
 (Claude Fable 5.2).
 
+The same day it lost its ban on `SemaphoreSlim`, in Compze, at the user's word: "Remove that ban." The ban had an agent
+(Claude Opus 5.5) recommend a public slot gate in Compze.Threading for the one place in Compze, JAStudio and Deskmancer
+that limits how many requests are in flight, where `SemaphoreSlim` does the job fully. Compze has only what improves on
+the base class library, the user said then; in Compze that is a rule of its own.
+
 ## What is behind it
 
 The user: "Compze.Threading[.InterProcess] is IMO a vastly better API than the built in synchronization primitives. it
@@ -26,10 +31,10 @@ verdict: "I share that, most of all for waiting on a condition." The cross-proce
 - **It covers synchronization only.** Other gaps in Compze go by `../004-compze-is-our-code.md`: work around, mark,
   recommend.
 
-## The exceptions approved before the stop
+## The exception approved before the stop
 
-Both in Compze, each with a `//rationale:` comment: a raw `Monitor` in `DoubleCheckedLockingOnAnExistingObject`, and a
-`SemaphoreSlim` in `FramedConnectionPool`. They stay.
+In Compze, with a `//rationale:` comment: a raw `Monitor` in `DoubleCheckedLockingOnAnExistingObject`. It stays. The
+`SemaphoreSlim` in the named-pipe transport's connection pool was the other one, until the ban went.
 
 ## Not tested
 
