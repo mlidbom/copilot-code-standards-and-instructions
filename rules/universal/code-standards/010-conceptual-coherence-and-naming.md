@@ -1,46 +1,69 @@
-# The king of all concerns: conceptual coherence.
+# Conceptual coherence and naming come first: each type and member is one clear concept, and its name tells the truth
 
-Every type and member is one clear concept, held at a consistent level of abstraction, and its **name tells
-the truth about what it is**. A type name that implies something untrue is not polish — it is a fatal design error. 
-A `User` must be a user; a value object holding a user's registration details is `UserRegistrationData`, or `Users.RegistrationData`, never just `User`.
+The user: "Implementation details are a distant, also-ran, in importance to me, while clear intuitive mental models are
+the absolute world champion of importance."
 
-Because a name *is* the abstraction's interface, **renaming is the most important refactoring there is** — the
-primary act that restores coherence, and a truer name is a fix to make now, never cosmetic
-([renaming](012-renaming-is-the-most-important-refactoring.md)).
+Every type and member is one clear concept, held at a consistent level of abstraction, and its name tells the truth
+about what it is. A `User` must be a user; a value object holding a user's registration details is
+`UserRegistrationData`, or `Users.RegistrationData`, never just `User`.
 
-The operational test — you understand the code by reading names, never by decoding implementations:
+The test: the code is understood by reading names, not by working out implementations.
 
-- **A class:** its name, and its members' *names alone*, tell you what it is and what each member is for.
-  Needing to read a member's body to learn what it is *for* is a design defect.
-- **A method:** you never stop to work out what a line or section does. Anything not obvious as it stands is
-  extracted behind a name that makes the caller read as plain truth — recursively, all the way down.
+- **A type:** its name and its members' names tell what it is, and what each member is for. A documentation comment
+  briefly explains what the abstraction is.
+- **A method:** it reads as what it does. Anything not obvious as it stands is extracted behind a name, all the way
+  down ([everything in its place](031-everything-in-its-place.md)).
 
-The how-to lives in [everything-in-its-place](031-everything-in-its-place.md) and
-[naming](032-naming.md). The one truthful name a concept earns is then the project's single word for it — its
-[ubiquitous language](007-ubiquitous-language.md) (DDD) term, spoken identically in every artifact: code,
-comments, tests, docs, and on screen, never a synonym. This file only ranks it: it outranks everything below.
+**Why:** a human reader has the names to go on, and reads them far more often than the bodies behind them. The user:
+"To me, without a great name, I need to go looking things up CONSTANTLY to be sure what I'm looking at."
 
-## General guidelines
+## Names
 
-### Prefer the obvious term if it fits
-If there is a standard term that will almost certainly be understood intuitively in context, that is a strong signal in favor of using that over inventing something new.
+- **As long as it takes for a reader new to the code to understand it with no lookup.** "Do not fear typing." Brevity
+  only decides between names that are equally clear. Short names aren't the clean ones here, though most code has
+  them: "code of a type that I utterly hate that optimizes for characters typed and just loves variable names like
+  a,b,c,d and ad-hoc abbreviations and acronyms" (the user).
+- **No abbreviations,** unless it's certain both that the reader knows the abbreviation and that it's obvious in
+  context.
+- **A method's name tells what it does.** If you need to read the method to understand what a line calling it does,
+  renaming or other refactoring is in order.
+- **Prefer the obvious term if it fits.** If there is a standard term that will almost certainly be understood
+  intuitively in context, that is a strong signal in favor of using that over inventing something new.
+- **The flowing lambda variable in fluent code is `it`** by default. It means exactly the right thing in English: the
+  thing we are already talking about.
+- **The name is then the concept's one word, everywhere** it appears: its
+  [ubiquitous language](007-ubiquitous-language.md) term.
 
-## Traps. Never trade the above for these.
+## Renaming is the most important refactoring there is
 
-### Minimalism / "YAGNI" / "don't extract until reused"
-The default failure mode, and the one that most fights the goal. Extract every time it reads clearer — reuse
-count is irrelevant, "used once" is no reason to inline. YAGNI withholds only speculative *behavior nothing
-calls*, never an extraction-for-clarity or the right kind of type — see
-[standard-wisdom-traps](040-standard-wisdom-traps.md).
+The user "100% seriously consider[s] renaming to be the most important refactoring that exists". A name is read at every
+call site, so one that tells less than the truth misleads every reader, everywhere. Correcting it is often the whole
+fix: when a type's name claims a concept the type isn't, the rename is the design fix.
 
-### Keeping a name short
-A name is as long as it needs to be for instant understanding and full conceptual clarity — never shorter.
-Brevity is a tie-breaker between equally clear names, never a reason to sacrifice clarity.
+- **Rename when a truer name occurs to you.** It's a fix to make now, not polish for later.
+- **A name being everywhere is no reason to keep it:** every use carries the wrong idea.
+- **In review and design, raise the names first.** Proposing a rename is proposing a real fix.
 
-### Avoiding large refactorings
-Total restructurings are not just fine, but encouraged, as long as the resulting code reads clearer.
+## When the user remarks on code
 
-### Convention
-Do not go against the goals and guidelines we set up because
-* It is unconventional
-* The current code already goes against it
+"When I'm pointing out something about code, unless I'm specifically pointing at a bug, the odds are 90%+ that what I'm
+talking about is questionable design in this sense, not implementation."
+
+- **Answer about the concept:** does the name, or the abstraction, fit the concept it calls to mind? How the
+  implementation happens to work doesn't answer that. "If the name it is given is messed up given what it is used as,
+  that does NOT mean it is OK — it means we have a fundamental modeling error to fix." Propose the rename or the new
+  model, and let him choose the direction.
+- **Conceptual coherence isn't weighed against usage, performance or YAGNI.** Those bear on how to reach the coherent
+  model, not on whether to. Lead with the coherent model, then say what it costs. Whether something is the right kind
+  of type, a value or an entity, is a question of coherence too, not a detail.
+- **"Clean", "simple" and "maintainable" mean this** when the user says them: conceptual coherence, and extracting
+  whenever it reads clearer. Not fewer parts, and not "don't abstract until it's reused".
+
+## What doesn't outweigh conceptual coherence
+
+- **Reuse counts, minimalism, YAGNI:** extract whenever it reads clearer, used once or not
+  ([standard wisdom traps](040-standard-wisdom-traps.md)).
+- **The size of the refactoring:** total restructurings are not just fine, but encouraged, as long as the resulting
+  code reads clearer.
+- **Convention:** that something is unconventional, or that the current code already does otherwise, is no reason
+  against it.

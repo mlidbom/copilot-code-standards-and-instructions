@@ -12,8 +12,8 @@ re-creates the coupling somewhere else. Invert the order:
 3. **Then split the wiring.** After step 2 it usually stops being a design problem and becomes mechanics: the
    seam is the shape the code wants once the names stop lying.
 
-This is conceptual-coherence-first (010–013) applied as an operational *sequence*, not just a review lens.
+This is [conceptual coherence and naming first](010-conceptual-coherence-and-naming.md) applied as an operational
+*sequence*, not just a review lens.
 
-Pairs with [renaming-is-the-most-important-refactoring](012-renaming-is-the-most-important-refactoring.md).
 Provenance and the full case study: see the .rationale.txt sidecar. (The "when given full delegation"
 working mode that emerged from the same case lives in the collaboration rules — it is not a code standard.)

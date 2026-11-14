@@ -9,7 +9,7 @@ Because of various limitations of the human mind, in order to be able to effecti
 * a [Ubiquitous Language](007-ubiquitous-language.md)
 * [Well encapsulated abstractions](031-everything-in-its-place.md)
 * Deep hierarchies of namespaces that make the context and grouping of abstractions clear
-* [Long descriptive names](013-name-for-the-human-who-must-look-it-up.md) that make meaning clear without knowing the details
+* [Long descriptive names](010-conceptual-coherence-and-naming.md) that make meaning clear without knowing the details
 
 In these standards, a name means the fully qualified name: a type's with its namespace, a member's with its type.
 

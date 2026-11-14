@@ -13,8 +13,10 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
    `preparing-a-commit-for-magnus-to-make.md` says.
 2. Magnus reads the diff: "Looking at the git diff is much easier for me than reading your free text description." He
    stages each file as he approves it, and commits in Git Extensions.
-3. When he says he has committed, the agent pushes the catalog with the push script, which records the new pin, and
-   starts the next step.
+3. He pushes the catalog himself. When he says he has, the agent starts the next step.
+4. The catalog's pin in the consuming repository is recorded once, when the work is done. Magnus, 2026-11-14: "One
+   commit in the parent repo for every step here is not helpful." So meanwhile the agent fetches the catalog with git
+   itself, not with the pull and push scripts, which commit the pin.
 
 ## What guides the changes
 
@@ -39,10 +41,11 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
    - "REFUSE to start work" and "Ask the design question upfront" removed from the collaboration rules, which settles
      them against the user-level independence mandate. Nothing was put in their place.
 4. **The larger rewrites, one group at a time:**
-   - the five naming files (010 to 013, and 032) into one, in Magnus's words;
-   - what is calibrated for Deskmancer: the reader who doesn't know the domain (013), the doc-comment audience (060),
-     the `IntPtr` examples (050);
-   - the force of the taste rules: "BANNED", "king of all concerns", "you have already lost the thread";
+   - the five naming files (010 to 013, and 032) into one, in Magnus's words. *Done 2026-11-14:* they are
+     `010-conceptual-coherence-and-naming.md`. The merge also settled what the next two points held for those files:
+     the reader of 013, and "king of all concerns" and "you have already lost the thread";
+   - what is calibrated for Deskmancer: the doc-comment audience (060), the `IntPtr` examples (050);
+   - the force of the remaining taste rules, such as "BANNED" in the rule on defensive coding;
    - the Compze rule's "near the top", which made a headline of a small idea.
 5. **Size:** the user-level tooling rules, about 5,400 words always loaded, that could load on demand.
 

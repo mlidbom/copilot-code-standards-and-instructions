@@ -61,3 +61,6 @@ look at just removing parts of the current instructions rather than changing the
   "Long fully qualified names. This goes for A LOT of the references to names I would think."
 
 **If it comes back, look first for a sentence to remove,** in these rules or another, before adding one here.
+
+(The files `013-name-for-the-human-who-must-look-it-up.md` and `032-naming.md`, named above, were merged into
+`010-conceptual-coherence-and-naming.md` on 2026-11-14, with 011 and 012. Their sidecars are in that file's sidecar.)
