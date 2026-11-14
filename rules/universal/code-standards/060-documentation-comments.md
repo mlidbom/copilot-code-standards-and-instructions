@@ -10,7 +10,7 @@ The reader is not there for your clever caveats. They are there for "what is thi
 
 ## Use linking tags for every instance of a word that refers to something in our code
 
-Anything that refers to a symbol that can be referenced by `<see cref="…"/>`, `<paramref name="…"/>`, `<typeparamref name="…"/>` etc. MUST be. Fall back to `<c>…</c>` if the symbol is in a non-referenced assembly but NEVER leave it as just a word.
+Link anything that refers to a symbol that can be referenced, with `<see cref="…"/>`, `<paramref name="…"/>`, `<typeparamref name="…"/>` etc. If the symbol is in a non-referenced assembly, fall back to `<c>…</c>`: don't leave it as just a word.
 
 Why: 
 - Each tag becomes a real link that the developer can follow to explore the code. This is invaluable to me.

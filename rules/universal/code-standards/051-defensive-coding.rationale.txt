@@ -17,3 +17,16 @@ as designed.
 So the rule is **empirically grounded, not aspirational.** If a future you is tempted to add a "just in
 case" catch — or to soften the rule to permit them — this is the evidence that says don't: delete the catch
 and let it crash until you have your own empirical evidence of a specific, characterized non-bug exception.
+
+## The title, 2026-11-14
+
+Until then the title was `"Defensive coding" is BANNED`. The guide on writing rules keeps absolute wording for hard
+limits, and the user's measure for the rules is how well the agent works as a whole, not "hard adherence to the rules
+in every situation". The title now says what to do. Nothing else in the rule changed: "never preemptively swallow
+exceptions" stays as absolute as the evidence above makes it.
+
+**Not tested with any signal.** The change was replayed with Opus 5.5 and Claude Fable 5.2
+(`rule-testing/replays/code-where-a-guard-or-a-catch-is-tempting` in the catalog). No answer coped quietly with a
+state that shouldn't happen: not with the old title, not with the new, not with this rule taken away, and for Opus not
+with no shared rules at all, 32 answers in all. The code around the task was already written this way, and the models
+went on as it did. Whether the title matters where the surrounding code is defensive is not known.

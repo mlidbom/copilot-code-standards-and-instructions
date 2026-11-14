@@ -22,6 +22,10 @@ with me. Very prominently."
   each time the agent would have done it the mainstream way, the heading would be noise, and skipped.
 - **"Whether you followed the rule or not":** it reports the parting of rule and judgment, whichever won. It gives no
   leave to set a rule aside.
+- **"What the rules are for" is the user's words and nothing more.** Until 2026-11-14 no rule said what the rules
+  serve, so an agent had nothing to weigh a rule against. He was asked what his concern with the rules' size was, and
+  answered with what he wants of the rules as a whole. Whether his words give leave to set a rule aside is not
+  settled: the section doesn't say so, and the heading still reports the parting whichever won.
 - **At the end, in two or three lines.** "Near the top", in the rule on Compze, made a headline of a small idea.
 - **The name states the event and the action.** `watch-out-for-bad-rules.md`, the user's first suggestion, reads as
   standing vigilance: the duty to check.

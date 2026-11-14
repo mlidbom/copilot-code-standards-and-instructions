@@ -1,4 +1,4 @@
-# "Defensive coding" is BANNED
+# Don't code defensively: guarantee correct state and assert it
 
 **Guarantee correct state and assert it; do not check for a catalogue of corrupt states and work around
 them.** A type's job is to keep itself valid and make invalid states impossible — not to defend, at every
