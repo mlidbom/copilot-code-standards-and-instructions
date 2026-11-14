@@ -4,13 +4,17 @@ shared rules: so that a change to a rule is tested before it is committed, and a
     python .claude-shared/rule-testing/replay-a-rule-change.py <replay folder>
         [--arm <name>=<rules>]...   default: committed=HEAD and working-tree=working-tree
         [--runs <how many for each arm>]   default: 2
-        [--model <model>] [--tools <allowed tools>] [--show <regular expression>] [--keep-in <folder>]
+        [--model <model>] [--judge-model <model>] [--tools <allowed tools>] [--keep-in <folder>]
+        [--judge <results folder>]   judge the answers already there, and run no sessions
+        [--show <regular expression>]
 
 A replay folder holds:
     prompt.txt              what each fresh session is asked: the situation as it stood, and the user's message.
     documents/              optional: the files the prompt has the session read, at the paths the prompt names.
-    passages-to-show.txt    optional: a regular expression. Only the passages of each answer that match it are
-                            printed. Without it, and without --show, whole answers are.
+    the-failing.md          optional: what counts as the failing, and what doesn't. With it, each answer is judged
+                            by a fresh session of its own, and the script counts the failings for each arm.
+    passages-to-show.txt    optional: a regular expression. Without the-failing.md, only the passages of each answer
+                            that match it are printed. Without either, and without --show, whole answers are.
 
 An arm is a version of the catalog's rules, given as <name>=<rules>, where <rules> is one of:
     working-tree    the catalog as it is on disk, uncommitted changes included: the change under test.
@@ -26,8 +30,8 @@ arms, such as with-the-sentence, gave results that folders with plain names did 
 is named after the consuming repository, under a temporary folder with a random name.
 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
-sessions get read-only tools and no MCP servers. Whether the failing happened is for the reader to judge, from the
-passages printed and the whole answers kept in the results folder.
+sessions get read-only tools and no MCP servers. The whole answers are kept in the results folder: read some of them
+beside the judge's verdicts, since the judge is a model too.
 """
 from __future__ import annotations
 
@@ -85,67 +89,127 @@ class Arm:
 
 
 @dataclass
-class Run:
-    arm: Arm
-    number: int
+class FreshSession:
+    """A claude session started for one prompt, which writes its result as JSON to a file."""
+    name: str
     result_file: Path
     process: subprocess.Popen
 
+    @staticmethod
+    def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str | None) -> FreshSession:
+        claude = shutil.which("claude")
+        if not claude:
+            sys.exit("claude isn't on the PATH")
+        command = [claude, "-p", "--strict-mcp-config", "--output-format", "json"]
+        if tools:
+            command += ["--allowedTools", tools]
+        if model:
+            command += ["--model", model]
+        with prompt.open("rb") as the_prompt, result_file.open("wb") as the_result, result_file.with_suffix(".errors.txt").open("wb") as its_errors:
+            process = subprocess.Popen(command, cwd=runs_in, stdin=the_prompt, stdout=the_result, stderr=its_errors)
+        return FreshSession(name, result_file, process)
+
+    def result(self, timeout_minutes: int) -> dict | None:
+        """What the session returned, or None when it gave no answer."""
+        try:
+            self.process.wait(timeout=timeout_minutes * 60)
+        except subprocess.TimeoutExpired:
+            self.process.kill()
+        try:
+            result = json.loads(self.result_file.read_text(encoding="utf-8"))
+            return result if "result" in result else None
+        except (ValueError, OSError):
+            return None
+
+
+@dataclass
+class Verdict:
+    shows_the_failing: bool | None
+    """None when the judge gave no verdict."""
+    what_decides_it: str
+
+    @staticmethod
+    def parsed_from(the_judges_answer: str | None) -> Verdict:
+        lines = [line.strip() for line in (the_judges_answer or "").splitlines() if line.strip()]
+        first_line = lines[0].upper().strip("*# .:") if lines else ""
+        what_decides_it = " ".join(lines[1:])
+        if first_line.startswith("NOT FAILING"):
+            return Verdict(False, what_decides_it)
+        if first_line.startswith("FAILING"):
+            return Verdict(True, what_decides_it)
+        return Verdict(None, " ".join(lines) or "The judge gave no answer.")
+
     @property
-    def name(self) -> str:
-        return f"{self.arm.name}-{self.number}"
+    def in_a_word(self) -> str:
+        return {True: "FAILING", False: "not failing", None: "NO VERDICT"}[self.shows_the_failing]
 
 
 def main() -> None:
     arguments = parsed_arguments()
     replay = Path(arguments.replay).resolve()
+    the_failing = text_of(replay / "the-failing.md")
+
+    if arguments.judge:
+        if the_failing is None:
+            sys.exit(f"{replay} has no the-failing.md to judge by")
+        answers = {file.stem: file.read_text(encoding="utf-8") for file in sorted(Path(arguments.judge).glob("*.md"))}
+        print_the_verdicts(answers, the_failing, arguments)
+        return
+
     prompt = replay / "prompt.txt"
     if not prompt.is_file():
         sys.exit(f"{replay} has no prompt.txt")
     arms = [Arm.parsed_from(text) for text in arguments.arm] or [Arm("committed", "HEAD"), Arm("working-tree", "working-tree")]
-    passages_to_show = arguments.show or passages_to_show_of(replay)
     results = Path(arguments.keep_in).resolve() if arguments.keep_in else Path(tempfile.mkdtemp(prefix="replay-of-a-rule-change-"))
     results.mkdir(parents=True, exist_ok=True)
     repository = consuming_repository()
 
     print(f"Replaying {replay.name}: {arguments.runs} runs for each of {', '.join(f'{arm.name} ({arm.rules})' for arm in arms)}")
-    runs: list[Run] = []
+    sessions: list[FreshSession] = []
     where_each_arm_ran: dict[str, Path] = {}
     for arm in arms:
         folder = Path(tempfile.mkdtemp()) / (repository.name if repository else "project")
         build_the_folder_a_session_runs_in(folder, arm, replay, repository)
         where_each_arm_ran[arm.name] = folder
         for number in range(1, arguments.runs + 1):
-            runs.append(started_run(arm, number, folder, prompt, results, arguments))
+            name = f"{arm.name}-{number}"
+            sessions.append(FreshSession.started(name, prompt, folder, results / f"{name}.json", arguments.model, arguments.tools))
 
-    failed = False
-    for run in runs:
-        try:
-            run.process.wait(timeout=arguments.timeout_minutes * 60)
-        except subprocess.TimeoutExpired:
-            run.process.kill()
-        failed |= not report(run, passages_to_show, results)
+    answers: dict[str, str] = {}
+    for session in sessions:
+        result = session.result(arguments.timeout_minutes)
+        if result is None:
+            print(f"   {session.name} gave no answer: see {session.result_file} and the errors file beside it")
+            continue
+        answers[session.name] = result["result"]
+        (results / f"{session.name}.md").write_text(result["result"], encoding="utf-8")
+
+    if the_failing is not None:
+        print_the_verdicts(answers, the_failing, arguments)
+    else:
+        print_the_passages(answers, arguments.show or text_of(replay / "passages-to-show.txt"))
     print(f"\nThe whole answers are in {results}")
     for arm_name, folder in where_each_arm_ran.items():
         print(f"   {arm_name} ran in {folder}")
-    sys.exit(1 if failed else 0)
+    sys.exit(0 if len(answers) == len(sessions) else 1)
 
 
 def parsed_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("replay", help="the replay folder: prompt.txt, and optionally documents/ and passages-to-show.txt")
+    parser.add_argument("replay", help="the replay folder: prompt.txt, and optionally documents/, the-failing.md and passages-to-show.txt")
     parser.add_argument("--arm", action="append", default=[], metavar="NAME=RULES", help="RULES is working-tree, none, or a commit of the catalog")
     parser.add_argument("--runs", type=int, default=2, help="fresh sessions for each arm")
     parser.add_argument("--model", help="the model the sessions use, such as the one that got it wrong")
+    parser.add_argument("--judge-model", help="the model that judges the answers. Default: --model")
     parser.add_argument("--tools", default="Read,Grep,Glob", help="the tools the sessions may use")
-    parser.add_argument("--show", metavar="REGEX", help="print only the passages of each answer that match")
+    parser.add_argument("--judge", metavar="FOLDER", help="judge the answers (*.md) already in that results folder, and run no sessions")
+    parser.add_argument("--show", metavar="REGEX", help="without the-failing.md: print only the passages of each answer that match")
     parser.add_argument("--keep-in", metavar="FOLDER", help="where the results go, instead of a new temporary folder")
     parser.add_argument("--timeout-minutes", type=int, default=20)
     return parser.parse_args()
 
 
-def passages_to_show_of(replay: Path) -> str | None:
-    file = replay / "passages-to-show.txt"
+def text_of(file: Path) -> str | None:
     return file.read_text(encoding="utf-8").strip() if file.is_file() else None
 
 
@@ -189,39 +253,57 @@ def copy_the_rules(source: Path, destination: Path, arm: Arm) -> None:
             shutil.copy2(entry, destination / entry.name)
 
 
-def started_run(arm: Arm, number: int, folder: Path, prompt: Path, results: Path, arguments: argparse.Namespace) -> Run:
-    claude = shutil.which("claude")
-    if not claude:
-        sys.exit("claude isn't on the PATH")
-    command = [claude, "-p", "--allowedTools", arguments.tools, "--strict-mcp-config", "--output-format", "json"]
-    if arguments.model:
-        command += ["--model", arguments.model]
-    result_file = results / f"{arm.name}-{number}.json"
-    with prompt.open("rb") as the_prompt, result_file.open("wb") as the_result, (results / f"{arm.name}-{number}.errors.txt").open("wb") as its_errors:
-        process = subprocess.Popen(command, cwd=folder, stdin=the_prompt, stdout=the_result, stderr=its_errors)
-    return Run(arm, number, result_file, process)
+def print_the_verdicts(answers: dict[str, str], the_failing: str, arguments: argparse.Namespace) -> None:
+    """Has a fresh session judge each answer against the description of the failing, and prints the count for each arm."""
+    judgings = [started_judging(name, answer, the_failing, arguments) for name, answer in answers.items()]
+    failings_of_each_arm: dict[str, list[bool | None]] = {}
+    print()
+    for judging in judgings:
+        result = judging.result(arguments.timeout_minutes)
+        verdict = Verdict.parsed_from(result["result"] if result else None)
+        failings_of_each_arm.setdefault(re.sub(r"-\d+$", "", judging.name), []).append(verdict.shows_the_failing)
+        print(f"   {judging.name}: {verdict.in_a_word}  > {verdict.what_decides_it}")
+    print()
+    for arm_name, failings in failings_of_each_arm.items():
+        without_a_verdict = failings.count(None)
+        print(f"{arm_name}: {failings.count(True)} of {len(failings)} answers show the failing" + (f", {without_a_verdict} without a verdict" if without_a_verdict else ""))
 
 
-def report(run: Run, passages_to_show: str | None, results: Path) -> bool:
-    """Prints what the run answered, and returns whether it gave an answer."""
-    print(f"\n== {run.name}")
-    try:
-        result = json.loads(run.result_file.read_text(encoding="utf-8"))
-        answer = result["result"]
-    except (ValueError, KeyError, OSError):
-        print(f"   No answer. See {run.result_file} and {run.result_file.with_suffix('').name}.errors.txt beside it.")
-        return False
-    (results / f"{run.name}.md").write_text(answer, encoding="utf-8")
-    print(f"   {result.get('num_turns')} turns, with {', '.join((result.get('modelUsage') or {}).keys()) or 'an unnamed model'}")
-    if not passages_to_show:
-        print(answer)
-        return True
-    matching = [passage for passage in passages_of(answer) if re.search(passages_to_show, passage, re.IGNORECASE)]
-    for passage in matching:
-        print("   > " + " ".join(passage.split()))
-    if not matching:
-        print(f"   Nothing in the answer matches {passages_to_show}")
-    return True
+def started_judging(name: str, answer: str, the_failing: str, arguments: argparse.Namespace) -> FreshSession:
+    workplace = Path(tempfile.mkdtemp())
+    question = workplace / "question.txt"
+    question.write_text(f"""You are judging one answer from a test of a rule. Decide whether the answer shows the failing described below.
+
+## What counts as the failing
+
+{the_failing}
+
+## The answer to judge
+
+{answer}
+
+## How to reply
+
+Reply with exactly two lines, and nothing else.
+Line 1: FAILING or NOT FAILING.
+Line 2: the passage of the answer that decides it, quoted word for word; or, when nothing in the answer is on the matter, a few words saying so.
+""", encoding="utf-8")
+    an_empty_folder = workplace / "empty"
+    an_empty_folder.mkdir()
+    return FreshSession.started(name, question, an_empty_folder, workplace / "verdict.json", arguments.judge_model or arguments.model, tools=None)
+
+
+def print_the_passages(answers: dict[str, str], passages_to_show: str | None) -> None:
+    for name, answer in answers.items():
+        print(f"\n== {name}")
+        if not passages_to_show:
+            print(answer)
+            continue
+        matching = [passage for passage in passages_of(answer) if re.search(passages_to_show, passage, re.IGNORECASE)]
+        for passage in matching:
+            print("   > " + " ".join(passage.split()))
+        if not matching:
+            print(f"   Nothing in the answer matches {passages_to_show}")
 
 
 def passages_of(answer: str) -> list[str]:
