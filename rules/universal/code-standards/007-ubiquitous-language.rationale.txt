@@ -4,7 +4,7 @@
 
 The agent took the rule to mean that a word may mean only one thing in the whole codebase. Twice, both in JAStudio:
 
-- **2026-11-11, in code** (the model isn't recorded). It avoided "import", because the `Importing` namespace already
+- **2026-11-11, in code** (Opus 5.5). It avoided "import", because the `Importing` namespace already
   used the word, and named the action "keep", then "archive". It also put the namespace's word in front of every type
   in a namespace. The user: "this feels like we are trying to apply the impossible rule of never ever reusing a word
   that is very common in computer science, such as import or store or save", and of the prefixes: "this feels to me

@@ -6,7 +6,8 @@ recommendation that it should be added to compze." He agreed to the proposal thi
 
 What prompted it, in the same session:
 - Compze's `Endpoint.DisposeAsync` awaits with `.caf()` and disposes the container in a `finally`, so in Deskmancer's
-  observation-endpoint launches the whole graph was torn down on a thread-pool thread. The agent worked around it in
+  observation-endpoint launches the whole graph was torn down on a thread-pool thread. The agent (Opus 5.5) worked around
+  it in
   Deskmancer (`ApplicationBootstrapper.DisposeGraph` tears the application root down on the UI thread first) and raised
   the real fix, stopping the endpoint separately from disposing the container, only as "that's your call" near the end
   of a report.

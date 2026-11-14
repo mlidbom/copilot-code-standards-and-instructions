@@ -2,7 +2,8 @@ Provenance: Compze typermedia–tessaging disentanglement, 2026-06-10, session o
 separate-typermedia-and-tessaging (commits 25797d10e..8a60ffd69). Confirmed emphatically by Magnus.
 
 The case: Typermedia (sync request-response API paradigm) and Tessaging (async exactly-once service bus) shared
-a fused hosting layer. A month of prior effort (Magnus + Opus) had split the pipelines (transports, routing,
+a fused hosting layer. A month of prior effort (Magnus + Opus, most likely 4.7 and then 4.8, going by the dates)
+had split the pipelines (transports, routing,
 handler execution, discovery) but stalled on the hosting/wiring split and was shelved in frustration.
 
 Diagnosis that unlocked it: the hosting abstractions (IEndpoint, IEndpointHost, IEndpointBuilder,

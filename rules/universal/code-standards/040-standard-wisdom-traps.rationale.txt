@@ -5,7 +5,8 @@ Covers the YAGNI section. (Originally the standalone user-level rule
 "understand-code-by-names-not-implementations" below is the earlier name of what is now
 010-conceptual-coherence-and-naming.)
 
-Written 2026-06-05, same session as understand-code-by-names-not-implementations. A `record struct Monitor`
+Written 2026-06-05, same session as understand-code-by-names-not-implementations (the agent: most likely
+Opus 4.8, the latest Opus then). A `record struct Monitor`
 case exposed a conflation of two independent axes:
 
 - *Nature* — what kind of thing it is (entity vs value, class vs struct). A monitor is an entity: it has

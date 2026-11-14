@@ -1,5 +1,8 @@
 # Rationale — anti-corruption layers
 
+The agents in the entries below: most likely Opus 4.8, the latest Opus at the time (released 2026-05-28), or else
+Opus 4.7.
+
 ## The "boundary / introduce the type" paragraph (provenance)
 
 Added 2026-05-31 after the same multi-agent review let naked `IntPtr` window handles flow freely through

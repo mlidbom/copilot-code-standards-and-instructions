@@ -7,7 +7,7 @@ the last that has them.
 
 ## What is behind it
 
-All from June 2026, in the vdgs-live-view project (Vantage). Which models isn't recorded.
+All from June 2026, in the vdgs-live-view project (Vantage). The agent: most likely Opus 4.8, the latest Opus then.
 
 - **The `Monitor` case:** a `record struct Monitor(ScreenRect Bounds)`. Asked whether the name and the kind of type
   fitted the concept, the agent answered twice with how the implementation used it. The fix was the rename: it's the

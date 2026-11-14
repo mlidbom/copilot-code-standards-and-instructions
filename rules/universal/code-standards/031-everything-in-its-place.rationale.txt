@@ -3,7 +3,8 @@
 ## The junk-drawer / technical-trait test (provenance)
 
 Added 2026-05-31 after a multi-agent style review of `Vantage/` let `NativeMethods` — an unbounded bag of
-unrelated P/Invokes (windowing, DWM, foreground-lock, keyboard hook, GDI, …) — pass completely clean. This
+unrelated P/Invokes (windowing, DWM, foreground-lock, keyboard hook, GDI, …) — pass completely clean (the agents were
+most likely Opus 4.8, released three days earlier, or else Opus 4.7). This
 is the evidence, because it shows *how a careful adversarial review still missed it*, which is what the
 wording is built to defeat:
 

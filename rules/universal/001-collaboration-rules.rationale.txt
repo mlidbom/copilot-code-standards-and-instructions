@@ -3,8 +3,8 @@
 ## What is behind each section
 
 - **Don't code until instructed to,** and **honesty about what you don't know:** Compze's own rules, in the catalog
-  since 2026-06-12. The second answered an agent that kept the old architecture, said nothing and reported success.
-  Which model isn't recorded.
+  since 2026-06-12. The second answered an agent that kept the old architecture, said nothing and reported success:
+  most likely Opus 4.6, the latest Opus when Compze got the rule, 2026-03-07.
 - **Questions are just questions,** and **the codebase must improve over time:** from the user-level CLAUDE.md of
   before the rules folder.
 - **Build the tools the work will need again now** (2026-11-09, JAStudio). The user: "In the spirit of creating the
