@@ -22,6 +22,12 @@ in a `Deskmancer.Core.CompzeStaging` namespace (still visible in the refactor-to
 affinity-cache-god-class-split example). It now follows the tagged-todo-comment form, a sub-tag like `todo:docs:`, so
 Rider's `todo:` pattern lists it.
 
+## Doing better than the BCL
+
+Added 2026-11-14, from Compze's own rule "Compze has only what improves on the BCL", which sessions in other repositories
+don't see. Magnus, in Compze: "Compze needs to improve on something available in the BCL for a Compze version to be worth
+it", and a better, more intuitive API is improvement enough, as Compze's `*Ordinal` string methods are.
+
 ## Taken out
 
 "Near the top of the report", after the heading's name. Removed 2026-11-14 (JAStudio, Claude Fable 5.2): the agent had

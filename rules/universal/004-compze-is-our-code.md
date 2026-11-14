@@ -10,9 +10,9 @@ refactoring, a fix or an addition in that repository's own code triggers a recom
 - **A bug or surprising behavior.** Disposing an endpoint also disposes the container, on a thread-pool thread, so a
   host cannot stop serving and then tear its graph down on the thread that built it.
 - **Code written here that belongs in one of Compze's libraries:** it fits the domain of a library Compze already has,
-  such as a locking primitive for Compze.Threading or an assertion for Compze.Contracts, and it's something we'd publish
-  to the world. Having nothing about this repository in it isn't enough: Compze isn't the home for everything
-  general-purpose.
+  such as a locking primitive for Compze.Threading or an assertion for Compze.Contracts; it does better than what .NET's
+  base class library offers, if only by reading better; and it's something we'd publish to the world. Having nothing
+  about this repository in it isn't enough: Compze isn't the home for everything general-purpose.
 
 ## How to recommend it
 
