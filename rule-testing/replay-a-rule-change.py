@@ -33,8 +33,8 @@ arms, such as with-the-sentence, gave results that folders with plain names did 
 is named after the consuming repository, under a temporary folder with a random name.
 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
-sessions get read-only tools and no MCP servers. The whole answers are kept in the results folder: read some of them
-beside the judge's verdicts, since the judge is a model too.
+sessions get read-only tools and no MCP servers, and Claude Code keeps no transcript of them. The whole answers are kept
+in the results folder: read some of them beside the judge's verdicts, since the judge is a model too.
 """
 from __future__ import annotations
 
@@ -114,7 +114,7 @@ class FreshSession:
         claude = shutil.which("claude")
         if not claude:
             sys.exit("claude isn't on the PATH")
-        command = [claude, "-p", "--strict-mcp-config", "--output-format", "json"]
+        command = [claude, "-p", "--strict-mcp-config", "--no-session-persistence", "--output-format", "json"]
         if tools:
             command += ["--allowedTools", tools]
         if model:
@@ -197,6 +197,8 @@ def main() -> None:
             continue
         answers[session.name] = result["result"]
         (results / f"{session.name}.md").write_text(result["result"], encoding="utf-8")
+    for folder in where_each_arm_ran.values():
+        remove_the_empty_folder_claude_code_made_for(folder)
 
     if the_failing is not None:
         print_the_verdicts(answers, the_failing, arguments)
@@ -234,6 +236,13 @@ def copy_the_file_or_folder(source: Path, destination: Path) -> None:
     elif source.is_file():
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+
+
+def remove_the_empty_folder_claude_code_made_for(where_sessions_ran: Path) -> None:
+    """Claude Code makes a folder in the user's .claude/projects for a folder that sessions ran in, also when it keeps no transcript of them."""
+    its_folder = Path.home() / ".claude" / "projects" / re.sub(r"[^A-Za-z0-9]", "-", str(where_sessions_ran))
+    if its_folder.is_dir() and not any(its_folder.iterdir()):
+        its_folder.rmdir()
 
 
 def consuming_repository() -> Path | None:
