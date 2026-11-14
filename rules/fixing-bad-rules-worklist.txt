@@ -52,9 +52,10 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
        strings and to what is stored. Its paragraph against one misreading of June went;
    - the force of the remaining taste rules, such as "BANNED" in the rule on defensive coding. *Looked at
      2026-11-14, nothing changed.* The forceful wording that misfired was in corrections agents had written, and those
-     are done. What is left is Magnus's own: "BANNED" (defensive coding), "NEVER raw lock" (locking), "MUST be" (linking
-     tags in doc comments). No misfire of them is known, the sidecar on defensive coding says its force is deliberate,
-     and the rule on when to break the rules now gives each a marked way out;
+     are done. What is left is Magnus's own: "BANNED" (defensive coding) and "MUST be" (linking tags in doc comments).
+     No misfire of them is known, the sidecar on defensive coding says its force is deliberate, and the rule on when
+     to break the rules now gives each a marked way out. The one-line rule on locking, "NEVER raw lock", Magnus had
+     rewritten the same day: his reasons for Compze.Threading, and a stop, not an exception, when it doesn't fit;
    - the Compze rule's "near the top", which made a headline of a small idea. *Done 2026-11-14:* the words are out.
 5. **Size:** the user-level tooling rules, about 5,400 words always loaded, that could load on demand.
 6. **The sidecars written or grown during this work,** cut down to what `path-scoped/rules-folder.md` now says a

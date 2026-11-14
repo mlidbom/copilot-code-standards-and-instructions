@@ -1,0 +1,29 @@
+# Provenance
+
+Until 2026-11-14 the rule was one line: "Always use the locking primitives in Compze.Threading. IMonitor,
+IAwaitableMonitor, IMutex etc. NEVER raw lock, Monitor, Mutex etc." Rewritten that day at the user's word, in JAStudio
+(Claude Fable 5.2), with his reasons and the stop.
+
+## What looks removable but isn't
+
+- **The stop.** The rule on when to break the rules has the agent make an exception and mark it. Here the user wants
+  neither the worse code nor the raw primitive: "this is a stop condition. Tell me why good code cannot be written with
+  the compze tooling, and tell me suggested fixes in compze."
+- **It covers synchronization only.** Other gaps in Compze go by `../004-compze-is-our-code.md`: work around, mark,
+  recommend.
+
+## The agent's verdict in the rule
+
+The user asked for it: he wanted his reasons checked, not taken on his word. It rests on reading both packages, and on
+one comparison written and run that day: a queue whose takers wait for an item, synchronously and asynchronously, with
+a timeout and cancellation. 72 lines with `Monitor` and a task for the async waits, 17 with `IAwaitableThreadShared`,
+and both passed the same checks. The cross-process part was read, not run.
+
+## The exceptions approved before the stop
+
+Both in Compze, each with a `//rationale:` comment: a raw `Monitor` in `DoubleCheckedLockingOnAnExistingObject`, and a
+`SemaphoreSlim` in `FramedConnectionPool`. They stay.
+
+## Not tested
+
+Whether the stop is raised where it should be, and only there.
