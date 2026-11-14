@@ -16,8 +16,8 @@ refactoring, a fix or an addition in that repository's own code triggers a recom
 
 ## How to recommend it
 
-- **Prominently: under a heading of its own,** `### COMPZE RECOMMENDATION ###`, near the top of the report, never as a
-  closing "your call". Say what to change in Compze, why, and what you did here in the meantime.
+- **Prominently: under a heading of its own,** `### COMPZE RECOMMENDATION ###`, never as a closing "your call". Say
+  what to change in Compze, why, and what you did here in the meantime.
 - **Mark the workaround at the code** with a `todo:compze:` comment (see the rule on tagged todo comments): the Compze
   change it waits for, and what to do here once it lands, usually to delete the workaround. One grep then finds every
   workaround to remove when Compze changes.

@@ -21,3 +21,9 @@ The `todo:compze:` marker revives an older Deskmancer convention, `//todo: Compz
 in a `Deskmancer.Core.CompzeStaging` namespace (still visible in the refactor-to-code-standards skill's
 affinity-cache-god-class-split example). It now follows the tagged-todo-comment form, a sub-tag like `todo:docs:`, so
 Rider's `todo:` pattern lists it.
+
+## Taken out
+
+"Near the top of the report", after the heading's name. Removed 2026-11-14 (JAStudio, Claude Fable 5.2): the agent had
+put a passing idea about Compze under the heading, near the top of a design report, where it would otherwise have been
+a line. The heading is what keeps a recommendation from being missed; where it goes follows from how much it matters.
