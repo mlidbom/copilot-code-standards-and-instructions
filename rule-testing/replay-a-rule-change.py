@@ -20,6 +20,9 @@ An arm is a version of the catalog's rules, given as <name>=<rules>, where <rule
     working-tree    the catalog as it is on disk, uncommitted changes included: the change under test.
     <commit>        the catalog as of that commit, such as HEAD or a1b2c3d^: the control.
     none            no shared rules at all: what the model does by itself.
+After working-tree or a commit, +<folder> lays that folder's files over the catalog's, at the same paths. So several
+wordings of a rule are tested at once, each in a folder of its own, with nothing changed in the catalog:
+    --arm shorter=HEAD+C:/wordings/shorter    with the wording in C:/wordings/shorter/rules/universal/001-some-rule.md
 
 Each arm gets a folder of its own, holding the replay's documents and the consuming repository's .claude folder, with
 the rules that come from the catalog in the arm's version. So the arms differ in the catalog's rules and in nothing
@@ -54,26 +57,37 @@ CATALOG = Path(__file__).resolve().parent.parent
 class Arm:
     name: str
     rules: str
+    laid_over_the_rules: Path | None = None
+    """A folder whose files replace the catalog's at the same paths."""
 
     @staticmethod
     def parsed_from(text: str) -> Arm:
         name, separator, rules = text.partition("=")
         if not separator or not name or not rules:
             sys.exit(f"An arm is <name>=<rules>, such as before=HEAD. Got: {text}")
-        return Arm(name, rules)
+        rules, _, folder = rules.partition("+")
+        if not folder:
+            return Arm(name, rules)
+        if rules == "none" or not Path(folder).is_dir():
+            sys.exit(f"After working-tree or a commit, + takes a folder that exists. Got: {text}")
+        return Arm(name, rules, Path(folder).resolve())
+
+    @property
+    def described(self) -> str:
+        return f"{self.name} ({self.rules}" + (f" with {self.laid_over_the_rules} laid over it)" if self.laid_over_the_rules else ")")
 
     def puts_what_the_catalog_has_at(self, path_in_the_catalog: PurePosixPath, destination: Path) -> None:
         """Writes the catalog's file or folder at that path to the destination, in this arm's version of the rules."""
         if self.rules == "none":
             return
         if self.rules == "working-tree":
-            source = CATALOG / path_in_the_catalog
-            if source.is_dir():
-                shutil.copytree(source, destination)
-            elif source.is_file():
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(source, destination)
-            return
+            copy_the_file_or_folder(CATALOG / path_in_the_catalog, destination)
+        else:
+            self.puts_what_its_commit_has_at(path_in_the_catalog, destination)
+        if self.laid_over_the_rules:
+            copy_the_file_or_folder(self.laid_over_the_rules / path_in_the_catalog, destination)
+
+    def puts_what_its_commit_has_at(self, path_in_the_catalog: PurePosixPath, destination: Path) -> None:
         archived = subprocess.run(["git", "-C", str(CATALOG), "archive", self.rules, path_in_the_catalog.as_posix()], capture_output=True)
         if archived.returncode != 0:
             print(f"   ({self.name}: the catalog has no {path_in_the_catalog} as of {self.rules})")
@@ -164,7 +178,7 @@ def main() -> None:
     results.mkdir(parents=True, exist_ok=True)
     repository = consuming_repository()
 
-    print(f"Replaying {replay.name}: {arguments.runs} runs for each of {', '.join(f'{arm.name} ({arm.rules})' for arm in arms)}")
+    print(f"Replaying {replay.name}: {arguments.runs} runs for each of {', '.join(arm.described for arm in arms)}")
     sessions: list[FreshSession] = []
     where_each_arm_ran: dict[str, Path] = {}
     for arm in arms:
@@ -197,7 +211,7 @@ def main() -> None:
 def parsed_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("replay", help="the replay folder: prompt.txt, and optionally documents/, the-failing.md and passages-to-show.txt")
-    parser.add_argument("--arm", action="append", default=[], metavar="NAME=RULES", help="RULES is working-tree, none, or a commit of the catalog")
+    parser.add_argument("--arm", action="append", default=[], metavar="NAME=RULES", help="RULES is working-tree, none, or a commit of the catalog; +FOLDER lays a folder's files over it")
     parser.add_argument("--runs", type=int, default=2, help="fresh sessions for each arm")
     parser.add_argument("--model", help="the model the sessions use, such as the one that got it wrong")
     parser.add_argument("--judge-model", help="the model that judges the answers. Default: --model")
@@ -211,6 +225,15 @@ def parsed_arguments() -> argparse.Namespace:
 
 def text_of(file: Path) -> str | None:
     return file.read_text(encoding="utf-8").strip() if file.is_file() else None
+
+
+def copy_the_file_or_folder(source: Path, destination: Path) -> None:
+    """Copies it over what the destination already has. Does nothing when there is no such file or folder."""
+    if source.is_dir():
+        shutil.copytree(source, destination, dirs_exist_ok=True)
+    elif source.is_file():
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
 
 
 def consuming_repository() -> Path | None:
