@@ -37,6 +37,11 @@ wrong does its harm each time it applies, and the user only sees the result. So:
   changes what the agent does, and the facts it can't derive, such as what a tool offers.
 - **Word it for every case it's meant for.** A rule worded for its incident, such as one that speaks only of classes and
   namespaces, isn't recognised when the same thing happens in a document.
+- **When a correction doesn't hold, read the answers that still fail, and put the argument they make into the rule,**
+  in the words they make it in. A model may not take its own argument for what the rule speaks of. Told not to rename
+  for a shared word, Opus 5.5 went on arguing that one name "will be read as" the other, until the rule said that this
+  is the same argument. The reason, added in the user's own words, changed little. One case and one model, 2026-11-14:
+  the counts are in the sidecar of the rule on the ubiquitous language.
 - **Don't tell the agent to distrust its own judgment.** Say what the reader needs instead. Told that its own reading
   doesn't count, the agent solves problems nobody has.
 - **When a rule misfires, look first for a sentence to remove,** in that rule or in the one that caused it. A rule that
