@@ -23,6 +23,9 @@ them in its TODO window (Rider: Settings > Editor > TODO; a solution's own patte
 - `review:` something strange or potentially problematic about the code, for the other one to look at or to discuss. The
   user adds them for you to look at, and you add them for the user. When you find one addressed to you, look into it and
   answer the user about it.
+- `review-naming:` a review comment that is only about the name of something: a name you chose or changed on your own, or
+  a name you doubt, for the user's pass over the names. An area may follow it, to make such comments searchable, such as
+  `review-naming:matching:`. The `review:` pattern doesn't match it, so a solution needs a TODO pattern of its own for it.
 
 The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user's to use.
 
@@ -44,7 +47,7 @@ The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user
   once it's resolved.
 - **In the summary at the end of a task, list the tagged comments you added and those you resolved.**
 - **To list them all, grep with the IDE's patterns,** such as
-  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|wip):" --include=*.cs <source folder>`. It finds what the IDE
+  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|review-naming|wip):" --include=*.cs <source folder>`. It finds what the IDE
   finds, and also the tags inside string literals, which the IDE skips.
 - **What spans many files, or isn't tied to any code, belongs in the project's documents,** not in a comment.
 

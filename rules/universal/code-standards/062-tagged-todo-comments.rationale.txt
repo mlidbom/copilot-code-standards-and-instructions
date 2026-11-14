@@ -14,5 +14,12 @@ What decided it:
 The meanings of `review:`, `wip:` and `urgent:` are Magnus's own, as he uses them (2026-11-09). `review:rebuttal:` and
 `todo:docs:` exist in his Rider patterns; their use wasn't discussed, so the rule leaves them to him.
 
+`review-naming:` was added 2026-11-14 (Magnus, in JAStudio), when an agent proposed marking the naming calls it makes on
+its own with `review:` comments for his pass: "Use //review-naming: for this from now on." And: "Any review comment that
+is only about the name of something would use this new tag. If you want to clarify an area to make the comments more
+searchable you could add it after the : //review-naming:matching:". The agent first saved it as a memory; Magnus: "It
+should be in rules, not a memory I figure." Rider's `review:` pattern requires the colon right after "review", so it
+doesn't list these: each solution needs a pattern for the tag, such as `(?<=\W|^)(?<TAG>REVIEW-NAMING:)(.*)`.
+
 `todo:compze:` was added 2026-11-10 with the rule "Compze is our code" (`../004-compze-is-our-code.md`); its sidecar
 says why.
