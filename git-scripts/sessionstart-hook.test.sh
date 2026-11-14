@@ -20,6 +20,8 @@ upstream="$scratch/upstream.git"
 publisher="$scratch/publisher"
 consumer="$scratch/consumer"
 catalog_in_consumer="$consumer/.claude-shared"
+own_hook_of_the_consumer="$consumer/.claude/verify-shared-claude-config.sessionstart-hook.sh"
+the_current_hook_for_a_consuming_repository="$catalog_in_consumer/git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh"
 
 export GIT_AUTHOR_NAME='The session-start hook test' GIT_AUTHOR_EMAIL='test@example.invalid'
 export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
@@ -55,7 +57,7 @@ set_up_the_scratch_repositories() {
    git init --quiet "$consumer"
    git -C "$consumer" -c protocol.file.allow=always submodule --quiet add -b main "$upstream" .claude-shared 2>/dev/null
    mkdir "$consumer/.claude"
-   cp "$catalog_in_consumer/git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh" "$consumer/.claude/"
+   cp "$the_current_hook_for_a_consuming_repository" "$own_hook_of_the_consumer"
    git -C "$consumer" add --all
    git -C "$consumer" commit --quiet -m 'Mounts the shared Claude config'
 }
@@ -80,7 +82,7 @@ commit_of_the_catalog_in_the_consumer() { git -C "$catalog_in_consumer" rev-pars
 # Starts a session in the consumer as far as the hook goes: runs the consuming repository's SessionStart hook, or the
 # script $1 in its place. What the hook said is then in $said, and its exit code in $hook_exit_code.
 start_a_session() {
-   said=$(sh "${1:-$consumer/.claude/verify-shared-claude-config.sessionstart-hook.sh}" 2>&1)
+   said=$(sh "${1:-$own_hook_of_the_consumer}" 2>&1)
    hook_exit_code=$?
 }
 
@@ -204,7 +206,7 @@ git -C "$catalog_in_consumer" branch --quiet -D a-branch-of-its-own
 start_case 'Behind, on a machine without PowerShell 7: the hook says that the rules were not pulled'
 path_without_powershell=$(path_without pwsh)
 if PATH="$path_without_powershell" command -v git >/dev/null 2>&1 && PATH="$path_without_powershell" command -v sh >/dev/null 2>&1; then
-   said=$(PATH="$path_without_powershell" sh "$consumer/.claude/verify-shared-claude-config.sessionstart-hook.sh" 2>&1)
+   said=$(PATH="$path_without_powershell" sh "$own_hook_of_the_consumer" 2>&1)
    hook_exit_code=$?
    must_say 'were not pulled: pull.ps1 runs in PowerShell 7'
    the_catalog_must_be_at "$level_with_the_upstream_before_that_change"
@@ -221,12 +223,32 @@ the_catalog_must_be_at "$level_with_the_upstream_before_that_change"
 end_case
 git -C "$catalog_in_consumer" remote set-url origin "$upstream"
 
-start_case "A consuming repository's hook from before 2026-11-15, which hands over by the old name: all of the hook runs"
-start_a_session "$catalog_in_consumer/git-scripts/verify-claude-symlinks.sessionstart-hook.sh"
+start_case "A consuming repository whose own hook was copied before 2026-11-15, and hands over by the old name: all of the hook runs, and says that the copy is outdated"
+sed 's|git-scripts/sessionstart-hook.sh|git-scripts/verify-claude-symlinks.sessionstart-hook.sh|' "$the_current_hook_for_a_consuming_repository" > "$own_hook_of_the_consumer"
+git -C "$consumer" commit --quiet -m 'The hook as it was copied before 2026-11-15' -- .claude
+start_a_session
 must_say 'have now been pulled'
 must_say "/$rule_the_test_changes"
+must_say "is no longer the shared Claude config's current one"
+must_say '/git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh over it'
 the_catalog_must_be_at "$(upstream_commit)"
 the_consumer_must_have_committed_the_pin
+end_case
+
+start_case "The repository's own hook is replaced by the current one, not yet committed: the hook says nothing"
+cp "$the_current_hook_for_a_consuming_repository" "$own_hook_of_the_consumer"
+start_a_session
+must_say_nothing
+end_case
+git -C "$consumer" commit --quiet -m 'The current hook' -- .claude
+
+start_case 'A repository that keeps no copy of the hook at that path: the hook says nothing of it'
+start_a_session "$catalog_in_consumer/git-scripts/sessionstart-hook.sh"
+must_say_nothing
+mv "$own_hook_of_the_consumer" "$own_hook_of_the_consumer.kept-aside"
+start_a_session "$catalog_in_consumer/git-scripts/sessionstart-hook.sh"
+must_say_nothing
+mv "$own_hook_of_the_consumer.kept-aside" "$own_hook_of_the_consumer"
 end_case
 
 start_case 'A symlink into the catalog that the checkout left as a plain file: the hook tells the agent to stop'

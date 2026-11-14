@@ -127,7 +127,7 @@ Wire one into the consuming repo so a degraded checkout fails loudly:
 
 The consuming repository's `SessionStart` hook (above) hands over to
 [git-scripts/sessionstart-hook.sh](git-scripts/sessionstart-hook.sh), which is all the catalog does when a session
-starts. It runs two steps, each of which tells the agent what it needs to know and says nothing when all is well:
+starts. It runs three steps, each of which tells the agent what it needs to know and says nothing when all is well:
 
 1. **It pulls the catalog when its upstream has commits the checkout lacks**
    ([git-scripts/sessionstart-hook.pull-when-behind.sh](git-scripts/sessionstart-hook.pull-when-behind.sh)): it
@@ -140,13 +140,17 @@ starts. It runs two steps, each of which tells the agent what it needs to know a
      branch other than `main`, uncommitted edits, or unpublished commits), and where PowerShell 7 is missing.
    - **When the upstream can't be reached,** as when offline, the agent is told that the rules may be behind.
 2. **It verifies the `.claude/` symlinks** (the adapter under [Verifying](#verifying)).
+3. **It says when the repository's own `SessionStart` hook is no longer the current one**
+   ([git-scripts/sessionstart-hook.report-an-outdated-copy-of-the-repositorys-hook.sh](git-scripts/sessionstart-hook.report-an-outdated-copy-of-the-repositorys-hook.sh)):
+   the repository keeps a copy of that file, so a change to it under `copy-into-consuming-repository/` reaches no
+   repository by a pull. The agent is told to copy the current one over it and commit it.
 
 [git-scripts/sessionstart-hook.test.sh](git-scripts/sessionstart-hook.test.sh) runs the hook in scratch repositories
 through each of those situations. Run it after changing the hook or the sync scripts.
 
 A consuming repository whose copy of the hook was made before 2026-11-15 hands over to
-`git-scripts/verify-claude-symlinks.sessionstart-hook.sh`, which runs the whole session-start hook. Copy the file
-under `copy-into-consuming-repository/` over such a copy when convenient; the old name goes once none is left.
+`git-scripts/verify-claude-symlinks.sessionstart-hook.sh`, which runs the whole session-start hook. That name goes
+once no repository's copy is that old.
 
 ## Syncing
 
