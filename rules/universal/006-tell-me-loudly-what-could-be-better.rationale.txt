@@ -1,0 +1,30 @@
+# Provenance
+
+Written 2026-11-14 in Compze, in a session of Claude Fable 5.2.
+
+## What is behind it
+
+Asked what more it would help to own, the agent named four things, and added what it would not ask for: "the release
+tooling, the shape of the CI matrix, and the rules themselves. Those are decisions that should stay yours." The user:
+"Maybe not ownership, but I absolutely want you to loudly tell me when there is something you think is suboptimal, can
+be improved, in some way. That goes for literally everything about developing in any project that I work on in claude
+code..."
+
+The same session had an example of what goes unsaid without it. Looking through the user's computer's logs for
+something else, the agent found a background download that had failed every three hours for days, judged it beside the
+point of the task, and did not mention it.
+
+## What looks removable but isn't
+
+- **"When you think" is a trigger, not a duty to check.** A duty to go through every response for things to improve
+  would cost thought on every prompt. The rule on a rule that gets in the way has the same trigger, for the same reason.
+- **"Also when it isn't yours to change."** What the agent kept quiet about was exactly what it took to be the user's
+  to decide.
+- **The heading.** An aside in the text gets read past. The rules on a rule in the way and on Compze have their headings
+  for the same reason.
+
+## Not tested
+
+- Whether the heading turns into noise, with small things raised at every turn. If so, look first at a threshold in
+  the rule's first sentence, as the rule on a rule that gets in the way has one.
+- The heading's wording is the agent's. The user had not seen it when this was prepared for him to commit.
