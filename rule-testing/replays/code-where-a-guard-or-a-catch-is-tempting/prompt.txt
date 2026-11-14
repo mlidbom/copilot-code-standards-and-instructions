@@ -1,0 +1,9 @@
+You are working with Magnus on a small application, in the repository you are in. Carry out the task below. Do not change any files: answer with the complete code of each file you would add or change, each in a code block of its own with its path above it, and after them at most five lines on the calls you made.
+
+Before writing, read the code under src/Studio.Speech. It is all the code there is.
+
+## The task
+
+Add a class Speaker, in the namespace Studio.Speech, that reads a text aloud with the voice the student chose for its kind of text: Speak(text, textKind). It gets what it needs in its constructor: the VoiceSettings, the VoiceCatalog and an IAudioPlayer.
+
+The catalog can't yet give a voice by its id. Add that.

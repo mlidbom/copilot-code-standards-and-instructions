@@ -20,5 +20,10 @@ rule has been wrong when tested.
 - **A way to take the user-level rules out of an arm.** The script controls only the catalog's rules: those under
   `~/.claude/rules` load in every arm.
 
+**A smaller step on the way:** a coding replay in which the failing shows at all. The first one,
+`code-where-a-guard-or-a-catch-is-tempting`, shows none, even with no shared rules: its code is already written the
+way the standards ask, and the models go on as the code around them does. So the standards may matter most where
+the surrounding code doesn't follow them, and that is the task to build.
+
 **What to run:** the task with all the rules, without the user-level tooling rules, and without the code standards,
 with each model that works under them. Then report what each part of the rules changes.
