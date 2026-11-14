@@ -1,17 +1,10 @@
 #!/bin/sh
-# SessionStart adapter for the symlink verifier. The verifier reports failures on stderr + non-zero exit —
-# correct for a build/CI gate, but a Claude Code SessionStart hook injects into the agent's context ONLY via
-# STDOUT on exit 0; stderr on a non-zero exit reaches the user, never the agent, and cannot block the session.
-# So run the verifier and, on failure, re-emit its message on stdout (with agent-directed framing) and exit 0,
-# so the warning actually lands in the agent's context at session start.
+# Kept for the consuming repositories whose copy of the SessionStart hook was made before 2026-11-15: that copy hands
+# over to this file by name. The catalog's session-start hook is sessionstart-hook.sh, which this runs, so those
+# repositories get all of it. The step that verifies the symlinks, which this file used to be, is
+# sessionstart-hook.verify-claude-symlinks.sh.
 #
-# The consuming repository's SessionStart hook calls this once it has confirmed the catalog submodule is
-# initialized (see copy-into-consuming-repository/). The verifier is run through sh, not executed directly, so it
-# works whether or not the checkout kept the file's executable bit.
+# todo: delete this file once every consuming repository's .claude/verify-shared-claude-config.sessionstart-hook.sh
+#    hands over to sessionstart-hook.sh, as the copy under copy-into-consuming-repository/ does (Claude, 2026-11-15).
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-if report=$(sh "$dir/verify-claude-symlinks.sh" 2>&1); then
-   exit 0
-fi
-printf '%s\n%s\n' \
-  'STOP: this checkout is degraded — .claude/ symlinks into the shared Claude config are broken. Do NOT trust loaded rules or skills; tell Magnus immediately and surface the message below.' \
-  "$report"
+exec sh "$dir/sessionstart-hook.sh"

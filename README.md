@@ -12,7 +12,7 @@ parts it adopts from `.claude-shared/` into its own `.claude/`; the catalog itse
 | `rules/path-scoped/` | Rules with `paths:` frontmatter — injected only when matching files are touched |
 | `skills/` | Skills, one folder per skill |
 | `rule-testing/` | `replay-a-rule-change.py`, which replays a situation in fresh sessions under several versions of the rules, the replays it runs, and `todo.md`, what is still to build |
-| `git-scripts/` | Submodule sync and symlink verification scripts |
+| `git-scripts/` | The scripts that sync the submodule, verify the symlinks, and run at the start of a session |
 | `git-scripts/copy-into-consuming-repository/` | The one file each consuming repository keeps its own copy of |
 
 How the rules loader works — include order, the sidecar convention, what loads when — is documented in
@@ -88,11 +88,12 @@ implementations of the same check:
 
 Both report failures the build/CI way: non-zero exit + stderr. That is the wrong shape for a `SessionStart`
 hook, which reaches the agent ONLY via stdout on exit 0 — stderr on a non-zero exit goes to the user, never
-the agent, and cannot block the session. So the hook is wired through an adapter:
+the agent, and cannot block the session. So the hook runs the verifier through an adapter:
 
-- [git-scripts/verify-claude-symlinks.sessionstart-hook.sh](git-scripts/verify-claude-symlinks.sessionstart-hook.sh)
+- [git-scripts/sessionstart-hook.verify-claude-symlinks.sh](git-scripts/sessionstart-hook.verify-claude-symlinks.sh)
   — runs the `.sh` verifier and, on failure, re-emits its message on stdout (exit 0) so the warning actually
-  lands in the agent's context at session start.
+  lands in the agent's context at session start. It is a step of the catalog's session-start hook (see
+  [At the start of a session](#at-the-start-of-a-session)).
 
 Wire one into the consuming repo so a degraded checkout fails loudly:
 
@@ -103,7 +104,7 @@ Wire one into the consuming repo so a degraded checkout fails loudly:
   submodule can run — so each consuming repository keeps its own copy of
   [git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh](git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh)
   at `.claude/verify-shared-claude-config.sessionstart-hook.sh`. It reports an uninitialized submodule
-  itself, and otherwise hands over to the catalog's adapter. Claude Code only merges settings from a
+  itself, and otherwise hands over to the catalog's session-start hook. Claude Code only merges settings from a
   project's own `.claude/settings.json` (never from `.claude-shared/`), so add it there. Keep it
   project-level, not user-level: a degraded checkout happens on fresh clones, cloud agents, and teammates,
   which user settings don't reach.
@@ -121,6 +122,31 @@ Wire one into the consuming repo so a degraded checkout fails loudly:
 
   `bash` runs the hook via Git Bash on Windows and natively on Linux/macOS; the quoted `${CLAUDE_PROJECT_DIR}`
   path resolves in both (Claude Code expands the variable before spawning the shell).
+
+## At the start of a session
+
+The consuming repository's `SessionStart` hook (above) hands over to
+[git-scripts/sessionstart-hook.sh](git-scripts/sessionstart-hook.sh), which is all the catalog does when a session
+starts. It runs two steps, each of which tells the agent what it needs to know and says nothing when all is well:
+
+1. **It pulls the catalog when its upstream has commits the checkout lacks**
+   ([git-scripts/sessionstart-hook.pull-when-behind.sh](git-scripts/sessionstart-hook.pull-when-behind.sh)): it
+   fetches the upstream and, when behind, runs `pull.ps1`, so the new pin is committed in the consuming repository,
+   not pushed. A repository otherwise gets the catalog's changes only when someone pulls them into it, and its
+   sessions work under old rules meanwhile.
+   - **The agent is told which always-on rules changed, to read them:** Claude Code loads the rules without waiting
+     for the hook, so the session may have them as they were before the pull.
+   - **The pull is left alone, and reported as due,** when the catalog there has work of its own in progress (a
+     branch other than `main`, uncommitted edits, or unpublished commits), and where PowerShell 7 is missing.
+   - **When the upstream can't be reached,** as when offline, the agent is told that the rules may be behind.
+2. **It verifies the `.claude/` symlinks** (the adapter under [Verifying](#verifying)).
+
+[git-scripts/sessionstart-hook.test.sh](git-scripts/sessionstart-hook.test.sh) runs the hook in scratch repositories
+through each of those situations. Run it after changing the hook or the sync scripts.
+
+A consuming repository whose copy of the hook was made before 2026-11-15 hands over to
+`git-scripts/verify-claude-symlinks.sessionstart-hook.sh`, which runs the whole session-start hook. Copy the file
+under `copy-into-consuming-repository/` over such a copy when convenient; the old name goes once none is left.
 
 ## Syncing
 

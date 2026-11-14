@@ -10,7 +10,7 @@
 # git via this script's own location. Silent on success; on failure exits non-zero with fix instructions on stderr — the
 # right contract for a build/CI gate. NOTE for SessionStart hooks: a SessionStart hook reaches the agent ONLY
 # via stdout on exit 0 (stderr on a non-zero exit goes to the user, never the agent, and cannot block the
-# session), so the hook is wired through the adapter verify-claude-symlinks.sessionstart-hook.sh, which
+# session), so the session-start hook runs it through the adapter sessionstart-hook.verify-claude-symlinks.sh, which
 # re-emits this failure on stdout. (PowerShell twin for build scripts: verify-claude-symlinks.ps1.)
 set -eu
 

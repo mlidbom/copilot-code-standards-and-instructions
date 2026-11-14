@@ -1,0 +1,19 @@
+#!/bin/sh
+# Session-start step: verifies the consuming repository's .claude/ symlinks into the shared Claude config, and tells
+# the agent when they are broken.
+#
+# The verifier reports failures on stderr + non-zero exit — correct for a build/CI gate, but a Claude Code
+# SessionStart hook injects into the agent's context ONLY via STDOUT on exit 0; stderr on a non-zero exit reaches the
+# user, never the agent, and cannot block the session. So this runs the verifier and, on failure, re-emits its message
+# on stdout (with agent-directed framing) and exits 0, so the warning actually lands in the agent's context at session
+# start.
+#
+# Run by sessionstart-hook.sh. The verifier is run through sh, not executed directly, so it works whether or not the
+# checkout kept the file's executable bit.
+dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+if report=$(sh "$dir/verify-claude-symlinks.sh" 2>&1); then
+   exit 0
+fi
+printf '%s\n%s\n' \
+  'STOP: this checkout is degraded — .claude/ symlinks into the shared Claude config are broken. Do NOT trust loaded rules or skills; tell Magnus immediately and surface the message below.' \
+  "$report"
