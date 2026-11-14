@@ -2,22 +2,29 @@
 
 Until 2026-11-14 the rule was one line: "Always use the locking primitives in Compze.Threading. IMonitor,
 IAwaitableMonitor, IMutex etc. NEVER raw lock, Monitor, Mutex etc." Rewritten that day at the user's word, in JAStudio
-(Claude Fable 5.2), with his reasons and the stop.
+(Claude Fable 5.2).
+
+## What is behind it
+
+The user: "Compze.Threading[.InterProcess] is IMO a vastly better API than the built in synchronization primitives. it
+is safer, easier to use, harder to misuse, reads better, results in fewer lines, has identical API's for in-process
+synchronization and inter process syncronization, composes beautifully into abstractions built on it such as
+InterProcessObject etc etc." And of the automatic deadlock diagnosing: "that is HUGE in itself".
+
+He wanted that checked, not taken on his word. The agent read both packages, and wrote and ran one comparison: a queue
+whose takers wait for an item, synchronously and asynchronously, with a timeout and cancellation. 72 lines with
+`Monitor` and a task for the async waits, 17 with `IAwaitableThreadShared`, and both passed the same checks. Its
+verdict: "I share that, most of all for waiting on a condition." The cross-process part was read, not run.
 
 ## What looks removable but isn't
 
+- **The list of what it gives.** An agent knows `Monitor` and `SemaphoreSlim` by heart, and this API not at all. The
+  list is there so that it looks here first, and doesn't conclude from unfamiliarity that Compze lacks what it needs.
 - **The stop.** The rule on when to break the rules has the agent make an exception and mark it. Here the user wants
   neither the worse code nor the raw primitive: "this is a stop condition. Tell me why good code cannot be written with
   the compze tooling, and tell me suggested fixes in compze."
 - **It covers synchronization only.** Other gaps in Compze go by `../004-compze-is-our-code.md`: work around, mark,
   recommend.
-
-## The agent's verdict in the rule
-
-The user asked for it: he wanted his reasons checked, not taken on his word. It rests on reading both packages, and on
-one comparison written and run that day: a queue whose takers wait for an item, synchronously and asynchronously, with
-a timeout and cancellation. 72 lines with `Monitor` and a task for the async waits, 17 with `IAwaitableThreadShared`,
-and both passed the same checks. The cross-process part was read, not run.
 
 ## The exceptions approved before the stop
 

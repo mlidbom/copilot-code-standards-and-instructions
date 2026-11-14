@@ -31,7 +31,9 @@ wrong does its harm each time it applies, and the user only sees the result. So:
     look in the transcript of the session it happened in, which records it. If that's gone, name the latest Opus of
     that date, as "most likely".
 - **State the value and its reason once, in plain words,** the user's own where there are any. The reason is what lets
-  the agent apply the rule to cases the wording doesn't list. The incident behind it goes in the sidecar.
+  the agent apply the rule to cases the wording doesn't list. The incident behind it goes in the sidecar, and so does
+  the case for the rule: the evidence, how strongly it's held, who agreed. What stays in the rule is the reason that
+  changes what the agent does, and the facts it can't derive, such as what a tool offers.
 - **Word it for every case it's meant for.** A rule worded for its incident, such as one that speaks only of classes and
   namespaces, isn't recognised when the same thing happens in a document.
 - **Don't tell the agent to distrust its own judgment.** Say what the reader needs instead. Told that its own reading
