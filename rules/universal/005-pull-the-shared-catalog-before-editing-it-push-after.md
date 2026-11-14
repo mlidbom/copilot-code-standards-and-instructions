@@ -15,6 +15,5 @@ They're shared, so every edit is shared at once (the user, 2026-11-11):
 Never leave an edit to the catalog unpushed: other repositories, and other sessions, would work from rules that are
 out of date, and a later edit elsewhere would have to be merged with it.
 
-This is the user's standing approval to push the catalog after editing it, an exception to
-[never change an external environment without approval](003-never-change-external-environments-without-approval.md).
-Pushing the consuming repository itself still needs the user's word.
+Pushing the catalog needs no approval, as pushing never does: see "Commit and push whenever it helps" in the
+[collaboration rules](001-collaboration-rules.md).

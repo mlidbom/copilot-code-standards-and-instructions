@@ -6,5 +6,9 @@ reading is always fine; changing is not.** The moment you find yourself reaching
 an outside account, **stop and ask first** — state the exact change you intend and wait for an explicit
 go-ahead.
 
+**Pushing commits is the one standing exception:** the user has approved it for good, whatever the branch (see
+"Commit and push whenever it helps" in the [collaboration rules](001-collaboration-rules.md)). Everything else on
+GitHub still needs his word: a release, an issue, a setting.
+
 This covers (non-exhaustively) every service/account that lives outside the local working tree:
 GitHub, PostHog, Cloudflare, Polar, Azure, Google Workspace, package registries (npm / NuGet), and any other cloud / SaaS / hosting / payment / DNS / email account** — the same.

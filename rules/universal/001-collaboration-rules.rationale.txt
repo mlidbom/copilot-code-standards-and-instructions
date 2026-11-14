@@ -7,12 +7,30 @@
   most likely Opus 4.6, the latest Opus when Compze got the rule, 2026-03-07.
 - **Questions are just questions,** and **the codebase must improve over time:** from the user-level CLAUDE.md of
   before the rules folder.
+- **Refactorings are the agent's to make** (2026-11-14, Compze, Claude Fable 5.2). The section read "If you touch a file
+  and notice something wrong", and the agent took that for the files of its task. The user: "Our leave the code better
+  guidelines was intended to already make it clear that, barring changes to the public API's of our published packages,
+  clearly beneficial refactorings that you discover, you are intended to just do." The agent proposed where to stop
+  ("a new abstraction or a changed relation between subsystems: propose first"), and he answered: "A new abstraction
+  could mean small internal types, methods etc. That is most likely perfectly fine and very much in line with the code
+  standards. Use judgment, not hard rules. Do notify me about what changed." The other points are the agent's, and he
+  agreed to them: what it comes across and not a hunt, commits of their own, everything code outside the repository
+  can compile against as the limit, and keeping to the task's files while another session is in the checkout.
 - **Build the tools the work will need again now** (2026-11-09, JAStudio). The user: "In the spirit of creating the
   tools we will need again and again right away rather than postponing creating them. Thus speeding up long term
   progress. This is absolutely a basic idea in how I think." And: "I specifically want you to consider and suggest
   major changes if required to speed up future development, not just small additions to existing infrastructure. Not
   least tooling specifically to help YOU or other AI agents. For instance. It took me FAR to long to suggest adding MCP
   to jastudio."
+- **The tools are the agent's, as a product** (2026-11-14). JAStudio (2026-11-09), Deskmancer (2026-11-12) and Compze
+  (2026-11-14) each had a rule of their own saying nearly the same, the first in the user's words: "I would like to
+  give you total product ownership of the MCP. It is YOUR ui into jastudio." What they shared is here now, and each
+  project's rule keeps its list of tools and its own limits. "A tool the user runs himself is his too" is his answer
+  when the agent asked to own the interfaces of Compze's commands: "Is it enough to be free to add to them, without
+  changing the default behaviours, and asking me if you want a tool to, for instance, become more verbose by default?"
+- **Commit and push whenever it helps.** Committing: 2026-11-11. Pushing: 2026-11-14, when the agent asked for leave to
+  push the branch it was working on, to run CI: "Always OK regardless of branch. Nothing push does is irreversible."
+  Asked whether that held in his other repositories: "Yes, now it is, deskmancer no longer publishes on push to main."
 - **When given full delegation:** from Compze's separation of typermedia and tessaging, 2026-06-10. The case is in
   `code-standards/014-rehome-concepts-before-restructuring.rationale.txt`.
 
@@ -25,8 +43,13 @@
   what was worth keeping of them is "Name what you don't know".
 - **A gate on changes outside the repository** was in these rules until 2026-06-13. Since 2026-06-28 the rule on
   external environments holds that.
+- **Pushing needing the user's word.** Removed 2026-11-14. A push to Deskmancer's main used to publish, and no longer
+  does.
 
 ## Not tested
 
-Whether agents go back to guessing in silence at an unclear target. Look first at "Name what you don't know", before
-adding a point.
+- Whether agents go back to guessing in silence at an unclear target. Look first at "Name what you don't know", before
+  adding a point.
+- Whether the freedom to refactor is overdone: refactorings he would have wanted to weigh in on, or too many beside a
+  task. Look first at "Judgment, not a size limit" and "What you come across, not a hunt".
+- A forced push was not talked about when he approved pushing.
