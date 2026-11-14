@@ -42,12 +42,16 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
      them against the user-level independence mandate. Nothing was put in their place.
 4. **The larger rewrites, one group at a time:**
    - the five naming files (010 to 013, and 032) into one, in Magnus's words. *Done 2026-11-14:* they are
-     `010-conceptual-coherence-and-naming.md`. The merge also settled what the next two points held for those files:
-     the reader of 013, and "king of all concerns" and "you have already lost the thread";
+     `010-conceptual-coherence-and-naming.md`. The merge also took out "king of all concerns" and "you have already
+     lost the thread", of the point on force below;
    - what is calibrated for Deskmancer: the doc-comment audience (060), the `IntPtr` examples (050);
    - the force of the remaining taste rules, such as "BANNED" in the rule on defensive coding;
    - the Compze rule's "near the top", which made a headline of a small idea.
 5. **Size:** the user-level tooling rules, about 5,400 words always loaded, that could load on demand.
+6. **The sidecars written or grown during this work,** cut down to what `path-scoped/rules-folder.md` now says a
+   sidecar holds. Magnus, 2026-11-14: "now they seem complete logs of everything every discussed about a rule, which
+   is not helpful to me simply because of the length". Done before the rest of step 4: the sidecars of the rules on
+   telling when a rule gets in the way, the collaboration rules, the ubiquitous language, and when to break the rules.
 
 ## Testing a change, not yet tried
 

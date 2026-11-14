@@ -19,7 +19,7 @@ The test: the code is understood by reading names, not by working out implementa
 
 ## Names
 
-- **As long as it takes for a reader new to the code to understand it with no lookup.** "Do not fear typing." Brevity
+- **As long as it takes to be understood with no lookup.** "Do not fear typing." Brevity
   only decides between names that are equally clear. Short names aren't the clean ones here, though most code has
   them: "code of a type that I utterly hate that optimizes for characters typed and just loves variable names like
   a,b,c,d and ad-hoc abbreviations and acronyms" (the user).

@@ -1,182 +1,35 @@
 # Provenance
 
-## 2026-11-14 (JAStudio): five files became this one
-
-Until then the catalog had five always-on files on conceptual coherence and naming, 1,528 words together:
-`010-conceptual-coherence-and-naming.md`, `011-naming-and-conceptual-fit-are-preeminent.md`,
+Five files until 2026-11-14: this one, `011-naming-and-conceptual-fit-are-preeminent.md`,
 `012-renaming-is-the-most-important-refactoring.md`, `013-name-for-the-human-who-must-look-it-up.md` and
-`032-naming.md`. Each was written for its own incident, in June 2026, and together they said most things several times:
+`032-naming.md`. They and their sidecars, with the cases in full, are in the catalog's history: its commit `deeee39` is
+the last that has them.
 
-- that renaming is the most important refactoring: 010, 012 and 032;
-- that a name is as long as it must be, and brevity only a tie-breaker: 010, 013 and 032;
-- the `User` example: 010 and 032;
-- that the name is the concept's one word everywhere: all five.
+## What is behind it
 
-They were merged while going through the shared rules with the user (`fixing-bad-rules-worklist.txt` in the catalog's
-`rules` folder, while that work lasts), in a session of Claude Fable 5.2. The step was: "the five naming files into
-one, in Magnus's words". The result is 785 words.
+All from June 2026, in the vdgs-live-view project (Vantage). Which models isn't recorded.
 
-- **Each thing is said once,** and what another rule says is linked: that a rename applies everywhere
-  (`007-ubiquitous-language.md`), extracting whatever the reuse (`040-standard-wisdom-traps.md`), how a method reads
-  (`031-everything-in-its-place.md`).
-- **The user's own words are quoted** where the sidecars below record them. Wording carried over from the old files
-  without quotation marks may be his too: which sentences he wrote himself isn't recorded.
-- **What told the agent not to trust its own reading is gone.** From 013: the title's "your own comprehension is a
-  broken gauge"; "Two forces push you the wrong way. Treat both as suspect signals, not as taste"; "The urge to shorten
-  is a training artifact to resist, not an instinct to trust"; "self-comprehension is worthless as a quality check".
-  Sentences of that kind are what had the agent look for ambiguities nobody had met
-  (`007-ubiquitous-language.rationale.txt`, 2026-11-14). What the reader needs is said instead, in the user's words.
-  His sentence about the code agents are trained on is kept as what it is: his taste.
-- **The force is taken down to plain statement.** Gone: "The king of all concerns", "not polish — it is a fatal design
-  error", "This file only ranks it: it outranks everything below", "Catching yourself listing conceptual fit as one
-  consideration in a balanced trade-off means you have already lost the thread", "Never the reverse; never recommend
-  against the coherent model on pragmatic grounds". The ranking itself stays: in the title, and in the user's "absolute
-  world champion of importance".
-- **The reader is someone new to the code, not to its domain.** 013 came from a project whose domains were new to the
-  user, where the agent had written nearly all the code. Its "you already know the domain, the APIs, the surrounding
-  code" went with the paragraph it was in.
-- **Dropped:** "Keep distinct domain words distinct (a `chord` is the key combination; a `hotkey` is the bound,
-  globally-caught action)", which `007-ubiquitous-language.md` covers; and 011's "a constant, major source of
-  misunderstanding", which is in its sidecar below.
-- **One term:** the old files said "conceptual coherence" and "conceptual fit" for the same thing. The rule now says
-  "conceptual coherence"; "fit" is left where the user's own words have it.
+- **The `Monitor` case:** a `record struct Monitor(ScreenRect Bounds)`. Asked whether the name and the kind of type
+  fitted the concept, the agent answered twice with how the implementation used it. The fix was the rename: it's the
+  area a monitor covers, not the device. Behind "When the user remarks on code" and the section on renaming.
+- **"Simple, maintainable":** the agent read the words as minimalism and YAGNI. So the standard is stated without the
+  word "simple", and the rule says what the user means by the three words.
+- **`GlobalHotkeys`:** the agent shortened it to `Hotkeys`, and argued that "Global" was redundant. The user: "make the
+  naming universal. not hotkeys, globalHotkeys. Do not fear typing. Readability and being unambiguous is king."
 
-## Not tested, and what to watch for
+## Taken out, and not to put back
 
-- **Whether names now come out shorter, or less telling.** If so, look first at "As long as it takes for a reader new
-  to the code to understand it with no lookup": the old wording, in the sidecar of 013 below and in the catalog's
-  history, pushed much harder.
-- **Whether the agent goes back to answering a question about a name with how the implementation works.** That's the
-  failing 011 was written for, twice in a row, by a model that isn't recorded.
+- **Telling the agent not to trust its own reading** ("your own comprehension is a broken gauge"), built on the user's
+  "You know everything (compared to me) ... it could probably be named anything and the code would not become THAT
+  much harder to understand to you." It had the agent look for ambiguities nobody had met: see
+  `007-ubiquitous-language.rationale.txt`. Removed 2026-11-14, a session of Claude Fable 5.2.
+- **The force:** "The king of all concerns", "a fatal design error", "you have already lost the thread". Removed the
+  same day. The ranking is kept, in the title and in the user's own words.
+- **A reader "new to the code", or to the domain:** who the reader is belongs to the rules on comments. In names it
+  was the agent's addition, in for one commit.
 
-## What the five files' own sidecars said
+## Not tested
 
-Kept as they were, under the name of the file each belonged to. `032-naming.md` had none.
-
-### `010-conceptual-coherence-and-naming.md`
-
-Written 2026-06-05 in the vdgs-live-view project; supersedes the earlier
-understand-code-by-names-not-implementations rule, renamed so the rule's own name tells the truth about its
-now-broader scope — the very principle it states.
-
-Origin: the project's top-priority rule led with "Simple, maintainable code is the most important thing."
-Asked whether a `record struct Monitor` was the right model, the agent collapsed "simple/maintainable" to the
-*median* meaning — minimalism / YAGNI / "don't abstract until reused" — and argued to keep the value type on
-implementation-usage grounds. The opposite of what the user means.
-
-The fix dropped the word "simple" entirely (redefining a common word just re-collapses to the median every
-time the definition isn't in front of the reader) and stated the standard operationally: code is understood
-by reading names, never by decoding implementations. The user then raised that *type* names matter as much as
-member names — a class/interface name that implies something untrue is a fatal design error, not polish — and
-that this is really about conceptual coherence, of which naming is a large part. Hence the rule's scope and
-name broadened to conceptual coherence.
-
-Much of the read-by-names content already lived in the everything-in-its-place / naming rules; what was
-missing at the priority level was naming the standard without the misleading word, enumerating
-minimalism/YAGNI and short-names as traps, and putting type-name truthfulness up front.
-
-Standing standard for every project, hence user-level despite duplicating the project's. The user explicitly
-accepted that duplication for something this vital.
-
-### `011-naming-and-conceptual-fit-are-preeminent.md`
-
-vdgs-live-view (Vantage), 2026-06-05. Vantage.Geometry/Monitor.cs:
-`public readonly record struct Monitor(ScreenRect Bounds)`.
-
-The user asked whether `record struct` / the name `Monitor` was a good conceptual fit: a monitor is
-an entity (identity, DPI, refresh rate, mutable config, behavior), not a value object — does it even
-belong in Geometry?
-
-#### The failure (committed twice in a row), then the broader correction
-Both first replies rebutted the CONCEPTUAL critique with IMPLEMENTATION facts: "it's read fresh as a
-snapshot, value-equality is load-bearing (`MonitorOf(window) == monitor`), so the record/value
-design is correct and the name is fine." The user called this out: looking at deep implementation
-details and concluding "X invalidates your question," when the question was about conceptual design
-and naming. "If the name it is given is messed up given what it is used as, that does NOT mean it is
-OK — it means we have a fundamental modeling error to fix."
-
-Then he generalized it into a standing value ranking (this is the heart of the rule):
-- "The pre-eminence of naming and conceptual fit."
-- "Implementation details are a distant, also-ran, in importance to me, while clear intuitive mental
-  models are the absolute world champion of importance."
-- "When I'm pointing out something about code, unless I'm specifically pointing at a bug, the odds
-  are 90%+ that what I'm talking about is questionable design in this sense, not implementation."
-- My tendency to focus ~99% on implementation and treat naming/mental-model coherence as not
-  terribly important is "a major constant source of misunderstandings."
-
-So the rule is a PRIOR on interpretation + a value ranking, not just a "don't do X" — read his
-remarks as design/coherence first; rank conceptual fit above implementation by default.
-
-#### The actual answer once engaged correctly (kept for the worked example)
-`Monitor` the name promises a physical display device (entity); the thing is the rectangular AREA a
-monitor covers (a geometric value, compared interchangeably). Name says entity, thing is a region —
-that dissonance IS the defect. Coherent fixes: (1) name it for the value it is — `MonitorArea`,
-stays in Geometry; (2) make it a real device entity in Domain (identity, DPI, refresh, behavior);
-(3) split the conflation — a `Monitor` entity (Domain) that HAS a `MonitorArea` value (Geometry),
-reserving the name `Monitor` for the device. Which one is the user's call (depends on whether
-monitors should grow behavior), not something to settle on implementation grounds.
-
-#### Why a user-level rule, not a project memory
-Per ~/.claude/rules/where-to-store-lessons-learned.md: this is a cross-project value ranking and
-interpretation prior (how the user thinks and what he weights in ANY codebase), not a
-vdgs-live-view fact. Lean always-on .md + this sidecar. Renamed from the narrower
-engage-conceptual-critique-not-implementation.* because the user broadened it from a reactive
-"don't explain away" rule to the general preeminence of naming/mental models.
-
-### `012-renaming-is-the-most-important-refactoring.md`
-
-Written 2026-06-05 in the vdgs-live-view project. The user stated, verbatim, that he "100% seriously
-consider[s] renaming to be the most important refactoring that exists" — captured here because it is a
-standing, cross-project conviction, not a one-off remark.
-
-It crystallised from the `Monitor` case. A type named `Monitor` (which implies the physical-display entity)
-actually held only a `ScreenRect` and was used purely geometrically. Two wrong fixes were weighed first: keep
-the struct and defend the name by its usage (defending a lie with implementation), and convert it to an entity
-class (building a concept the app does not have). The right fix was the rename — it *is* a value (a region),
-so name it as one. The rename resolved the design error; nothing else had to change. That is the pattern the
-rule generalises: a name carries the abstraction, so fixing the name is usually the fix itself.
-
-### `013-name-for-the-human-who-must-look-it-up.md`
-
-Written 2026-06-08 in the Virtual-Desktop-Grid-Switcher (Vantage) project, during a naming-harmonization pass
-that renamed the hotkey subsystem (`Hotkeys` -> `GlobalHotkeys`, `_hotkeys` -> `_globalHotkeys`,
-`GlobalShortcutGroup` -> `GlobalHotkeyGroup`, and so on). Unprompted, the user named the two forces this rule
-generalises:
-
-  1. "You are trained on heaps and heaps of code of a type that I utterly hate that optimizes for characters
-     typed and just loves variable names like a,b,c,d and ad-hoc abbreviations and acronyms."
-
-  2. "You know everything (compared to me). When you see a symbol, you know so much about what it is ... that it
-     could probably be named anything and the code would not become THAT much harder to understand to you. To
-     me, without a great name, I need to go looking things up CONSTANTLY to be sure what I'm looking at."
-
-Why this earns its own rule rather than folding into 010-012: those assert that naming and conceptual fit are
-the top concern and that renaming is the highest-leverage refactoring — the *importance*. This one diagnoses
-the *mechanism* behind the agent's repeated under-naming, which is the actionable part: the agent's own
-comprehension never degrades on a bad name, so it is a broken gauge, and the agent must (a) switch the quality
-test to the human-who-does-not-already-know and (b) treat the pull toward brevity as a training artifact, not
-taste.
-
-Immediate trigger: the agent had shortened the field to `_hotkeys` and the class to `Hotkeys`; the user
-insisted on the fully-qualified `_globalHotkeys` / `GlobalHotkeys`, with: "make the naming universal. not
-hotkeys, globalHotkeys. Do not fear typing. Readability and being unambiguous is king." The agent had also
-initially argued *for* dropping the "Global" qualifier as redundant (because "hotkey" already implies global)
-— a textbook instance of force #2: redundant to the agent, load-bearing for the human.
-
-#### Amended 2026-11-11 (JAStudio): a qualifier the context already gives is the exception
-
-The agent applied "carry the disambiguating qualifier even when it feels redundant" where the namespace already said it,
-prefixing every type in a format namespace (`Archiving.Format.ArchivedNoteLine` and the like); the user called it
-`strName` again. So the rule now excepts a qualifier the name's own context gives, and 032-naming says a type doesn't
-repeat its namespace. The `GlobalHotkeys` case stands: there, "global" was in no context the reader saw, only implied by
-the word "hotkey" to the agent. See 007-ubiquitous-language.rationale.txt for the whole episode.
-
-#### Amended 2026-11-14 (JAStudio): the pushes toward ever more qualifiers taken out
-
-Removed: "Deliberately over-correct toward the explicit, unambiguous name; do not trust the green light your own
-understanding gives"; "Carry the disambiguating qualifier even when it feels redundant to you", with the exception of
-2026-11-11; "rather than collapsing them because you can tell which is meant from context"; and "alone" and "on its own".
-They had the agent (Claude Fable 5.2) treat any word shared between two terms as an ambiguity to remove, for an imagined
-reader, whatever its own reading said. Of the rule itself, and the others written in Deskmancer in June, Magnus said that
-day: "That was in the opus 4.6 era." The `GlobalHotkeys` case above stands as history: what remains of the rule, a name as long as it
-must be to be understood with no lookup, covers it. See 007-ubiquitous-language.rationale.txt for the whole episode.
+- **Whether names now come out shorter or less telling.** Look first at "As long as it takes to be understood with no
+  lookup".
+- **Whether the agent again answers a question about a name with how the implementation works.**

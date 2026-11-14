@@ -66,11 +66,19 @@ leading digit sorts before any letter, so it jumps the queue past sibling files 
 ## Rationale sidecars (`name.rationale.txt`)
 
 Keep each rule `.md` lean — only what helps you **follow** the rule (the instruction plus the apply-time
-*why* that lets you generalize it to cases the wording didn't enumerate). Anything needed only when
-**changing** the rule — provenance, the evidence behind it, rejected alternatives, "don't undo this
-because…" — goes in a sidecar named `<rule>.rationale.txt` (the rule's base name with the `.md` dropped and
+*why* that lets you generalize it to cases the wording didn't enumerate). What is needed only when
+**changing** the rule goes in a sidecar named `<rule>.rationale.txt` (the rule's base name with the `.md` dropped and
 `.rationale.txt` appended — e.g. `051-defensive-coding.md` → `051-defensive-coding.rationale.txt`).
 
+- **A sidecar holds what someone changing the rule must know and can't see in the rule:**
+  - the need or the failing behind the rule, in a line or two, with the date, and for a correction the model;
+  - what looks removable but isn't, and what was tried and rejected;
+  - what is untested, and where to look first if the rule goes wrong;
+  - the user's own words behind the rule, where the rule doesn't quote them.
+- **It states what is known now. It is not a log.** When the rule changes, rewrite the sidecar; don't append to it.
+  What changed, and when, is in git, and the commit message says why.
+- **No longer than that takes.** The user reads it too, and doesn't when it has grown into a record of everything ever
+  discussed about the rule: "not helpful to me simply because of the length".
 - **Self-documenting and co-located.** "rationale" in the name says what it is at a glance, and the shared
   prefix sorts it directly beneath its rule, so humans see it in the tree. The `.txt` extension keeps it out
   of the agent's always-on context.
