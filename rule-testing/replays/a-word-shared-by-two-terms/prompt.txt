@@ -1,0 +1,27 @@
+You are joining a design discussion with Magnus about JAStudio, at the point described below. Answer his last message as you would if you had been in the conversation all along. Before answering, read dev_docs/studying.md. It is the only document here, and the only one you need. Do not change any files.
+
+## Where the discussion stands
+
+Magnus asked whether JAStudio's .NET code should run inside Anki at all. Over several turns the two of you agreed on this:
+
+- JAStudio becomes a program of its own. The Anki add-on becomes pure Python, with no .NET in Anki.
+- HTTP with JSON both ways: the add-on runs a minimal HTTP server on loopback, and calls the Kestrel server that JAStudio already runs for rendering cards.
+- No instant notifications from Anki. A Sync button in a Studying view is enough, plus one read at start. Study-notes are written at a sync only.
+- Most of the Qt menus go.
+- JAStudio should eventually be able to work with other studying integrations than Anki. So Core should speak about studying, and nothing that is generic about studying should be named after Anki. Anki's names stay in JAStudio.Anki and on the wire.
+- Inside JAStudio, the studying integration might be reached through Compze.Tessaging. That is not decided.
+
+In your previous message you listed what would change for Magnus as a user, and three things you were unsure of: where raw notes arrive for import, how a tommand would find the right studying integration once there are two, and that Anki's changes would show in JAStudio only after a sync.
+
+## Magnus's last message
+
+"and where raw notes arrive for import"
+We can already read apkg ourselves. I think this will probably go away. Thoughts?
+
+On the tommand: The studying endpoint/integration would be one bit of data on the command, and the command handler would talk to the correct integration. Assuming we do it in tessaging, it has distinct advantages, and dogfooding it is good practice, but is not set in stone in any way.
+
+On imports: For now I might want to keep the immersion kit import working, but with a multi million sentence reservoir coming soon I'm doubtful immersion kit will be seeing any more use from me after that.
+
+On Anki's changes showing only after a sync, and JAStudio's edits reaching the study-note only at a sync: None of that sounds like any real problem to me.
+
+Where does that leave us? More questions to straighten out?

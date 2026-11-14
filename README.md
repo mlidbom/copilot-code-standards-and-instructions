@@ -11,6 +11,7 @@ parts it adopts from `.claude-shared/` into its own `.claude/`; the catalog itse
 | `rules/universal/` | Always-on rules (no `paths:` frontmatter) — collaboration rules and the code standards, with `.rationale.txt` sidecars |
 | `rules/path-scoped/` | Rules with `paths:` frontmatter — injected only when matching files are touched |
 | `skills/` | Skills, one folder per skill |
+| `rule-testing/` | `replay-a-rule-change.py`, which replays a situation in fresh sessions under several versions of the rules, and the replays it runs |
 | `git-scripts/` | Submodule sync and symlink verification scripts |
 | `git-scripts/copy-into-consuming-repository/` | The one file each consuming repository keeps its own copy of |
 
