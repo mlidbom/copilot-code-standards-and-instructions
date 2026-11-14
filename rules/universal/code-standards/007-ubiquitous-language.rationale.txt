@@ -13,15 +13,18 @@ Twice in JAStudio:
   should get another word. The user: "Do we need different names for addon depending on if it is anki, or jastudio, or
   chrome, or edge, or firefox, or the million other things that use add ons?"
 
-**The model does this by itself.** The second case was replayed in fresh sessions that day, with Claude Fable 5.2
-(`rule-testing/replays/a-word-shared-by-two-terms` in the catalog):
+**The model does this by itself, and the section stops only one of the two models tried.** The second case was
+replayed in fresh sessions that day (`rule-testing/replays/a-word-shared-by-two-terms` in the catalog). Answers that
+gave the shared word as a reason to rename:
 
-| The shared rules | Answers | Gave the shared word as a reason to rename |
+| The shared rules | Claude Fable 5.2 | Opus 5.5 |
 |---|---|---|
-| None at all | 2 | 2 |
-| With nothing on the matter | 3 | 3 |
-| With a sentence on it inside the paragraph, in three wordings | 13 | 13 |
-| With the section | 7 | 0 |
+| None at all | 2 of 2 | not run |
+| With nothing on the matter | 3 of 3 | 4 of 4 |
+| With a sentence on it inside the paragraph | 13 of 13, in three wordings | 4 of 4 |
+| With the section | 0 of 7 | 4 of 4 |
+
+**For Opus 5.5 the rule does not yet work.** Opus is the model the user works with most.
 
 ## What looks removable but isn't
 

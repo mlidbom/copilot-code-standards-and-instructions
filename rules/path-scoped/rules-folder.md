@@ -59,11 +59,14 @@ versions of the catalog's rules, and prints what each fresh session answered on 
 - **Why fresh sessions:** a session, and the agents it starts, keep the rules they started with. A changed rule
   reaches only the sessions started after the change.
 - **A replay** is a folder under `rule-testing/replays`: the prompt, which gives the situation as it stood and the
-  user's message, and the documents the prompt has the session read. `a-word-shared-by-two-terms` is one.
+  user's message, the documents the prompt has the session read, and a description of the failing.
+  `a-word-shared-by-two-terms` is one.
 - **Test before committing.** By default it runs the last commit against the working tree: the uncommitted change is
   one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules.
-- **Read what the answers say.** The script shows the passages; whether the failing happened is yours to judge. A
-  difference of one answer shows nothing.
+- **A fresh session judges each answer** against the replay's description of the failing, and the script counts the
+  failings for each arm. Read some answers beside the verdicts: the judge is a model too. A difference of one answer
+  shows nothing.
+- **Test with each model that will work under the rule.** What one model does by itself, another may not.
 - **A session sees the name of the folder it runs in.** Folders named after what was tested, such as
   `with-the-sentence`, once made a sentence look as if it worked, ten answers of ten. The script gives the folders
   plain names. Do the same when replaying by hand.
