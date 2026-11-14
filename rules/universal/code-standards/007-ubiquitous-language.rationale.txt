@@ -28,7 +28,8 @@ how language works, and a rarer word chosen to dodge a common one costs every re
 
 ## 2026-11-14: the corrections of 2026-11-11 taken out again, with what they corrected (JAStudio)
 
-Three days after the change above, the agent did it again, in prose. Designing how JAStudio could leave Anki's process,
+Three days after the change above, the agent (Claude Fable 5.2) did it again, in prose. Which model made the mistake of
+2026-11-11 wasn't recorded. Designing how JAStudio could leave Anki's process,
 it read that `studying.md` calls Anki a "studying-add-on", decided that "add-on" would soon also mean the Python add-on
 inside Anki, and stopped the design to ask which of the two should get another word. The user: "Back to a word not
 allowed to mean two things in different contexts. Do we need different names for addon depending on if it is anki, or

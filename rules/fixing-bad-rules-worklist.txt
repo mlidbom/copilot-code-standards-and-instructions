@@ -33,7 +33,7 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
    `1834507`.*
 2. **How to write rules:** the section "Writing and changing a rule" in `path-scoped/rules-folder.md`, and a pointer
    from the user-level rule on where to store lessons learned, so that sessions adding rules meanwhile don't add patches
-   of the old kind. *Changes made 2026-11-14, awaiting Magnus's commit.*
+   of the old kind. *Done 2026-11-14, the catalog's commit `7bbfd76`.*
 3. **Judgment:**
    - the code standards as defaults with reasons, a departure marked with a `//review:` comment, replacing the asking
      first of `020-when-to-break-the-rules.md`;

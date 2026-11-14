@@ -2,7 +2,7 @@
 
 ## Written 2026-11-14 (JAStudio)
 
-Designing how JAStudio could leave Anki's process, the agent read that `studying.md` calls Anki a "studying-add-on",
+Designing how JAStudio could leave Anki's process, the agent (Claude Fable 5.2) read that `studying.md` calls Anki a "studying-add-on",
 decided that "add-on" would soon also mean the Python add-on inside Anki, and stopped the design on the question of
 which of the two should get another word. Nobody had been confused: "studying-add-on" and "Anki add-on" are two
 qualified terms. It was the mistake the naming rules had been changed to stop three days before

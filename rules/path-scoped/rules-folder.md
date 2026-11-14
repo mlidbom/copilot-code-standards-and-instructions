@@ -26,7 +26,8 @@ wrong does its harm each time it applies, and the user only sees the result. So:
     go stale.
   - **The user's taste where it isn't the mainstream's,** such as no defensive coding: what he wants, and why.
   - **A correction** of something an agent did wrong. This is the most suspect kind: it's written for one model's
-    failing, and outlives it. Check first whether another rule caused the failing.
+    failing, and outlives it. Check first whether another rule caused the failing. Its sidecar names the model that
+    did it, by its full version, such as Opus 4.6 and not just Opus, with the date.
 - **State the value and its reason once, in plain words,** the user's own where there are any. The reason is what lets
   the agent apply the rule to cases the wording doesn't list. The incident behind it goes in the sidecar.
 - **Word it for every case it's meant for.** A rule worded for its incident, such as one that speaks only of classes and
@@ -36,8 +37,8 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 - **When a rule misfires, look first for a sentence to remove,** in that rule or in the one that caused it. A rule that
   corrects another rule is the last resort: the two then have to be weighed against each other in every session.
 - **Don't repeat a rule in other rules.** Link to it.
-- **When the model changes, go through the corrections again.** What it took to move an earlier model makes a later one
-  overdo it.
+- **When the model changes, go through the corrections again,** those written for earlier models first: their sidecars
+  say which. What it took to move an earlier model makes a later one overdo it.
 - **Rules are discussed with the user before they're written or changed,** as code is. An agent that writes one unasked
   writes it long, and for the case in front of it.
 
