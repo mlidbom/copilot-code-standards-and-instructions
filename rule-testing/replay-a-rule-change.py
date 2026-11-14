@@ -21,6 +21,10 @@ Each arm gets a folder of its own, holding the replay's documents and the consum
 the rules that come from the catalog in the arm's version. So the arms differ in the catalog's rules and in nothing
 else. Rules at user level are loaded in every arm: this script can't take them out.
 
+A session is told its working directory, and the name of that folder changes what it answers: folders named after the
+arms, such as with-the-sentence, gave results that folders with plain names did not (2026-11-14). So every arm's folder
+is named after the consuming repository, under a temporary folder with a random name.
+
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
 sessions get read-only tools and no MCP servers. Whether the failing happened is for the reader to judge, from the
 passages printed and the whole answers kept in the results folder.
@@ -54,25 +58,28 @@ class Arm:
             sys.exit(f"An arm is <name>=<rules>, such as before=HEAD. Got: {text}")
         return Arm(name, rules)
 
-    def puts_the_catalogs_folder(self, folder_in_the_catalog: PurePosixPath, destination: Path) -> None:
-        """Writes the catalog's folder to the destination, in this arm's version of the rules."""
+    def puts_what_the_catalog_has_at(self, path_in_the_catalog: PurePosixPath, destination: Path) -> None:
+        """Writes the catalog's file or folder at that path to the destination, in this arm's version of the rules."""
         if self.rules == "none":
             return
         if self.rules == "working-tree":
-            source = CATALOG / folder_in_the_catalog
+            source = CATALOG / path_in_the_catalog
             if source.is_dir():
                 shutil.copytree(source, destination)
+            elif source.is_file():
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, destination)
             return
-        archived = subprocess.run(["git", "-C", str(CATALOG), "archive", self.rules, folder_in_the_catalog.as_posix()], capture_output=True)
+        archived = subprocess.run(["git", "-C", str(CATALOG), "archive", self.rules, path_in_the_catalog.as_posix()], capture_output=True)
         if archived.returncode != 0:
-            print(f"   ({self.name}: the catalog has no {folder_in_the_catalog} as of {self.rules})")
+            print(f"   ({self.name}: the catalog has no {path_in_the_catalog} as of {self.rules})")
             return
         with tarfile.open(fileobj=io.BytesIO(archived.stdout)) as archive:
             for member in archive:
                 contents = archive.extractfile(member)
                 if contents is None:
                     continue
-                target = destination / PurePosixPath(member.name).relative_to(folder_in_the_catalog)
+                target = destination / PurePosixPath(member.name).relative_to(path_in_the_catalog)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(contents.read())
 
@@ -103,9 +110,11 @@ def main() -> None:
 
     print(f"Replaying {replay.name}: {arguments.runs} runs for each of {', '.join(f'{arm.name} ({arm.rules})' for arm in arms)}")
     runs: list[Run] = []
+    where_each_arm_ran: dict[str, Path] = {}
     for arm in arms:
-        folder = results / arm.name
+        folder = Path(tempfile.mkdtemp()) / (repository.name if repository else "project")
         build_the_folder_a_session_runs_in(folder, arm, replay, repository)
+        where_each_arm_ran[arm.name] = folder
         for number in range(1, arguments.runs + 1):
             runs.append(started_run(arm, number, folder, prompt, results, arguments))
 
@@ -116,7 +125,9 @@ def main() -> None:
         except subprocess.TimeoutExpired:
             run.process.kill()
         failed |= not report(run, passages_to_show, results)
-    print(f"\nThe whole answers, and the folders the sessions ran in, are in {results}")
+    print(f"\nThe whole answers are in {results}")
+    for arm_name, folder in where_each_arm_ran.items():
+        print(f"   {arm_name} ran in {folder}")
     sys.exit(1 if failed else 0)
 
 
@@ -145,25 +156,24 @@ def consuming_repository() -> Path | None:
 
 
 def build_the_folder_a_session_runs_in(folder: Path, arm: Arm, replay: Path, repository: Path | None) -> None:
-    if folder.exists():
-        shutil.rmtree(folder)
     documents = replay / "documents"
     if documents.is_dir():
         shutil.copytree(documents, folder)
     else:
         folder.mkdir(parents=True)
 
-    its_claude_folder = repository / ".claude" if repository else None
-    if its_claude_folder and its_claude_folder.is_dir():
-        for instructions in (repository / "CLAUDE.md", its_claude_folder / "CLAUDE.md"):
-            if instructions.is_file():
-                target = folder / instructions.relative_to(repository)
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(instructions, target)
-        if (its_claude_folder / "rules").is_dir():
-            copy_the_rules(its_claude_folder / "rules", folder / ".claude" / "rules", arm)
-    else:
-        arm.puts_the_catalogs_folder(PurePosixPath("rules/universal"), folder / ".claude" / "rules" / "01-universal-shared")
+    if repository is None or not (repository / ".claude").is_dir():
+        arm.puts_what_the_catalog_has_at(PurePosixPath("rules/universal"), folder / ".claude" / "rules" / "01-universal-shared")
+        return
+
+    for instructions in (repository / "CLAUDE.md", repository / ".claude" / "CLAUDE.md"):
+        if instructions.is_file():
+            target = folder / instructions.relative_to(repository)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(instructions, target)
+    its_rules = repository / ".claude" / "rules"
+    if its_rules.is_dir():
+        copy_the_rules(its_rules, folder / ".claude" / "rules", arm)
 
 
 def copy_the_rules(source: Path, destination: Path, arm: Arm) -> None:
@@ -171,7 +181,7 @@ def copy_the_rules(source: Path, destination: Path, arm: Arm) -> None:
     for entry in sorted(source.iterdir()):
         what_it_is = entry.resolve()
         if what_it_is.is_relative_to(CATALOG):
-            arm.puts_the_catalogs_folder(PurePosixPath(what_it_is.relative_to(CATALOG).as_posix()), destination / entry.name)
+            arm.puts_what_the_catalog_has_at(PurePosixPath(what_it_is.relative_to(CATALOG).as_posix()), destination / entry.name)
         elif entry.is_dir():
             copy_the_rules(entry, destination / entry.name, arm)
         else:
