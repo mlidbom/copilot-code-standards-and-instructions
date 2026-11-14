@@ -16,8 +16,8 @@ What it deliberately doesn't have is a gate held across awaits, or released on a
 many requests are in flight: its locks are short, synchronous and tied to the thread that took them. `SemaphoreSlim` does
 that job fully, and is the right tool for it.
 
-Apart from that, when it doesn't have what is needed, or using it would make the code worse, write neither the worse code nor the raw
-primitive. Stop, and tell the user:
+Apart from that, when it doesn't have what is needed, or using it would make the code worse, write neither the worse
+code nor the raw primitive. Stop, and tell the user:
 
 - why good code can't be written with what Compze has;
 - what change to Compze would fix it.
