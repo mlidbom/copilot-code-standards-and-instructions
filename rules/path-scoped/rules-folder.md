@@ -27,7 +27,9 @@ wrong does its harm each time it applies, and the user only sees the result. So:
   - **The user's taste where it isn't the mainstream's,** such as no defensive coding: what he wants, and why.
   - **A correction** of something an agent did wrong. This is the most suspect kind: it's written for one model's
     failing, and outlives it. Check first whether another rule caused the failing. Its sidecar names the model that
-    did it, by its full version, such as Opus 4.6 and not just Opus, with the date.
+    did it, by its full version, such as Opus 4.6 and not just Opus, with the date. When you don't know the model,
+    look in the transcript of the session it happened in, which records it. If that's gone, name the latest Opus of
+    that date, as "most likely".
 - **State the value and its reason once, in plain words,** the user's own where there are any. The reason is what lets
   the agent apply the rule to cases the wording doesn't list. The incident behind it goes in the sidecar.
 - **Word it for every case it's meant for.** A rule worded for its incident, such as one that speaks only of classes and
