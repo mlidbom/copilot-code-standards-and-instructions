@@ -33,10 +33,11 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
 2. **How to write rules:** the section "Writing and changing a rule" in `path-scoped/rules-folder.md`, and a pointer
    from the user-level rule on where to store lessons learned, so that sessions adding rules meanwhile don't add patches
    of the old kind. *Done 2026-11-14, the catalog's commit `7bbfd76`.*
-3. **Judgment:**
-   - the code standards as defaults with reasons, a departure marked with a `//review:` comment, replacing the asking
+3. **Judgment:** *Done 2026-11-14.*
+   - the code standards as defaults with reasons, an exception marked with a `//review:` comment, replacing the asking
      first of `020-when-to-break-the-rules.md`;
-   - "REFUSE to start work" in the collaboration rules settled against the user-level independence mandate.
+   - "REFUSE to start work" and "Ask the design question upfront" removed from the collaboration rules, which settles
+     them against the user-level independence mandate. Nothing was put in their place.
 4. **The larger rewrites, one group at a time:**
    - the five naming files (010 to 013, and 032) into one, in Magnus's words;
    - what is calibrated for Deskmancer: the reader who doesn't know the domain (013), the doc-comment audience (060),

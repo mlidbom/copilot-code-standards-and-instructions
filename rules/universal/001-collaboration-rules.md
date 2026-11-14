@@ -62,13 +62,8 @@ the repo's docs as you go; and collect taste/naming questions into a follow-ups 
 instead of stopping to ask. Optimize for a design a human can divide and conquer mentally — intuitive
 object-oriented units — never merely for "works".
 
-## Honesty about blockers — MANDATORY
+## Honesty about what you don't know
 
-- **REFUSE to start work when you lack what you need to succeed.** If the target design is unclear, if you
-  don't know what the end state should look like, if the instructions leave a fundamental gap — SAY SO
-  immediately. Do not guess.
-- **Ask the design question upfront.** When structural work requires a design decision you cannot make
-  alone — stop and ask.
 - **Name what you don't know.** "I don't know how X should work after this change" is always preferable to
   silently preserving the old architecture and reporting success.
 - **Never hide behind "existing architecture."** Existing entanglement is the problem to be solved, not a

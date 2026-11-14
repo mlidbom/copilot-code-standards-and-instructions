@@ -26,3 +26,31 @@ Assembled from three sources:
   (2026-06-10); the full case study is in
   `code-standards/014-rehome-concepts-before-restructuring.rationale.txt` — the working mode emerged
   alongside that code-standards rule but is collaboration conduct, so it lives here.
+
+## 2026-11-14 (JAStudio): "Honesty about blockers — MANDATORY" lost its first two points, and its name
+
+The section became "Honesty about what you don't know". Removed:
+
+- "**REFUSE to start work when you lack what you need to succeed.** If the target design is unclear, if you don't know
+  what the end state should look like, if the instructions leave a fundamental gap — SAY SO immediately. Do not
+  guess."
+- "**Ask the design question upfront.** When structural work requires a design decision you cannot make alone — stop
+  and ask."
+
+Why:
+
+- **What they were for,** going by the two points that remain: an agent that kept the old architecture, said nothing,
+  and reported success, in Compze before 2026-06-12. Which model isn't recorded.
+- **What they did:** designing how JAStudio could leave Anki's process, the agent (Claude Fable 5.2) presented a
+  question about a name as one it needed answered before the design could go on
+  (`000-tell-me-when-a-rule-gets-in-the-way.rationale.txt` has the case). They also contradicted the user's
+  independence mandate, a user-level rule: "know when to ask, but otherwise make the judgement calls yourself and just
+  mention the calls you made when reporting."
+- **Why nothing was put in their place:** what was worth keeping of them, saying that the target is unclear, is "Name
+  what you don't know". When to ask is the agent's judgment. A sentence saying so here would be a second rule on what
+  the mandate already says, and an agent without the mandate now has nothing telling it to refuse.
+- **Left as it is:** "Disclose blockers" in the user-level `010-output-format.md`. It's about something that really
+  blocks what was instructed, and had no part in this.
+
+**If agents go back to guessing in silence at an unclear target, look first at "Name what you don't know",** before
+adding a point.

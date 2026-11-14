@@ -1,0 +1,56 @@
+# Provenance
+
+## Until 2026-11-14: ask first
+
+In the catalog since 2026-06-12. The rule read: when, following the rules, "you cannot reach a design that read well and
+is easy to maintain", "Surface it to the user and ask for guidance", and if the user approves, document it in the code
+"under a comment starting with //rationale:" and add it "to a document under dev_docs/code_standard_exceptions".
+
+What it had produced by 2026-11-14:
+
+- **Compze, a raw `Monitor`** in `DoubleCheckedLockingOnAnExistingObject`, against the locking standard: a
+  `//rationale:` comment, and the document `raw-monitor-in-lazy-initialization.md` with the measurements. An `IMonitor`
+  for each instance cost ten allocations, in a type created by the million.
+- **Compze, a `SemaphoreSlim`** in `FramedConnectionPool`, against the same standard: a `//rationale:` comment and no
+  document. The wait must hold no thread, and Compze.Threading's monitors block one.
+- **JAStudio, `InternalsVisibleTo`** for the specification projects: the document
+  `the-ui-specifications-see-the-uis-internals.md`. The rule against it is aimed at libraries, and JAStudio is an
+  application.
+
+## 2026-11-14 (JAStudio): the exception is made and marked, not asked for
+
+Changed while going through the shared rules with the user (`fixing-bad-rules-worklist.txt` in the catalog's `rules`
+folder, while that work lasts), in a session of Claude Fable 5.2. This rule isn't a correction of something an agent did
+wrong: it's how the user wants exceptions handled.
+
+- **Asking first stops the work** for a decision the agent can make, and the user can judge afterwards, at the code.
+  The user had already chosen that way of working for JAStudio's redesign of matching, 2026-11-10: "You are so
+  incredibly much faster than me that if we wait for me to catch up progress will slow to a halt." He proposed the
+  comments himself: the agent makes the call, and marks it for his pass.
+- **With asking as the only way out, every standard was in effect absolute.** Rules that override the agent's judgment
+  for the worse are what that day's work was about. The user: "the greatest problem with rules is where they end up
+  overriding your own good judgment".
+
+## Why it's worded as it is
+
+- **"Exception"** is the word the folder and the old rule already used.
+- **The two examples** ("the standard's reason doesn't hold", "what it prescribes can't do what the code needs") are
+  the shapes of the three approved exceptions above.
+- **"Not for a standard you would simply have written differently":** most of the standards state the user's taste
+  where it isn't the mainstream's. Without this sentence, "defaults" would let back in what the standards are there to
+  keep out: short names, defensive checks, no extraction until something is reused. It's the threshold of
+  `000-tell-me-when-a-rule-gets-in-the-way.md`, for the same reason.
+- **`//rationale:` and the folder are kept from the old rule.** A `review:` comment is an item in the IDE's TODO list,
+  there to be resolved. Once it's resolved, the reason has to stay at the code, or the next agent corrects the
+  exception.
+- **A document for "what the comment can't hold":** the old rule asked for a document every time. Of the three
+  exceptions, one has only its comment, and nothing was missing.
+
+## Not tested, and what to watch for
+
+- **Whether agents now make exceptions too readily.** If exceptions turn up where the agent simply prefers the
+  mainstream way, look first at the word "defaults".
+- **An exception also raises `### A RULE GOT IN THE WAY ###`,** as the two rules are worded. Left so: exceptions are
+  rare, and the heading tells the user that a standard didn't fit.
+- **The force of the standards' own wording** ("BANNED", "NEVER") is untouched by this change. It's a later step of
+  the worklist.
