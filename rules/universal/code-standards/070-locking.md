@@ -1,7 +1,7 @@
 # Synchronization: use Compze.Threading, and stop when it doesn't fit
 
 Whenever Compze.Threading or Compze.Threading.Interprocess has what is needed, use it, never a raw `lock`, `Monitor`,
-`Mutex`, `SemaphoreSlim` or the like.
+`Mutex` or the like.
 
 What it gives that the built-in primitives don't, which is also where to look first:
 
@@ -12,7 +12,11 @@ What it gives that the built-in primitives don't, which is also where to look fi
 - **The same across processes:** `IMutex`, `IAwaitableMutex`, `IProcessShared<T>`.
 - **Deadlocks diagnosed:** taking a lock times out, and the exception has both threads' stack traces.
 
-When it doesn't have what is needed, or using it would make the code worse, write neither the worse code nor the raw
+What it deliberately doesn't have is a gate held across awaits, or released on another thread, such as a limit on how
+many requests are in flight: its locks are short, synchronous and tied to the thread that took them. `SemaphoreSlim` does
+that job fully, and is the right tool for it.
+
+Apart from that, when it doesn't have what is needed, or using it would make the code worse, write neither the worse code nor the raw
 primitive. Stop, and tell the user:
 
 - why good code can't be written with what Compze has;
