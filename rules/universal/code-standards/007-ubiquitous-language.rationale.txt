@@ -2,8 +2,8 @@
 
 ## What is behind the section "A word that two names share is not a collision"
 
-An agent takes a word that is part of two names for a collision, and renames one of them or asks which to rename.
-Twice in JAStudio:
+An agent takes a word that is part of two names for a collision. It renames one of them, passes over the obvious word
+for a rarer one, or asks which to rename. Twice in JAStudio:
 
 - **2026-11-11, in code** (Opus 5.5). It avoided "import", because the `Importing` namespace already used the word,
   and named the action "keep", then "archive". It also put the namespace's word in front of every type in a namespace.
@@ -13,43 +13,45 @@ Twice in JAStudio:
   should get another word. The user: "Do we need different names for addon depending on if it is anki, or jastudio, or
   chrome, or edge, or firefox, or the million other things that use add ons?"
 
-**The model does this by itself, and the section stops only one of the two models tried.** The second case was
-replayed in fresh sessions that day (`rule-testing/replays/a-word-shared-by-two-terms` in the catalog). Answers that
-gave the shared word as a reason to rename:
+**Both models do this by themselves, and the section's two paragraphs stop both.** Both cases were replayed in fresh
+sessions on 2026-11-14, from `rule-testing/replays` in the catalog: `a-word-another-namespace-already-uses` is the case
+in code, `a-word-shared-by-two-terms` the one in prose. Answers that showed the failing:
 
-| The shared rules | Claude Fable 5.2 | Opus 5.5 |
-|---|---|---|
-| None at all | 2 of 2 | not run |
-| With nothing on the matter | 3 of 3 | 4 of 4 |
-| With a sentence on it inside the paragraph | 13 of 13, in three wordings | 4 of 4 |
-| With the section | 0 of 7 | 4 of 4 |
-
-**For Opus 5.5 the rule does not yet work.** Opus is the model the user works with most.
+| The rule | In prose, Fable 5.2 | In prose, Opus 5.5 | In code, Fable 5.2 | In code, Opus 5.5 |
+|---|---|---|---|---|
+| With nothing on the matter | 7 of 7 | 4 of 4 | 1 of 4 | 7 of 10 |
+| With the section's first paragraph only | 0 of 7 | 19 of 22 | 0 of 4 | 1 of 6 |
+| With both paragraphs | 0 of 4 | 0 of 20 | 0 of 4 | 0 of 6 |
 
 ## What looks removable but isn't
 
-- **The heading of its own.** Said as a sentence inside the paragraph above it, the same thing changed nothing: "A word
-  that two terms share is no reason to rename either of them", nor with "a word that is the last part of", or "part
-  of", "two different fully qualified names".
+- **The second paragraph, which is there for Opus 5.5.** Opus argued that one name "will be read as" the other, and
+  didn't take that for renaming because of a shared word until the rule said it is.
+- **The heading of its own.** Said as a sentence inside the paragraph above the section, the same thing changed
+  nothing, in three wordings: 13 answers of 13 from Fable 5.2 and 4 of 4 from Opus 5.5 still showed the failing.
 - **"And don't propose to", and "in code, in documents or in conversation".** The corrections of 2026-11-11 spoke of
-  code only ("in use elsewhere in the codebase"), and didn't hold in prose three days later.
-- **The examples are not the replay's own.** With "add-on" as the example, the replay would test nothing.
+  code only, and didn't hold in prose three days later.
+- **The examples as they are.** With a `Parsing` namespace and a `Parse` method in place of `Importing` and `Import`,
+  the two paragraphs let 6 of 22 Opus answers fail in prose. Why isn't known: perhaps because the replayed discussion
+  is itself about an import. In code those other examples did as well: no answer of 20 failed.
 
 ## Tried and rejected
 
-- **"A distinct word must mean a distinct concept",** and making type names unique "if there is any risk of them
-  being confused for each other": the rule's wording until 2026-11-11, which asked for the failing.
-- **The corrections of 2026-11-11,** removed 2026-11-14: a condition ("as long as the context makes things clear")
-  and a list of common words here, and in the naming rules "a type doesn't repeat its namespace", which got in the way
-  where repeating it helped.
-- **Removing only.** Asked on 2026-11-14 whether it would avoid a shared word with no rules at all, the agent said
-  no, and those corrections were removed with nothing put in their place. The replays showed that account to be wrong.
-- **The sentence inside the paragraph,** committed twice that day on a flawed test: 10 answers of 10 had seemed to
-  show it working. Those sessions ran in folders named after what was tested, such as `with-the-sentence`, and a
-  session is told its working directory. In folders with plain names the sentence did nothing.
+- **The wording until 2026-11-11,** which asked for the failing: "a distinct word must mean a distinct concept", and
+  type names made unique "if there is any risk of them being confused for each other".
+- **The corrections of 2026-11-11,** removed 2026-11-14: a condition ("as long as the context makes things clear"),
+  a list of common words, and in the naming rules "a type doesn't repeat its namespace", which got in the way where
+  repeating it helped.
+- **Removing only.** The agent said that with no rules it wouldn't avoid a shared word. The replays showed otherwise.
+- **The reason as the second paragraph:** "Common words are needed in many names", with the user's sentence of
+  2026-11-11. 6 of 8 Opus answers still failed in prose.
+- **The user's sentence about add-ons as the second paragraph.** It worked, 0 of 18 from Opus in prose. But it names
+  the replayed case itself, so the replay couldn't show whether it carries over to other words. It is the first thing
+  to try if the failing comes back.
 
 ## Not tested
 
-- **Whether the section holds in code.** Every replay was of the design discussion.
-- **Two of the seven answers still preferred "studying integration"**, for another reason: that Anki isn't added on to
-  JAStudio. That is a view on whether the name tells the truth, which the naming rule asks for.
+- **A third case:** another word, in a conversation about something else. The result with the other examples says
+  the section may hold less well there than the table shows.
+- **Whether an agent now keeps quiet about a name that does mislead.** The replays showed no sign of it: the answers
+  still asked which of two words for one concept to keep, and still said that Anki isn't added on to JAStudio.
