@@ -18,7 +18,8 @@ Every always-on rule is read in every session, by a model that follows what it r
 wrong does its harm each time it applies, and the user only sees the result. So:
 
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
-  the agent can't know or wouldn't choose by itself.
+  the agent can't know or wouldn't choose by itself. An agent's own account of what it would do without the rule is not
+  evidence: replay the case without the rule, as below.
 - **Know which kind of rule it is,** since that decides how it's worded:
   - **A hard limit:** breaking it does harm that can't be undone, such as changing an external environment without
     approval. Absolute wording belongs here, and only here.
@@ -49,6 +50,21 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 The always-on rule `000-tell-me-when-a-rule-gets-in-the-way.md` is how a rule that does harm gets noticed. How this
 came about is in its sidecar, and in `fixing-bad-rules-worklist.txt` in the catalog's `rules` folder while that work
 lasts.
+
+## Testing a change to a rule: replay the case in fresh sessions
+
+`rule-testing/replay-a-rule-change.py` in the catalog replays a situation in which a rule went wrong, under two or more
+versions of the catalog's rules, and prints what each fresh session answered on the point. Its own help says how.
+
+- **Why fresh sessions:** a session, and the agents it starts, keep the rules they started with. A changed rule
+  reaches only the sessions started after the change.
+- **A replay** is a folder under `rule-testing/replays`: the prompt, which gives the situation as it stood and the
+  user's message, and the documents the prompt has the session read. `a-word-shared-by-two-terms` is one.
+- **Test before committing.** By default it runs the last commit against the working tree: the uncommitted change is
+  one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules.
+- **Read what the answers say.** The script shows the passages; whether the failing happened is yours to judge. A
+  difference of one answer shows nothing.
+- **Keep the replay** when the case may come back. It is the rule's test.
 
 ## What loads, and when
 

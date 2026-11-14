@@ -7,7 +7,8 @@ human reads**: type and member names, comments, commit messages, documentation, 
 user-facing text (labels, dialogs, errors). Even throwaway lab and research code.
 
 The inverse is not true: the same word can mean different things in different contexts. Only a fully qualified name
-has to mean one thing.
+has to mean one thing. A word that two terms share is no reason to rename either of them. That holds in documents and
+in conversation as much as in code.
 
 ## Why:
 

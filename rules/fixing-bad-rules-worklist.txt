@@ -31,7 +31,7 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
 ## The steps
 
 1. **Naming: the deletions, and "a name means the fully qualified name".** *Done 2026-11-14, the catalog's commit
-   `1834507`.*
+   `1834507`.* *Not enough, as the replays showed: see "Testing a change" below.*
 2. **How to write rules:** the section "Writing and changing a rule" in `path-scoped/rules-folder.md`, and a pointer
    from the user-level rule on where to store lessons learned, so that sessions adding rules meanwhile don't add patches
    of the old kind. *Done 2026-11-14, the catalog's commit `7bbfd76`.*
@@ -64,14 +64,12 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
    when a rule gets in the way, the collaboration rules, the ubiquitous language, and when to break the rules. Not
    done: the user-level sidecar of the rule on preparing a commit for Magnus to make.
 
-## Testing a change, not yet tried
+## Testing a change: done 2026-11-14
 
-Replaying a known failure, such as the add-on question, to fresh agents under the old and the new wording, and
-comparing.
+The add-on question was replayed in fresh sessions, with `rule-testing/replay-a-rule-change.py`, written for it. How
+to do it is in `path-scoped/rules-folder.md`, and the results are in the sidecar of the rule on the ubiquitous language.
 
-- **An agent started from a session gets the rules as they were when that session started,** not as they are on disk
-  (checked 2026-11-14). It listed the 56 rule files and quoted one verbatim, but didn't have a rule written earlier in
-  that session. Whether it sees an edit to a rule it does have isn't checked.
-- **So the old wording can be replayed from a session that predates the change, and the new wording needs a new
-  session,** such as `claude -p` run in the checkout. Not tried.
-- **Each such agent costs about 100,000 tokens to start,** rules and tools included.
+- **The removals of step 1 had not fixed the naming failure.** With no shared rules at all, the model still gave a
+  shared word as a reason to rename. One sentence in the rule on the ubiquitous language stopped it.
+- **So step 1 rested on a wrong account:** the agent had said it wouldn't avoid a shared word without the rules.
+  Nothing else done in this work was tested this way.

@@ -1,33 +1,43 @@
 # Provenance
 
-## What is behind "the same word can mean different things in different contexts"
+## What is behind "a word that two terms share is no reason to rename either of them"
 
-The agent took the rule to mean that a word may mean only one thing in the whole codebase. Twice, both in JAStudio:
+An agent takes a word that two terms share for a collision, and renames one of them or asks which to rename. Twice in
+JAStudio:
 
-- **2026-11-11, in code** (Opus 5.5). It avoided "import", because the `Importing` namespace already
-  used the word, and named the action "keep", then "archive". It also put the namespace's word in front of every type
-  in a namespace. The user: "this feels like we are trying to apply the impossible rule of never ever reusing a word
-  that is very common in computer science, such as import or store or save", and of the prefixes: "this feels to me
-  like intAge, strName".
-- **2026-11-14, in prose** (Claude Fable 5.2). It stopped a design to ask which of "studying-add-on" and "Anki
-  add-on" should get another word. The user: "Do we need different names for addon depending on if it is anki, or
-  jastudio, or chrome, or edge, or firefox, or the million other things that use add ons?"
+- **2026-11-11, in code** (Opus 5.5). It avoided "import", because the `Importing` namespace already used the word,
+  and named the action "keep", then "archive". It also put the namespace's word in front of every type in a namespace.
+  The user: "this feels like we are trying to apply the impossible rule of never ever reusing a word that is very common
+  in computer science, such as import or store or save", and of the prefixes: "this feels to me like intAge, strName".
+- **2026-11-14, in prose** (Claude Fable 5.2). It stopped a design to ask which of "studying-add-on" and "Anki add-on"
+  should get another word. The user: "Do we need different names for addon depending on if it is anki, or jastudio, or
+  chrome, or edge, or firefox, or the million other things that use add ons?"
 
-The agent's account of its own part: it finds code by searching text, so a name unique across the codebase suits it,
-at the human reader's cost. Asked whether it would avoid a shared word with no rules at all, it said no.
+**The model does this by itself.** The second case was replayed in fresh sessions that day, with Claude Fable 5.2
+(`rule-testing/replays/a-word-shared-by-two-terms` in the catalog):
 
-## Taken out, and not to put back
+| The shared rules | Answers | Gave the shared word as a reason to rename |
+|---|---|---|
+| That morning's | 1 | 1 |
+| Without the sentence | 4 | 4 |
+| None at all | 2 | 2 |
+| With the sentence | 4 | 0 |
+
+## What looks removable but isn't
+
+**The sentence, and its "in documents and in conversation as much as in code".** The corrections of 2026-11-11 said
+nearly the same for code only ("in use elsewhere in the codebase"), and didn't hold in prose three days later.
+
+## Tried and rejected
 
 - **"A distinct word must mean a distinct concept",** and making type names unique "if there is any risk of them
-  being confused for each other": the wording the agent read that way. Out 2026-11-11.
-- **The corrections of 2026-11-11,** out again 2026-11-14: here, a condition ("as long as the context makes things
-  clear") and a list of common words; in the naming rules, "a type doesn't repeat its namespace", which got in the way
-  where repeating it helped, and "carry the disambiguating qualifier" with an exception. Each was a new absolute, was
-  worded for code only, and left the decision to a judgment the naming rules told the agent not to trust.
+  being confused for each other": the rule's wording until 2026-11-11, which asked for the failing.
+- **The corrections of 2026-11-11,** removed 2026-11-14: a condition ("as long as the context makes things clear")
+  and a list of common words here, and in the naming rules "a type doesn't repeat its namespace", which got in the way
+  where repeating it helped.
+- **Removing only.** Asked on 2026-11-14 whether it would avoid a shared word with no rules at all, the agent said
+  no, and those corrections were removed with nothing put in their place. The replays showed that account to be wrong.
 
-The user, on choosing to remove: "we may need to look at just removing parts of the current instructions rather than
-changing them to be ever more complex."
+## Not tested
 
-## If it comes back
-
-Look first for a sentence to remove, here or in `010-conceptual-coherence-and-naming.md`, before adding one.
+Whether the sentence holds in code. Every replay was of the design discussion.
