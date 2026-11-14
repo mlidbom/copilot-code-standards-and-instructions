@@ -15,20 +15,48 @@ with me. Very prominently."
 
 ## What looks removable but isn't
 
-- **"When a rule has you do something you think is a bad idea" is a trigger, not a duty to check.** A duty to go
-  through every response for rules in the way would cost thought on every prompt, which the user asked about before
-  agreeing to the rule.
-- **The threshold, "a bad result in this case".** Several of the user's values differ from the mainstream's. Raised
-  each time the agent would have done it the mainstream way, the heading would be noise, and skipped.
-- **"Whether you followed the rule or not":** it reports the parting of rule and judgment, whichever won. It gives no
-  leave to set a rule aside.
+- **"A rule gets in the way when" is a trigger, not a duty to check.** A duty to go through every response for rules
+  in the way would cost thought on every prompt, which the user asked about before agreeing to the rule.
+- **The threshold, "a bad result in the case at hand".** Several of the user's values differ from the mainstream's.
+  Raised each time the agent would have done it the mainstream way, the heading would be noise, and skipped.
+- **"Time, round trips or noise that buy nothing"** is what a bad result is outside the code standards, which the
+  user asked about. That day's cases: a commit in the consuming repository for every edit of the catalog, work
+  stopped for questions nobody needed answered, and a small idea made a headline.
+- **The leave to do what is better, and its two limits.** At first the rule only had the agent tell. Later that day
+  the agent proposed to "do what is better and report it under the heading, whenever it can be undone", and to
+  follow the rule "where it guards something that can't be undone or is yours to decide: the hard limits, your
+  approvals, your data". The user: "Go with that."
+- **The paragraph on a rule judged not to apply, and its place, are there for Opus 5.5,** which didn't take "it
+  doesn't apply here" for a rule in the way. The table below has what other places for it did.
+- **"Either way" keeps the heading for both.** It is what makes the leave safe: the user sees every parting of rule
+  and judgment, and corrects the rule or the agent.
 - **"What the rules are for" is the user's words and nothing more.** Until 2026-11-14 no rule said what the rules
   serve, so an agent had nothing to weigh a rule against. He was asked what his concern with the rules' size was, and
-  answered with what he wants of the rules as a whole. Whether his words give leave to set a rule aside is not
-  settled: the section doesn't say so, and the heading still reports the parting whichever won.
+  answered with what he wants of the rules as a whole.
 - **At the end, in two or three lines.** "Near the top", in the rule on Compze, made a headline of a small idea.
 - **The name states the event and the action.** `watch-out-for-bad-rules.md`, the user's first suggestion, reads as
   standing vigilance: the duty to check.
+
+## Tested, 2026-11-14
+
+A change to one sentence of a document, against a project's rule that no task is done before the full build and every
+test have passed (`rule-testing/replays/a-change-to-one-document-and-the-definition-of-done` in the catalog). No answer
+of 66 would have run them, under any version of the rule. The versions change whether the report says so. Answers
+that left the build and the tests out without the heading:
+
+| The rule | Opus 5.5 | Claude Fable 5.2 |
+|---|---|---|
+| As it was: tell, with no leave | 6 of 6 | 2 of 4 |
+| With the leave, without the paragraph on a rule judged not to apply | 12 of 12 | 0 of 4 |
+| With that paragraph after the instruction to raise the heading | 7 of 16 | not run |
+| With it as a third bullet | 6 of 10 | not run |
+| With it after the definition, as now | 1 of 10 | 0 of 4 |
+
+**Not tested:**
+
+- That a rule which guards an approval or the user's data is still followed when following it costs something. No
+  replay tempts that.
+- How often the heading now comes up in ordinary work. In six answers to an unrelated design question it didn't.
 
 ## What it doesn't catch
 

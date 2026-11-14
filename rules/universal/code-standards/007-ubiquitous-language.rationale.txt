@@ -21,7 +21,7 @@ in code, `a-word-shared-by-two-terms` the one in prose. Answers that showed the 
 |---|---|---|---|---|
 | With nothing on the matter | 7 of 7 | 4 of 4 | 1 of 4 | 7 of 10 |
 | With the section's first paragraph only | 0 of 7 | 19 of 22 | 0 of 4 | 1 of 6 |
-| With both paragraphs | 0 of 4 | 0 of 20 | 0 of 4 | 0 of 6 |
+| With both paragraphs | 0 of 4 | 1 of 26 | 0 of 4 | 0 of 6 |
 
 ## What looks removable but isn't
 
