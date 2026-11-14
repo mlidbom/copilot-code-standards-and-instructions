@@ -1,57 +1,37 @@
 # Provenance
 
-## Written 2026-11-14 (JAStudio)
+Written 2026-11-14 in JAStudio, in a session of Claude Fable 5.2.
 
-Designing how JAStudio could leave Anki's process, the agent (Claude Fable 5.2) read that `studying.md` calls Anki a "studying-add-on",
-decided that "add-on" would soon also mean the Python add-on inside Anki, and stopped the design on the question of
-which of the two should get another word. Nobody had been confused: "studying-add-on" and "Anki add-on" are two
-qualified terms. It was the mistake the naming rules had been changed to stop three days before
-(`code-standards/007-ubiquitous-language.rationale.txt`).
+## What is behind it
 
-Asked whether it would have avoided the shared word without the rules, the agent's answer was no: the word hadn't
-confused it, and it raised the question for an imagined reader, because the naming rules told it not to trust its own
-reading. Going through the session, it found three more places where a rule had it do something it thought worse:
+The agent stopped a design to ask which of two terms that share the word "add-on" should be renamed, though nobody had
+been confused: the naming rules had told it not to trust its own reading
+(`code-standards/007-ubiquitous-language.rationale.txt`). Going through the session, it found three more places where
+a rule had it do something it thought worse. In two of the four it had complied and said nothing: there was nowhere to
+say it.
 
-- **It proposed five additions to the naming rules and no removals,** partly because the user-level rule "Long-standing
-  instruction docs are scar tissue — don't propose trimming them" said not to condense them.
-- **It put a speculative idea about Compze under the heading the Compze rule demands, near the top,** where it would
-  otherwise have been a line.
-- **It presented the add-on question as one it needed answered before starting,** as "REFUSE to start work" and "Ask
-  the design question upfront" read, against the user's independence mandate.
+The user: "If you ever feel that a rule just caused you to do something you think is a bad idea. You should raise that
+with me. Very prominently."
 
-In two of the four, by its own account, it had weighed the rule against its judgment, complied, and said nothing: there
-was nowhere to say it. The user: "If you ever feel that a rule just caused you to do something you think is a bad idea.
-You should raise that with me. Very prominently. In the bold all-uppercase format discussed for other feedback I must
-not miss."
+## What looks removable but isn't
 
-The user's wider concern, the same day: most of the shared rules were written in Deskmancer, whose domains were new to
-him, with the agent having written nearly all the code, and for the models of that time. "I seriously fear that A
-Lot(TM) of the shared rules may be directly counter productive nowadays...." This rule is how such rules get found as
-they act, rather than in a review like that day's.
-
-## Why it's worded as it is
-
-- **A trigger, not a duty to check.** "When a rule has you do something you think is a bad idea" acts on something the
-  agent already notices. A duty, such as reviewing every response for rules that got in the way, would cost thought on
-  every prompt, which the user asked about before agreeing to the rule.
-- **A threshold: a bad result in this case.** Several of the user's values differ from the mainstream's, such as no
-  defensive catches. Raised each time the agent would have done it the mainstream way, the heading would become noise,
-  and the user would learn to skip it.
-- **At the end, in two or three lines.** The Compze rule's "near the top" is what made a headline of a small idea.
+- **"When a rule has you do something you think is a bad idea" is a trigger, not a duty to check.** A duty to go
+  through every response for rules in the way would cost thought on every prompt, which the user asked about before
+  agreeing to the rule.
+- **The threshold, "a bad result in this case".** Several of the user's values differ from the mainstream's. Raised
+  each time the agent would have done it the mainstream way, the heading would be noise, and skipped.
 - **"Whether you followed the rule or not":** it reports the parting of rule and judgment, whichever won. It gives no
   leave to set a rule aside.
-- **Its name states the event and the action.** The user's first suggestion was `watch-out-for-bad-rules.md`; "watch
-  out for" reads as standing vigilance, the duty to check.
-- **Numbered `000`,** so it's read before the rules it is about.
+- **At the end, in two or three lines.** "Near the top", in the rule on Compze, made a headline of a small idea.
+- **The name states the event and the action.** `watch-out-for-bad-rules.md`, the user's first suggestion, reads as
+  standing vigilance: the duty to check.
 
 ## What it doesn't catch
 
 Only what the agent notices. In the add-on case no rule felt in the way: the rules had already shaped what the agent
-thought was right. Such cases still take a review of the rules.
+thought right. Such cases still take a review of the rules.
 
-## What it replaced
+## Rejected
 
-The section "Long-standing instruction docs are scar tissue — don't propose trimming them" of the user-level rule
-`020-collaborating-with-magnus.md`, removed the same day. It said the length and repetition of the standing rules were
-deliberate reinforcement, and that only stale facts might be tightened. The user now wants the opposite: rules that
-override good judgment "gone or fixed", and no "super long rules that don't consistently help".
+The user-level section "Long-standing instruction docs are scar tissue — don't propose trimming them", removed the
+same day. The user now wants rules that override good judgment "gone or fixed".

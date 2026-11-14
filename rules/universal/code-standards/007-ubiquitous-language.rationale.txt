@@ -1,66 +1,33 @@
 # Provenance
 
-## 2026-11-11: context disambiguates; uniqueness across the codebase taken out (JAStudio)
+## What is behind "the same word can mean different things in different contexts"
 
-The rule used to end its "How" list with "A distinct word must mean a distinct concept", and to say of the inverse
-that "identical type names are more iffy though. If there is any risk of them being confused for each other, it is
-better to add something to the name to make them unique."
+The agent took the rule to mean that a word may mean only one thing in the whole codebase. Twice, both in JAStudio:
 
-The agent read those as "a word may mean only one thing in the whole codebase". Writing the code that brings Anki decks
-into JAStudio's sentence reservoir, it avoided "import", because the corpus's `Importing` namespace already used it, and
-named the action "keep", then "archive", neither of which says what's done. It also prefixed every type in the format's
-namespace (`Kept…`, then `Archived…`), though the namespace already said it. The user: "this feels like we are trying to
-apply the impossible rule of never ever reusing a word that is very common in computer science, such as import or store
-or save", and of the prefixes, "this feels to me like intAge, strName".
+- **2026-11-11, in code** (the model isn't recorded). It avoided "import", because the `Importing` namespace already
+  used the word, and named the action "keep", then "archive". It also put the namespace's word in front of every type
+  in a namespace. The user: "this feels like we are trying to apply the impossible rule of never ever reusing a word
+  that is very common in computer science, such as import or store or save", and of the prefixes: "this feels to me
+  like intAge, strName".
+- **2026-11-14, in prose** (Claude Fable 5.2). It stopped a design to ask which of "studying-add-on" and "Anki
+  add-on" should get another word. The user: "Do we need different names for addon depending on if it is anki, or
+  jastudio, or chrome, or edge, or firefox, or the million other things that use add ons?"
 
-Asked why, the agent's account was two rules over-applied (this one, and the qualifier advice in
-013-name-for-the-human-who-must-look-it-up) and a habit of its own: it finds code by searching text, so a name unique
-across the codebase suits it, at the human reader's cost.
+The agent's account of its own part: it finds code by searching text, so a name unique across the codebase suits it,
+at the human reader's cost. Asked whether it would avoid a shared word with no rules at all, it said no.
 
-So the user rewrote the inverse ("multiple namespaces having types with the same name etc. is perfectly fine"), made the
-fully qualified name the unit of meaning ("A fully qualified name defines one unique concept, and that is the only
-definition of that concept"), and added "Prefer the obvious term if it fits" to 010-conceptual-coherence-and-naming. The
-agent added the reason (that's how language works) and the "never avoid the obvious word" sentence here, the
-"a type doesn't repeat its namespace" paragraph to 032-naming, and the matching exception to 013.
+## Taken out, and not to put back
 
-**Don't reintroduce uniqueness across the codebase:** the same word meaning different things in different contexts is
-how language works, and a rarer word chosen to dodge a common one costs every reader.
+- **"A distinct word must mean a distinct concept",** and making type names unique "if there is any risk of them
+  being confused for each other": the wording the agent read that way. Out 2026-11-11.
+- **The corrections of 2026-11-11,** out again 2026-11-14: here, a condition ("as long as the context makes things
+  clear") and a list of common words; in the naming rules, "a type doesn't repeat its namespace", which got in the way
+  where repeating it helped, and "carry the disambiguating qualifier" with an exception. Each was a new absolute, was
+  worded for code only, and left the decision to a judgment the naming rules told the agent not to trust.
 
-## 2026-11-14: the corrections of 2026-11-11 taken out again, with what they corrected (JAStudio)
+The user, on choosing to remove: "we may need to look at just removing parts of the current instructions rather than
+changing them to be ever more complex."
 
-Three days after the change above, the agent (Claude Fable 5.2) did it again, in prose. Which model made the mistake of
-2026-11-11 wasn't recorded. Designing how JAStudio could leave Anki's process,
-it read that `studying.md` calls Anki a "studying-add-on", decided that "add-on" would soon also mean the Python add-on
-inside Anki, and stopped the design to ask which of the two should get another word. The user: "Back to a word not
-allowed to mean two things in different contexts. Do we need different names for addon depending on if it is anki, or
-jastudio, or chrome, or edge, or firefox, or the million other things that use add ons?" He had also seen "a type
-doesn't repeat its namespace", added on 2026-11-11, get in the way where repeating it helped.
+## If it comes back
 
-Why the change of 2026-11-11 hadn't held, by the agent's account:
-
-- **Its wording was of code:** classes, namespaces, "the codebase". This was a term in a document against a term of
-  Anki's, and the agent didn't recognise it as the same case.
-- **"As long as the context makes things clear" left the decision to a judgment the agent had been told not to trust,**
-  by 013-name-for-the-human: "a broken gauge", "deliberately over-correct", "rather than collapsing them because you can
-  tell which is meant from context".
-- **Each correction was a new absolute,** applied as mechanically as the sentence it replaced.
-
-Asked whether it would avoid a shared word with no rules at all, the agent said no: it reuses common words across
-namespaces unprompted, and "add-on" hadn't confused it. So the user chose to remove rather than to add: "we may need to
-look at just removing parts of the current instructions rather than changing them to be ever more complex."
-
-- **Here:** the three sentences on the inverse became two, without the condition and the list of words, and took in the
-  bullet on the fully qualified name.
-- **013-name-for-the-human:** "Deliberately over-correct…", "Carry the disambiguating qualifier even when it feels
-  redundant to you…" with its exception, and the tail of the chord and hotkey sentence went. So did "alone" and "on its
-  own", which read as "without its namespace".
-- **032-naming:** the paragraph "A type doesn't repeat its namespace" went. The namespace is no reason to add a word to
-  a type's name, and none to remove one.
-- **010-conceptual-coherence:** the sentence repeating this rule under "Prefer the obvious term" went.
-- **005-software-design-and-the-human-mind** got the one addition: a name means the fully qualified name. The user:
-  "Long fully qualified names. This goes for A LOT of the references to names I would think."
-
-**If it comes back, look first for a sentence to remove,** in these rules or another, before adding one here.
-
-(The files `013-name-for-the-human-who-must-look-it-up.md` and `032-naming.md`, named above, were merged into
-`010-conceptual-coherence-and-naming.md` on 2026-11-14, with 011 and 012. Their sidecars are in that file's sidecar.)
+Look first for a sentence to remove, here or in `010-conceptual-coherence-and-naming.md`, before adding one.

@@ -1,56 +1,32 @@
-# Provenance — collaboration rules
+# Provenance
 
-Assembled from three sources:
+## What is behind each section
 
-- The core sections (don't code until instructed, honesty about blockers) began as Compze's project-local
-  rules and were promoted to the catalog 2026-06-12 — they were project-agnostic, and VDGS would have
-  duplicated them on migration. A "no changes external to the repo without confirmation" gate was promoted
-  alongside them and removed 2026-06-13 at the user's direction: no agent had ever made external changes
-  uninstructed, so the rule only added friction ("pure paranoia rule"). Don't re-add it.
-- "Questions are just questions" and "the codebase must improve over time" were recovered the same day from
-  the pre-rules-folder user-level CLAUDE.md (found unmigrated in a backup file when the user-level config was
-  reconciled with the catalog).
-- "Build the tools the work will need again now, not later — and propose the big ones" (2026-11-09, JAStudio):
-  the user, after the note-diff tool was built straight away rather than postponed: "In the spirit of creating
-  the tools we will need again and again right away rather than postponing creating them. Thus speeding up long
-  term progress. This is absolutely a basic idea in how I think." And on thinking big: "I specifically want
-  you to consider and suggest major changes if required to speed up future development, not just small
-  additions to existing infrastructure. Not least tooling specifically to help YOU or other AI agents. For
-  instance. It took me FAR to long to suggest adding MCP to jastudio." Before JAStudio's MCP server, every
-  change to parsing or the corpus waited on the user to restart Anki, run a full rebuild there and report back,
-  and analyses were throwaway programs; the server's core (a headless JAStudio on the real corpus, rebuilds,
-  sentence analysis, the same server live inside Anki) took about a day, after which two data fixes each went
-  from experiment to the user's checkout in one sitting. JAStudio's own rule that Claude owns its MCP server is
-  this rule's case for that project.
-- "When given full delegation" was confirmed during the Compze typermedia–tessaging disentanglement
-  (2026-06-10); the full case study is in
-  `code-standards/014-rehome-concepts-before-restructuring.rationale.txt` — the working mode emerged
-  alongside that code-standards rule but is collaboration conduct, so it lives here.
+- **Don't code until instructed to,** and **honesty about what you don't know:** Compze's own rules, in the catalog
+  since 2026-06-12. The second answered an agent that kept the old architecture, said nothing and reported success.
+  Which model isn't recorded.
+- **Questions are just questions,** and **the codebase must improve over time:** from the user-level CLAUDE.md of
+  before the rules folder.
+- **Build the tools the work will need again now** (2026-11-09, JAStudio). The user: "In the spirit of creating the
+  tools we will need again and again right away rather than postponing creating them. Thus speeding up long term
+  progress. This is absolutely a basic idea in how I think." And: "I specifically want you to consider and suggest
+  major changes if required to speed up future development, not just small additions to existing infrastructure. Not
+  least tooling specifically to help YOU or other AI agents. For instance. It took me FAR to long to suggest adding MCP
+  to jastudio."
+- **When given full delegation:** from Compze's separation of typermedia and tessaging, 2026-06-10. The case is in
+  `code-standards/014-rehome-concepts-before-restructuring.rationale.txt`.
 
-## 2026-11-14 (JAStudio): "Honesty about blockers — MANDATORY" lost its first two points, and its name
+## Taken out, and not to put back
 
-The section became "Honesty about what you don't know". Removed:
+- **"REFUSE to start work when you lack what you need to succeed"** and **"Ask the design question upfront",** of the
+  section then called "Honesty about blockers — MANDATORY". Removed 2026-11-14 (JAStudio, Claude Fable 5.2): they had
+  the agent present a question about a name as one it needed answered before a design could go on, against the user's
+  independence mandate, a user-level rule. Nothing was put in their place: when to ask is the agent's judgment, and
+  what was worth keeping of them is "Name what you don't know".
+- **A gate on changes outside the repository** was in these rules until 2026-06-13. Since 2026-06-28 the rule on
+  external environments holds that.
 
-- "**REFUSE to start work when you lack what you need to succeed.** If the target design is unclear, if you don't know
-  what the end state should look like, if the instructions leave a fundamental gap — SAY SO immediately. Do not
-  guess."
-- "**Ask the design question upfront.** When structural work requires a design decision you cannot make alone — stop
-  and ask."
+## Not tested
 
-Why:
-
-- **What they were for,** going by the two points that remain: an agent that kept the old architecture, said nothing,
-  and reported success, in Compze before 2026-06-12. Which model isn't recorded.
-- **What they did:** designing how JAStudio could leave Anki's process, the agent (Claude Fable 5.2) presented a
-  question about a name as one it needed answered before the design could go on
-  (`000-tell-me-when-a-rule-gets-in-the-way.rationale.txt` has the case). They also contradicted the user's
-  independence mandate, a user-level rule: "know when to ask, but otherwise make the judgement calls yourself and just
-  mention the calls you made when reporting."
-- **Why nothing was put in their place:** what was worth keeping of them, saying that the target is unclear, is "Name
-  what you don't know". When to ask is the agent's judgment. A sentence saying so here would be a second rule on what
-  the mandate already says, and an agent without the mandate now has nothing telling it to refuse.
-- **Left as it is:** "Disclose blockers" in the user-level `010-output-format.md`. It's about something that really
-  blocks what was instructed, and had no part in this.
-
-**If agents go back to guessing in silence at an unclear target, look first at "Name what you don't know",** before
+Whether agents go back to guessing in silence at an unclear target. Look first at "Name what you don't know", before
 adding a point.
