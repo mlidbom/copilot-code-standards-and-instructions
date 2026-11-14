@@ -12,6 +12,39 @@ This folder replaces CLAUDE.md. It's read by both humans and the agent; this fil
 *path-scoped* (note the `paths:` frontmatter above), so it loads only when you're actually touching a file
 under `.claude/rules/` — i.e. when editing the rules themselves — and costs nothing in a normal session.
 
+## Writing and changing a rule
+
+Every always-on rule is read in every session, by a model that follows what it reads closely. A rule that is a little
+wrong does its harm each time it applies, and the user only sees the result. So:
+
+- **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
+  the agent can't know or wouldn't choose by itself.
+- **Know which kind of rule it is,** since that decides how it's worded:
+  - **A hard limit:** breaking it does harm that can't be undone, such as driving the desktop from a background task.
+    Absolute wording belongs here, and only here.
+  - **A fact** the agent can't derive, about a tool, this machine or the project: stated plainly, with a date if it can
+    go stale.
+  - **The user's taste where it isn't the mainstream's,** such as no defensive coding: what he wants, and why.
+  - **A correction** of something an agent did wrong. This is the most suspect kind: it's written for one model's
+    failing, and outlives it. Check first whether another rule caused the failing.
+- **State the value and its reason once, in plain words,** the user's own where there are any. The reason is what lets
+  the agent apply the rule to cases the wording doesn't list. The incident behind it goes in the sidecar.
+- **Word it for every case it's meant for.** A rule worded for its incident, such as one that speaks only of classes and
+  namespaces, isn't recognised when the same thing happens in a document.
+- **Don't tell the agent to distrust its own judgment.** Say what the reader needs instead. Told that its own reading
+  doesn't count, the agent solves problems nobody has.
+- **When a rule misfires, look first for a sentence to remove,** in that rule or in the one that caused it. A rule that
+  corrects another rule is the last resort: the two then have to be weighed against each other in every session.
+- **Don't repeat a rule in other rules.** Link to it.
+- **When the model changes, go through the corrections again.** What it took to move an earlier model makes a later one
+  overdo it.
+- **Rules are discussed with the user before they're written or changed,** as code is. An agent that writes one unasked
+  writes it long, and for the case in front of it.
+
+The always-on rule `000-tell-me-when-a-rule-gets-in-the-way.md` is how a rule that does harm gets noticed. How this
+came about is in its sidecar, and in `fixing-bad-rules-worklist.txt` in the catalog's `rules` folder while that work
+lasts.
+
 ## What loads, and when
 
 - The native loader recursively discovers **`*.md` files only** under `.claude/rules/`. Non-`.md` files

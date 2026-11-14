@@ -9,9 +9,12 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
 
 ## How each step goes (Magnus, 2026-11-14)
 
-1. The agent makes the step's changes and leaves them uncommitted.
-2. Magnus reads the diff: "Looking at the git diff is much easier for me than reading your free text description."
-3. On his OK, the agent commits and pushes, before starting the next step.
+1. The agent makes the step's changes, leaves them unstaged, and prepares the commit message, as the user-level rule
+   `preparing-a-commit-for-magnus-to-make.md` says.
+2. Magnus reads the diff: "Looking at the git diff is much easier for me than reading your free text description." He
+   stages each file as he approves it, and commits in Git Extensions.
+3. When he says he has committed, the agent pushes the catalog with the push script, which records the new pin, and
+   starts the next step.
 
 ## What guides the changes
 
@@ -26,10 +29,11 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
 
 ## The steps
 
-1. **Naming: the deletions, and "a name means the fully qualified name".** *Changes made 2026-11-14, awaiting Magnus's
-   OK.*
-2. **How to write rules:** a page in `path-scoped/rules-folder.md`, and a pointer from the user-level rule on where to
-   store lessons learned, so that sessions adding rules meanwhile don't add patches of the old kind.
+1. **Naming: the deletions, and "a name means the fully qualified name".** *Done 2026-11-14, the catalog's commit
+   `1834507`.*
+2. **How to write rules:** the section "Writing and changing a rule" in `path-scoped/rules-folder.md`, and a pointer
+   from the user-level rule on where to store lessons learned, so that sessions adding rules meanwhile don't add patches
+   of the old kind. *Changes made 2026-11-14, awaiting Magnus's commit.*
 3. **Judgment:**
    - the code standards as defaults with reasons, a departure marked with a `//review:` comment, replacing the asking
      first of `020-when-to-break-the-rules.md`;
