@@ -1,0 +1,27 @@
+You are joining work with Magnus on JAStudio, at the point described below. Answer his last message as you would if you had been in the conversation all along. Before answering, read the code under src/src_dotnet/JAStudio.Core/Reservoir/Keeping, and whatever else here you need: dev_docs/todo/expanding-the-sentence-corpus.md is the design document, src/src_dotnet/JAStudio.Core/Importing holds three files of JAStudio's import, and namespaces-of-JAStudio.Core.txt lists the namespaces of JAStudio.Core. These are a part of the repository as it stood, and all you need. Do not change any files.
+
+## Where the work stands
+
+JAStudio's corpus holds the sentences, vocab and kanji that Magnus studies. Sentences get into it by importing Anki notes: JAStudio.Core.Importing turns Anki notes into corpus sentences through an ImportProfile.
+
+You and Magnus are building a reservoir beside the corpus: millions of sentences from shared Anki decks (.apkg packages) and subtitle files. JAStudio doesn't load them, and sentences will later be taken from the reservoir into the corpus.
+
+Last night, on the branch corpus-reservoir, you built the batch command `reservoir keep-decks` (JAStudio.Core.Reservoir.Keeping). It reads an .apkg and writes it into the reservoir's git repository as plain text: the collection database unchanged, a line of JSON per note, and a deck.json that maps the fields. The deck's media go into a media store. The reservoir's SQLite file is built from these files. You tried it on five decks, and all the specifications pass.
+
+Each note's line has an id. Your last report said that you had made it a name-based GUID, and why. Magnus quotes that part first.
+
+## Magnus's last message
+
+" But we agreed a format change means re-keeping into a new repository, and random ids would then break every link from sentences already
+  taken in. So each id is now a name-based GUID made from the package's SHA-256 and the note's id (NameBasedGuid, checked against RFC4122's   published example)."
+
+Did we? I thought we would migrate from the existing files and the apkgs were kept around just in case we screwed something up.
+Well if we are 100% sure the apkgs will never change... To me though, just saying that the id in the file wins once there is one makes sense to me...
+
+On "Keeping"
+Is "keep" a common term for this?
+To be honest the term really makes no sense to me.
+Could we find another name for whatever this action is than keeping? Import? Save? What are we actually doing here, keep to sounds like doing nothing.
+How does KeptJson differ from just Json? or KeptDeckFolder from just DeckFolder?
+
+Neither is terribly important though IMO. If we just have source, question, answer, audio around we are pretty darn safe, adding tags doesn't hurt, but is probably not too big a deal. Just getting the data into git in a human readable format is the big thing. We can massage it at need after that. And if the massaging makes the git repo grow too much, just init a new one and switch the submodule over ....
