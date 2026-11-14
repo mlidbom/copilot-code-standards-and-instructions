@@ -1,9 +1,9 @@
 # Provenance
 
-## What is behind "a word that two terms share is no reason to rename either of them"
+## What is behind the sentence on a word that is the last part of two fully qualified names
 
-An agent takes a word that two terms share for a collision, and renames one of them or asks which to rename. Twice in
-JAStudio:
+An agent takes a word that is part of two names for a collision, and renames one of them or asks which to rename.
+Twice in JAStudio:
 
 - **2026-11-11, in code** (Opus 5.5). It avoided "import", because the `Importing` namespace already used the word,
   and named the action "keep", then "archive". It also put the namespace's word in front of every type in a namespace.
@@ -21,7 +21,11 @@ JAStudio:
 | That morning's | 1 | 1 |
 | Without the sentence | 4 | 4 |
 | None at all | 2 | 2 |
-| With the sentence | 4 | 0 |
+| With the sentence as first worded | 7 | 0 |
+| With the sentence as it is now | 3 | 0 |
+
+The first wording was "A word that two terms share is no reason to rename either of them". The user found it confusing:
+nothing in these rules makes a term anything but a word. The present wording is his, in the rules' own words for names.
 
 ## What looks removable but isn't
 
