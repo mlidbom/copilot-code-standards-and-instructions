@@ -1,0 +1,55 @@
+# Fixing bad rules: the worklist
+
+Started 2026-11-14 in JAStudio, by Magnus and the session he named fix-bad-claude-rules. The shared rules were mostly
+written in Deskmancer, for the models of that time, and several now override the agent's judgment for the worse. Why,
+and the first cases, are in `universal/000-tell-me-when-a-rule-gets-in-the-way.rationale.txt` and
+`universal/code-standards/007-ubiquitous-language.rationale.txt`.
+
+This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. Delete it when the work is done.
+
+## How each step goes (Magnus, 2026-11-14)
+
+1. The agent makes the step's changes and leaves them uncommitted.
+2. Magnus reads the diff: "Looking at the git diff is much easier for me than reading your free text description."
+3. On his OK, the agent commits and pushes, before starting the next step.
+
+## What guides the changes
+
+- **Remove before adding.** When a rule misfires, find the sentence that caused it and cut or soften it. A rule that
+  corrects a rule comes last.
+- **Keep what states Magnus's taste where it isn't the mainstream's,** and what counters something the agent really does
+  otherwise. Cut what the agent's judgment gives anyway, and what tells it to distrust that judgment.
+- **Force is for hard limits:** irreversible harm, such as UI automation in the background and changing external
+  environments.
+- **Not starting to change code, rules or design documents without a clear instruction stays at full force.** Agents
+  lean toward acting.
+
+## The steps
+
+1. **Naming: the deletions, and "a name means the fully qualified name".** *Changes made 2026-11-14, awaiting Magnus's
+   OK.*
+2. **How to write rules:** a page in `path-scoped/rules-folder.md`, and a pointer from the user-level rule on where to
+   store lessons learned, so that sessions adding rules meanwhile don't add patches of the old kind.
+3. **Judgment:**
+   - the code standards as defaults with reasons, a departure marked with a `//review:` comment, replacing the asking
+     first of `020-when-to-break-the-rules.md`;
+   - "REFUSE to start work" in the collaboration rules settled against the user-level independence mandate.
+4. **The larger rewrites, one group at a time:**
+   - the five naming files (010 to 013, and 032) into one, in Magnus's words;
+   - what is calibrated for Deskmancer: the reader who doesn't know the domain (013), the doc-comment audience (060),
+     the `IntPtr` examples (050);
+   - the force of the taste rules: "BANNED", "king of all concerns", "you have already lost the thread";
+   - the Compze rule's "near the top", which made a headline of a small idea.
+5. **Size:** the user-level tooling rules, about 5,400 words always loaded, that could load on demand.
+
+## Testing a change, not yet tried
+
+Replaying a known failure, such as the add-on question, to fresh agents under the old and the new wording, and
+comparing.
+
+- **An agent started from a session gets the rules as they were when that session started,** not as they are on disk
+  (checked 2026-11-14). It listed the 56 rule files and quoted one verbatim, but didn't have a rule written earlier in
+  that session. Whether it sees an edit to a rule it does have isn't checked.
+- **So the old wording can be replayed from a session that predates the change, and the new wording needs a new
+  session,** such as `claude -p` run in the checkout. Not tried.
+- **Each such agent costs about 100,000 tokens to start,** rules and tools included.

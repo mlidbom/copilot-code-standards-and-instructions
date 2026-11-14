@@ -24,8 +24,6 @@ comments, tests, docs, and on screen, never a synonym. This file only ranks it: 
 
 ### Prefer the obvious term if it fits
 If there is a standard term that will almost certainly be understood intuitively in context, that is a strong signal in favor of using that over inventing something new.
-A word being in use elsewhere in the codebase is no reason to avoid it: the context tells the meanings apart (see
-[ubiquitous language](007-ubiquitous-language.md)).
 
 ## Traps. Never trade the above for these.
 

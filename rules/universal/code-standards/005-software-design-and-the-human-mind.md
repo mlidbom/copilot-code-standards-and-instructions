@@ -11,6 +11,8 @@ Because of various limitations of the human mind, in order to be able to effecti
 * Deep hierarchies of namespaces that make the context and grouping of abstractions clear
 * [Long descriptive names](013-name-for-the-human-who-must-look-it-up.md) that make meaning clear without knowing the details
 
+In these standards, a name means the fully qualified name: a type's with its namespace, a member's with its type.
+
 These and the other instructions here are about writing code that allows a human to enter a ubiquitous language into long term memory, 
 enabling them to understand, maintain, and change large complex code bases.
 

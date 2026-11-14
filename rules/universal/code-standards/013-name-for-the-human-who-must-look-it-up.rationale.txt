@@ -32,3 +32,12 @@ prefixing every type in a format namespace (`Archiving.Format.ArchivedNoteLine` 
 `strName` again. So the rule now excepts a qualifier the name's own context gives, and 032-naming says a type doesn't
 repeat its namespace. The `GlobalHotkeys` case stands: there, "global" was in no context the reader saw, only implied by
 the word "hotkey" to the agent. See 007-ubiquitous-language.rationale.txt for the whole episode.
+
+## Amended 2026-11-14 (JAStudio): the pushes toward ever more qualifiers taken out
+
+Removed: "Deliberately over-correct toward the explicit, unambiguous name; do not trust the green light your own
+understanding gives"; "Carry the disambiguating qualifier even when it feels redundant to you", with the exception of
+2026-11-11; "rather than collapsing them because you can tell which is meant from context"; and "alone" and "on its own".
+They had the agent treat any word shared between two terms as an ambiguity to remove, for an imagined reader, whatever
+its own reading said. The `GlobalHotkeys` case above stands as history: what remains of the rule, a name as long as it
+must be to be understood with no lookup, covers it. See 007-ubiquitous-language.rationale.txt for the whole episode.

@@ -20,10 +20,6 @@ implies something untrue is not polish — it is a fatal design error: a `User` 
 holding a user's registration details is `UserRegistrationData`, or `Users.RegistrationData`, never `User`. A
 documentation comment briefly explains what the abstraction is.
 
-A type doesn't repeat its namespace: `Reservoir.Storage.NoteLine`, not `Reservoir.Storage.StoredNoteLine`. A
-prefix or suffix that every type in a namespace shares is Hungarian notation for the namespace, as `strName` is for
-the type.
-
 The name you choose becomes the concept's word in the project's [ubiquitous language](007-ubiquitous-language.md) (DDD):
 write that *same* word everywhere the concept appears — comments, tests, docs, user-facing text — never a synonym.
 
