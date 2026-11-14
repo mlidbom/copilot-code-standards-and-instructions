@@ -21,11 +21,12 @@ searchable you could add it after the : //review-naming:matching:". The agent fi
 should be in rules, not a memory I figure." Rider's `review:` pattern requires the colon right after "review", so it
 doesn't list these: Rider needs a pattern for the tag, such as `(?<=\W|^)(?<TAG>REVIEW-NAMING:)(.*)`.
 
-Where the patterns are (read from the files, 2026-11-14): Magnus's own are at user level, in Rider's settings for this
-computer (`%APPDATA%\JetBrains\Rider<version>\resharper-host\GlobalSettingsStorage.DotSettings`), so one pattern added
-there covers every solution. Some solutions' settings files (`JAStudio.slnx.DotSettings`,
-`CompzeResharperSettings.DotSettings`) also carry an older copy of his patterns. The agent first wrote that each solution
-needs the pattern, having read only the solution's file.
+Where the patterns are: Magnus keeps his in one settings file of his own, which covers every solution and every Rider
+version on his machine (2026-11-14: "I want all of them in the shared\vAny settings file"); a user-level rule there says
+which file and how to add to it. A solution's settings override the user's, so a copy of the patterns in a solution's
+`.DotSettings` hides later changes to his own: JAStudio's had one until that day, and Compze's
+`CompzeResharperSettings.DotSettings` still did. The agent first wrote that each solution needs the pattern, having read
+only the solution's file.
 
 `todo:compze:` was added 2026-11-10 with the rule "Compze is our code" (`../004-compze-is-our-code.md`); its sidecar
 says why.
