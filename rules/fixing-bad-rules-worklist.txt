@@ -70,6 +70,7 @@ The add-on question was replayed in fresh sessions, with `rule-testing/replay-a-
 to do it is in `path-scoped/rules-folder.md`, and the results are in the sidecar of the rule on the ubiquitous language.
 
 - **The removals of step 1 had not fixed the naming failure.** With no shared rules at all, the model still gave a
-  shared word as a reason to rename. One sentence in the rule on the ubiquitous language stopped it.
+  shared word as a reason to rename. A section of its own in the rule on the ubiquitous language stopped it. A sentence
+  inside a paragraph did not, though a flawed test first said it did: the sidecar has both.
 - **So step 1 rested on a wrong account:** the agent had said it wouldn't avoid a shared word without the rules.
   Nothing else done in this work was tested this way.

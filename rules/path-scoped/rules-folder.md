@@ -64,6 +64,10 @@ versions of the catalog's rules, and prints what each fresh session answered on 
   one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules.
 - **Read what the answers say.** The script shows the passages; whether the failing happened is yours to judge. A
   difference of one answer shows nothing.
+- **A session sees the name of the folder it runs in.** Folders named after what was tested, such as
+  `with-the-sentence`, once made a sentence look as if it worked, ten answers of ten. The script gives the folders
+  plain names. Do the same when replaying by hand.
+- **Run the control at the same time as the change,** not from memory of an earlier run.
 - **Keep the replay** when the case may come back. It is the rule's test.
 
 ## What loads, and when

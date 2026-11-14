@@ -1,6 +1,6 @@
 # Provenance
 
-## What is behind the sentence on a word that is the last part of two fully qualified names
+## What is behind the section "A word that two names share is not a collision"
 
 An agent takes a word that is part of two names for a collision, and renames one of them or asks which to rename.
 Twice in JAStudio:
@@ -18,19 +18,19 @@ Twice in JAStudio:
 
 | The shared rules | Answers | Gave the shared word as a reason to rename |
 |---|---|---|
-| That morning's | 1 | 1 |
-| Without the sentence | 4 | 4 |
 | None at all | 2 | 2 |
-| With the sentence as first worded | 7 | 0 |
-| With the sentence as it is now | 3 | 0 |
-
-The first wording was "A word that two terms share is no reason to rename either of them". The user found it confusing:
-nothing in these rules makes a term anything but a word. The present wording is his, in the rules' own words for names.
+| With nothing on the matter | 3 | 3 |
+| With a sentence on it inside the paragraph, in three wordings | 13 | 13 |
+| With the section | 7 | 0 |
 
 ## What looks removable but isn't
 
-**The sentence, and its "in documents and in conversation as much as in code".** The corrections of 2026-11-11 said
-nearly the same for code only ("in use elsewhere in the codebase"), and didn't hold in prose three days later.
+- **The heading of its own.** Said as a sentence inside the paragraph above it, the same thing changed nothing: "A word
+  that two terms share is no reason to rename either of them", nor with "a word that is the last part of", or "part
+  of", "two different fully qualified names".
+- **"And don't propose to", and "in code, in documents or in conversation".** The corrections of 2026-11-11 spoke of
+  code only ("in use elsewhere in the codebase"), and didn't hold in prose three days later.
+- **The examples are not the replay's own.** With "add-on" as the example, the replay would test nothing.
 
 ## Tried and rejected
 
@@ -41,7 +41,12 @@ nearly the same for code only ("in use elsewhere in the codebase"), and didn't h
   where repeating it helped.
 - **Removing only.** Asked on 2026-11-14 whether it would avoid a shared word with no rules at all, the agent said
   no, and those corrections were removed with nothing put in their place. The replays showed that account to be wrong.
+- **The sentence inside the paragraph,** committed twice that day on a flawed test: 10 answers of 10 had seemed to
+  show it working. Those sessions ran in folders named after what was tested, such as `with-the-sentence`, and a
+  session is told its working directory. In folders with plain names the sentence did nothing.
 
 ## Not tested
 
-Whether the sentence holds in code. Every replay was of the design discussion.
+- **Whether the section holds in code.** Every replay was of the design discussion.
+- **Two of the seven answers still preferred "studying integration"**, for another reason: that Anki isn't added on to
+  JAStudio. That is a view on whether the name tells the truth, which the naming rule asks for.
