@@ -22,8 +22,7 @@ This is not a rule, and it isn't loaded: a `.txt` outside the linked folders. De
   corrects a rule comes last.
 - **Keep what states Magnus's taste where it isn't the mainstream's,** and what counters something the agent really does
   otherwise. Cut what the agent's judgment gives anyway, and what tells it to distrust that judgment.
-- **Force is for hard limits:** irreversible harm, such as UI automation in the background and changing external
-  environments.
+- **Force is for hard limits:** irreversible harm, such as changing external environments without approval.
 - **Not starting to change code, rules or design documents without a clear instruction stays at full force.** Agents
   lean toward acting.
 

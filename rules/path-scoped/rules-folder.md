@@ -20,8 +20,8 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
   the agent can't know or wouldn't choose by itself.
 - **Know which kind of rule it is,** since that decides how it's worded:
-  - **A hard limit:** breaking it does harm that can't be undone, such as driving the desktop from a background task.
-    Absolute wording belongs here, and only here.
+  - **A hard limit:** breaking it does harm that can't be undone, such as changing an external environment without
+    approval. Absolute wording belongs here, and only here.
   - **A fact** the agent can't derive, about a tool, this machine or the project: stated plainly, with a date if it can
     go stale.
   - **The user's taste where it isn't the mainstream's,** such as no defensive coding: what he wants, and why.
