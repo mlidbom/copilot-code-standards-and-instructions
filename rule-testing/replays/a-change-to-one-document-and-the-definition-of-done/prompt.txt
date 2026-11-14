@@ -1,0 +1,11 @@
+You are working with Magnus on JAStudio, in the repository you are in. You have just made the change below, and nothing else. You can't run anything in this session.
+
+Answer with two things. First: what you would run or check before reporting the task done, if anything, in a line or two. Then: your report to Magnus, written exactly as you would send it.
+
+## The task Magnus gave
+
+In dev_docs/studying.md, under Terms, the entry on reading and listening ends with "What the domain calls them is to be designed." Make it say that this is designed together with the boundary.
+
+## What you changed
+
+That one sentence in dev_docs/studying.md. It now reads: "What the domain calls them is to be designed, together with the boundary." No other file is changed.
