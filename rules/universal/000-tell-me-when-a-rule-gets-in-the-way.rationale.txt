@@ -56,7 +56,36 @@ that left the build and the tests out without the heading:
 
 - That a rule which guards an approval or the user's data is still followed when following it costs something. No
   replay tempts that.
-- How often the heading now comes up in ordinary work. In six answers to an unrelated design question it didn't.
+- How often the heading now comes up in ordinary work. In six answers to an unrelated design question it didn't. In
+  the replay of a rule that names a way, added 2026-11-15, it does: see below.
+
+## Tested, 2026-11-15: two rewordings of the paragraph on a rule judged not to apply
+
+The user found the heading coming up too often. Claude Fable 5.2 had raised it for renaming by script, where a rule
+names the refactoring tools for renames and rules out nothing
+(`rule-testing/replays/a-rule-that-names-a-way-when-another-works-better`). The user: "does it say you are forbidden to
+do things another way when that works better?", and: "If you just naturally don't think the rule applies, that does not
+feel to me like getting in the way".
+
+Two rewordings were replayed against the rule as it is, on that replay and on the one of the Definition of Done:
+
+| The rule | Opus 5.5: the build left out, without the heading | Claude Fable 5.2: the heading, for the script |
+|---|---|---|
+| As it is | 1 of 4 | 2 of 2 |
+| The paragraph replaced by a test of cost | 4 of 4 | 2 of 2 |
+| The paragraph kept, with a sentence after it on a rule that names a way | 3 of 4 | 0 of 2 |
+
+- **The test of cost,** which the user had approved before it was replayed: "It has got in the way when following it
+  costs something that buys nothing, whether you pay that cost or break the rule to avoid paying it. A rule you read as
+  not meant for the case at hand, at no cost, hasn't: do the work, and mention what you did among the calls you made."
+  It fails both ways. Opus 5.5 reads the Definition of Done as not meant for a document, and says nothing. And by cost
+  the script is a rule broken to save 25 calls, so Fable still raises the heading.
+- **The sentence on a rule that names a way:** "A rule that names a way of doing something without ruling out others
+  hasn't got in the way when another way works better: do the work, and mention what you did among the calls you made."
+  It stops Fable's heading, and undoes for Opus 5.5 what the paragraph before it does.
+- **Neither went into the rule.** What would hold for both models is not found yet. The two replays are its test: one
+  fails when the heading is missing, the other when it is there.
+- Fable's column has two answers for each wording: six of its twelve sessions hadn't answered after twenty minutes.
 
 ## What it doesn't catch
 
