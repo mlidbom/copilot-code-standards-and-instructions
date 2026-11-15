@@ -10,7 +10,9 @@ shared rules: so that a change to a rule is tested before it is committed, and a
 
 A replay folder holds:
     prompt.txt              what each fresh session is asked: the situation as it stood, and the user's message.
-    documents/              optional: the files the prompt has the session read, at the paths the prompt names.
+    documents/              optional: the files the prompt has the session read, at the paths the prompt names. They
+                            are copied in last, so a replay can also hold one of the consuming repository's own rules
+                            as it was, at its path under .claude/rules.
     the-failing.md          optional: what counts as the failing, and what doesn't. With it, each answer is judged
                             by a fresh session of its own, and the script counts the failings for each arm.
     passages-to-show.txt    optional: a regular expression. Without the-failing.md, only the passages of each answer
@@ -252,12 +254,14 @@ def consuming_repository() -> Path | None:
 
 
 def build_the_folder_a_session_runs_in(folder: Path, arm: Arm, replay: Path, repository: Path | None) -> None:
+    folder.mkdir(parents=True)
+    put_the_rules_in(folder, arm, repository)
     documents = replay / "documents"
     if documents.is_dir():
-        shutil.copytree(documents, folder)
-    else:
-        folder.mkdir(parents=True)
+        shutil.copytree(documents, folder, dirs_exist_ok=True)
 
+
+def put_the_rules_in(folder: Path, arm: Arm, repository: Path | None) -> None:
     if repository is None or not (repository / ".claude").is_dir():
         arm.puts_what_the_catalog_has_at(PurePosixPath("rules/universal"), folder / ".claude" / "rules" / "01-universal-shared")
         return
