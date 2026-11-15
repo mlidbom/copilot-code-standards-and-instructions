@@ -56,8 +56,7 @@ wrong does its harm each time it applies, and the user only sees the result. So:
   writes it long, and for the case in front of it.
 
 The always-on rule `000-tell-me-when-a-rule-gets-in-the-way.md` is how a rule that does harm gets noticed. How this
-came about is in its sidecar, and in `fixing-bad-rules-worklist.txt` in the catalog's `rules` folder while that work
-lasts.
+came about is in its sidecar.
 
 ## Testing a change to a rule: replay the case in fresh sessions
 
