@@ -16,15 +16,37 @@ The rule's two examples are the shapes of the exceptions approved under the old 
   `SemaphoreSlim` in `FramedConnectionPool`, with a comment only. Both against the standard on locking.
 - **JAStudio:** `InternalsVisibleTo` for the specification projects, with a document.
 
+## The approved form, 2026-11-15
+
+`rationale:violation-approved:` replaced a plain `//rationale:` comment, on the user's proposal in the .NET
+Analysis&Refactoring MCP, while a rule of Compze's didn't fit a plugin that can't reference Compze: "Rather than try to
+make every rule understand unusual edge cases, we document that these comments override any rule, and are never added
+without human approval." The approver is named as the `todo:` comments name the decider ("Magnus", not his GitHub
+handle), and the date follows.
+
+- **No project-wide form.** An approval for a whole project or folder, in a rule or a document, would reach agents
+  but not a human reading the code. When many places break a rule for one reason, move the violation into one place
+  first: the plugin's 39 raw locks became one type that holds the only raw lock, and the approval went on that type.
+- **The doc-comment placement** is for an exception that is the whole member or type, as that type is: hovering any use
+  shows the approval. The rule on tagged comments allows the same placement.
+- **The locking rule's stop stays.** It has the agent stop and tell the user instead of making the exception itself.
+  The user's approval after that stop takes this form.
+
+Approved exceptions written before, as `//rationale:` comments: three in Compze (raw `Monitor`s, and a wait that must
+hold no thread) and one in Deskmancer, to convert in their own repositories. `//rationale:` without the suffix stays for
+a design rationale that breaks no rule.
+
 ## What looks removable but isn't
 
 - **"Not for a standard you would simply have written differently".** Without it, "defaults" lets back in what the
   standards are there to keep out: short names, defensive checks, no extraction until something is reused.
-- **The `//rationale:` comment.** A `review:` comment is an item to resolve. Once it's resolved, the reason has to stay
-  at the code, or the next agent corrects the exception.
+- **The approved comment.** A `review:` comment is an item to resolve. Once it's resolved, the reason has to stay at
+  the code, or the next agent corrects the exception.
 
 ## Not tested
 
+- **Whether an agent writes `rationale:violation-approved:` without the user's approval,** or takes an approval for
+  more code than it was given for. No replay has such a case.
 - **Whether agents now make exceptions too readily.** Look first at the word "defaults".
 - **An exception also raises `### A RULE GOT IN THE WAY ###`,** as the two rules are worded. Left so: exceptions are
   rare, and the heading tells the user that a standard didn't fit.

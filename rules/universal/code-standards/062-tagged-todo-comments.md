@@ -27,12 +27,16 @@ them in its TODO window (Rider: Settings > Editor > TODO; they're in the user's 
 - `review-naming:` a review comment that is only about the name of something: a name you chose or changed on your own, or
   a name you doubt, for the user's pass over the names. An area may follow it, to make such comments searchable, such as
   `review-naming:matching:`. The `review:` pattern doesn't match it, so the IDE needs a TODO pattern of its own for it.
+- `rationale:violation-approved:` an exception to a rule that the user approved, written only on his approval: see
+  [when to break the rules](020-when-to-break-the-rules.md).
 
 The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user's to use.
 
 ## Writing one
 
 - Put it on the line before the code it concerns, inside the member, as for any inline comment; never on a member or a type.
+  When what it concerns is the whole member or type, such as a type to be replaced, it goes in that member's or type's
+  doc comment instead, where hovering any use shows it.
 - Write it for someone who doesn't know the context: what is wrong or to be done, and why, in the project's ubiquitous
   language. Name the other code involved, such as the duplicate.
 - One item per comment. Indented lines that follow it are part of the same item, for the IDE too.

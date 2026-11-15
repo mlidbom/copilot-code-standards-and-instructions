@@ -9,9 +9,17 @@ needs.
 An exception is not for a standard you would simply have written differently: most of them say what the user wants
 where that isn't what most code does.
 
-When the user has approved an exception:
+When the user has approved an exception, its comment becomes a `rationale:violation-approved:` comment, which stays:
 
-- **Its comment becomes a `//rationale:` comment,** which stays: it tells the next reader that the code is this way on
-  purpose, and why.
+```csharp
+//rationale:violation-approved:Magnus-2026-11-15: a raw lock, because the plugin can't reference Compze.Threading.
+```
+
+- **It overrides the rules for the code it's on:** whoever reads or changes that code next, human or agent, leaves the
+  exception alone, and no review or inspection pass reopens it.
+- **Only the user's approval writes one,** naming him and the date. An agent never writes it on its own, nor turns its
+  own `//review:` into one.
+- **At the code it concerns:** on the line before it, inside the member. When the whole member or type is the
+  exception, in that member's or type's doc comment instead, where hovering any use of it shows the approval.
 - **What the comment can't hold,** such as an exception wider than one place in the code, or reasoning too long for a
   comment, goes in a document under `dev_docs/code_standard_exceptions`, which the comment points to.

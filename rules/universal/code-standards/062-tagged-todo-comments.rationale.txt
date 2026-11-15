@@ -30,3 +30,9 @@ only the solution's file.
 
 `todo:compze:` was added 2026-11-10 with the rule "Compze is our code" (`../004-compze-is-our-code.md`); its sidecar
 says why.
+
+`rationale:violation-approved:` and the doc-comment placement were added 2026-11-15 (Magnus, in the .NET
+Analysis&Refactoring MCP) with the approved form in the rule on when to break the rules, whose sidecar says why. The
+placement came from that day's first use: a type that holds the plugin's only raw lock, where the approval and the
+`todo:` to replace the type concern the whole type, and the doc comment is what hovering a use of it shows. Not
+checked: whether Rider's TODO window lists a tag inside a `///` comment.
