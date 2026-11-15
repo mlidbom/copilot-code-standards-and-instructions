@@ -1,36 +1,43 @@
 ---
 name: jetbrains-inspect
 description: >-
-  Headless JetBrains code inspections for findings the IDE MCP can't give you: the sub-warning tier
-  (suggestions / style hints like "use var", "can be made static"), whole-solution scans, no-IDE / CI runs,
-  and non-.NET languages. FIRST check the fast path — for .NET errors + warnings on specific files, use the
-  Rider MCP directly (`lint_files` or `get_file_problems errorsOnly:false`, Rider 2026.2+); it's live and
-  needs no temp files, so don't reach for this slower tool just for warnings. Use this skill when you need
-  severities BELOW warning, the whole solution at once, no running IDE, or a non-.NET language (Python /
-  JS-TS / Java-Kotlin / Go / SQL via that IDE's `inspect` CLI; .NET via `jb inspectcode`). Not for:
-  navigation or refactor/build (use the code-intelligence MCPs).
+  Headless JetBrains code inspections, for when no live IDE can run them: no Rider open (a cloud session,
+  CI, a machine without the MCP), or a non-.NET language (Python / JS-TS / Java-Kotlin / Go / SQL via that
+  IDE's `inspect` CLI; .NET via `jb inspectcode`). FIRST check the live route: with Rider open and the
+  dotnet-analysis-and-refactoring MCP connected, `inspect_code` inspects files, folders, projects or the whole
+  solution in seconds, at any severity down to hint, and `get_diagnostics` (`minSeverity: 'hint'`) checks one
+  file; don't reach for this slower tool then. Not for: navigation or refactor/build (use the
+  code-intelligence MCPs).
 ---
 
 # JetBrains code inspection (headless, all severities)
 
 ## First — do you even need this?
 
-**.NET errors + warnings on specific files are faster from the Rider MCP** — live from the IDE, no temp
-files, no solution load:
-- `lint_files` (batch; `min_severity: warning`) or `get_file_problems` (`errorsOnly: false`).
-- Requires Rider **2026.2+** (the EAP added the warning tier). On 2026.1.x `get_file_problems` is
-  errors-only and `lint_files` doesn't exist — then you do need `jb inspectcode` below for warnings.
+**With Rider open and the `dotnet-analysis-and-refactoring` MCP connected, .NET needs no headless run.** It
+inspects against Rider's live model, with no temp files and no solution load:
+- `inspect_code`: files, folders, project files, or the whole solution (pass none), with `minSeverity`
+  `error` / `warning` / `suggestion` / `hint` and `inspectionIds` to filter. A whole solution takes seconds.
+  The solution-wide inspections, such as `UnusedMember.Global`, are in when Rider's solution-wide analysis is
+  on and complete; the answer says whether it was.
+- `get_diagnostics`: one file, always fresh from the daemon, and whether each finding has a quick-fix. Pass
+  `minSeverity: 'hint'` for the lowest tier.
+- After a change of settings, such as a new `.editorconfig`, `inspect_code` can miss the new findings until
+  solution-wide analysis catches up; `get_diagnostics` has them. The companion
+  `run-and-fix-resharper-inspections` skill says what that does to fixing.
+- Without that MCP, the built-in Rider MCP's `lint_files` or `get_file_problems` (`errorsOnly: false`) give
+  errors and warnings on specific files (Rider 2026.2+).
 
-**Reach for this skill only when the MCP can't cover it:**
-- **Suggestions / style hints** — the tier *below* warning ("use var", "can be made static", naming
-  conventions, redundancies). The MCP floors at warning; `jb inspectcode` reaches `SUGGESTION` / `HINT`.
-- **Whole-solution** sweeps, a **no-running-IDE / CI** run, or a **non-.NET language**.
+**Reach for this skill when no live route covers it:**
+- **No Rider running:** a cloud session, CI, or a machine without the MCP.
+- **A non-.NET language.**
+- **A check of the live answers against the headless engine,** as when developing that MCP.
 
 ## Engines (by language)
 
 | Language(s) | Engine | Tool |
 |---|---|---|
-| C# / VB / .NET | ReSharper | `jb inspectcode` (ReSharper Global Tools) — *but prefer the Rider MCP for errors+warnings* |
+| C# / VB / .NET | ReSharper | `jb inspectcode` (ReSharper Global Tools) — *but prefer `inspect_code` when Rider is open* |
 | Python, JS/TS, Java/Kotlin, Go, PHP, SQL, … | IntelliJ-platform | `<IDE>\bin\inspect.bat` |
 
 `jb inspectcode` is .NET-only. Severity coverage is governed by the inspection profile (`.editorconfig` /
@@ -49,10 +56,9 @@ SQL→DataGrip, .NET→Rider.
 
 ---
 
-## Engine A — .NET via `jb inspectcode`  (suggestions/hints, whole-solution, CI)
+## Engine A — .NET via `jb inspectcode`  (no Rider: cloud, CI)
 
-For errors+warnings prefer the Rider MCP (above). Use this for the **sub-warning tier**, **whole-solution**,
-or **no-IDE** runs.
+With Rider open, prefer `inspect_code` (above). Use this when no Rider runs.
 
 ```powershell
 $sln = "<repo>\Your.slnx"           # *.slnx / *.sln (skip legacy/sample solutions)

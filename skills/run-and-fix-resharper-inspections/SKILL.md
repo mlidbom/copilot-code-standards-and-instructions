@@ -1,37 +1,56 @@
 ---
 name: run-and-fix-resharper-inspections
 description: >-
-  Run a headless ReSharper inspection pass (jb inspectcode) over a .NET solution and systematically
-  correct the findings: parse the SARIF output, scope to one inspection type at a time, fix in
-  build-gated batches grouped by file, dodge the known traps (override chains, Newtonsoft silently
-  losing data on internal getters, making the wrong overload private), then build + full test suite
-  and re-run to confirm zero. Use for whole-solution inspection sweeps and systematic cleanup
-  campaigns — "fix all MemberCanBeInternal", "clean up inspection warnings", severities below
-  warning, or when no IDE is running. Not for targeted per-file diagnostics — a live
-  ReSharper-backed MCP (get_diagnostics / lint_files) is faster when one is available.
+  Run a ReSharper inspection campaign over a .NET solution and systematically correct the findings: find
+  them one inspection id at a time, fix in build-gated batches, dodge the known traps (override chains,
+  Newtonsoft silently losing data on internal getters, making the wrong overload private), then build +
+  full test suite and re-run to confirm zero. With Rider open and the dotnet-analysis-and-refactoring MCP
+  connected it runs live: `inspect_code` finds, `apply_suggestions` fixes at file, folder, project or
+  solution scope. Without Rider (a cloud session, CI), headless `jb inspectcode`. Use for whole-solution
+  sweeps and systematic cleanup campaigns — "fix all MemberCanBeInternal", "clean up inspection warnings",
+  severities below warning. Not for one file's diagnostics: `get_diagnostics` answers that directly.
 ---
 
 # Run and fix ReSharper inspections
 
 ## Prerequisites
 
-- JetBrains CLI tools (`jb`) must be on PATH
+- Rider open with the solution loaded and the `dotnet-analysis-and-refactoring` MCP connected; or, without
+  them, the JetBrains CLI tools (`jb`) on PATH
 - The solution must build cleanly before running inspections
 
 ## The campaign loop
 
 1. **Build** the solution to confirm it's clean
 2. **Run** the inspection
-3. **Parse** the output, filtered to ONE inspection type
+3. **Read** the findings, filtered to ONE inspection id
 4. **Fix** all reported issues (see "Correcting issues" below)
 5. **Build** to catch compile errors from incorrect changes
 6. **Test** (full suite) to catch runtime/serialization issues the compiler can't see
 7. **Re-run** the inspection to confirm the count dropped to zero (or to the expected suppression count)
 
-**Always work one inspection `ruleId` at a time.** Mixing inspection types in one pass makes it hard to
+**Always work one inspection id at a time.** Mixing inspection types in one pass makes it hard to
 apply fixes systematically and verify correctness.
 
-## Running an inspection
+## Finding and fixing live (Rider open)
+
+1. **Find:** `inspect_code` with no files for the whole solution (or folders, project files), `minSeverity`
+   down to `hint`, and `inspectionIds: ['MemberCanBeInternal']` for one at a time. It prints the count per
+   inspection, then `line:column severity id: message` lines per file. A whole solution takes seconds.
+2. **Fix what has a quick-fix:** `apply_suggestions` with `inspectionIds`, a `filePath` that has an
+   occurrence, and `scope` `file`, `folder`, `project` or `solution`, as Rider's Fix in solution does.
+   `dryRun: true` previews. The answer says how many files each fix changed: check it against `git status`.
+   The traps below hold for these fixes too: the build catches a broken override chain, only the tests catch
+   lost serialization. What has no headless fix, or needs judgment, you edit by hand.
+3. **Format** what the fixes touched, if they left it unformatted: `format_file`.
+
+**Trap: solution-wide analysis lags a change of settings,** such as a new `.editorconfig` (verified
+2026-11-15). Until it catches up, `inspect_code` misses the new findings, and a fix at a wider scope skips
+every file the stored results show clean (Rider's setting `MakeUseOfSolutionAnalysisResultsInScopedIntentions`),
+so it changes nothing; its answer says so. Then fix at file scope, with the files in `filePaths`.
+`get_diagnostics` is always fresh, to check a file.
+
+## Running it headless (no Rider)
 
 ```powershell
 jb inspectcode <path-to-your-solution> `
@@ -50,7 +69,7 @@ Deeper engine detail — flag gotchas (values need `=`, `--no-build`, `--project
 parsing, the live-MCP fast path, and non-.NET engines — lives in the companion `jetbrains-inspect` skill
 (same catalog; linked as `shared-jetbrains-inspect` in consuming repos).
 
-## Parsing the output
+## Parsing the headless output
 
 ```powershell
 $sarif = Get-Content inspection-results.sarif -Raw | ConvertFrom-Json
