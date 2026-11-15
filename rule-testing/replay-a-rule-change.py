@@ -5,6 +5,7 @@ shared rules: so that a change to a rule is tested before it is committed, and a
         [--arm <name>=<rules>]...   default: committed=HEAD and working-tree=working-tree
         [--runs <how many for each arm>]   default: 2
         [--model <model>] [--judge-model <model>] [--tools <allowed tools>] [--keep-in <folder>]
+        [--timeout-minutes <minutes>]   default: 20, for all the sessions together, and again for the judging
         [--judge <results folder>]   judge the answers already there, and run no sessions
         [--show <regular expression>]
 
@@ -37,6 +38,10 @@ is named after the consuming repository, under a temporary folder with a random 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
 sessions get read-only tools and no MCP servers, and Claude Code keeps no transcript of them. The whole answers are kept
 in the results folder: read some of them beside the judge's verdicts, since the judge is a model too.
+
+The sessions of a run all start at once, and each is reported, and its answer written to the results folder, as it
+finishes. They share one deadline: the sessions still running when it passes are stopped, and reported as having given
+no answer. So a run never takes longer than its timeout, and its timeout once more for the judging.
 """
 from __future__ import annotations
 
@@ -49,7 +54,9 @@ import subprocess
 import sys
 import tarfile
 import tempfile
-from dataclasses import dataclass
+import time
+from collections.abc import Iterator
+from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
 CATALOG = Path(__file__).resolve().parent.parent
@@ -110,6 +117,7 @@ class FreshSession:
     name: str
     result_file: Path
     process: subprocess.Popen
+    started_at: float = field(default_factory=time.monotonic)
 
     @staticmethod
     def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str | None) -> FreshSession:
@@ -125,17 +133,48 @@ class FreshSession:
             process = subprocess.Popen(command, cwd=runs_in, stdin=the_prompt, stdout=the_result, stderr=its_errors)
         return FreshSession(name, result_file, process)
 
-    def result(self, timeout_minutes: int) -> dict | None:
-        """What the session returned, or None when it gave no answer."""
-        try:
-            self.process.wait(timeout=timeout_minutes * 60)
-        except subprocess.TimeoutExpired:
-            self.process.kill()
+    @property
+    def has_finished(self) -> bool:
+        return self.process.poll() is not None
+
+    @property
+    def time_taken(self) -> str:
+        seconds = int(time.monotonic() - self.started_at)
+        return f"{seconds // 60} min {seconds % 60} s" if seconds >= 60 else f"{seconds} s"
+
+    def stop(self) -> None:
+        self.process.kill()
+        self.process.wait()
+
+    def result(self) -> dict | None:
+        """What the session returned, once it has finished or was stopped, or None when it gave no answer."""
         try:
             result = json.loads(self.result_file.read_text(encoding="utf-8"))
             return result if "result" in result else None
         except (ValueError, OSError):
             return None
+
+
+def results_as_they_come(sessions: list[FreshSession], timeout_minutes: int) -> Iterator[tuple[FreshSession, dict | None]]:
+    """Each session with what it returned, or None when it gave no answer, in the order the sessions finish.
+
+    The sessions share one deadline, counted from now: those still running when it passes are stopped, and gave no answer.
+    """
+    deadline = time.monotonic() + timeout_minutes * 60
+    still_running = list(sessions)
+    while still_running:
+        finished = [session for session in still_running if session.has_finished]
+        if not finished and time.monotonic() < deadline:
+            time.sleep(1)
+            continue
+        if not finished:
+            print(f"   The {timeout_minutes} minutes are up: stopping the {len(still_running)} sessions still running.")
+            finished = list(still_running)
+            for session in finished:
+                session.stop()
+        for session in finished:
+            still_running.remove(session)
+            yield session, session.result()
 
 
 @dataclass
@@ -191,14 +230,15 @@ def main() -> None:
             name = f"{arm.name}-{number}"
             sessions.append(FreshSession.started(name, prompt, folder, results / f"{name}.json", arguments.model, arguments.tools))
 
-    answers: dict[str, str] = {}
-    for session in sessions:
-        result = session.result(arguments.timeout_minutes)
+    answer_of_each: dict[str, str] = {}
+    for session, result in results_as_they_come(sessions, arguments.timeout_minutes):
         if result is None:
-            print(f"   {session.name} gave no answer: see {session.result_file} and the errors file beside it")
+            print(f"   {session.name} gave no answer in {session.time_taken}: see {session.result_file} and the errors file beside it")
             continue
-        answers[session.name] = result["result"]
+        answer_of_each[session.name] = result["result"]
         (results / f"{session.name}.md").write_text(result["result"], encoding="utf-8")
+        print(f"   {session.name} answered after {session.time_taken}")
+    answers = {session.name: answer_of_each[session.name] for session in sessions if session.name in answer_of_each}
     for folder in where_each_arm_ran.values():
         remove_the_empty_folder_claude_code_made_for(folder)
 
@@ -223,7 +263,7 @@ def parsed_arguments() -> argparse.Namespace:
     parser.add_argument("--judge", metavar="FOLDER", help="judge the answers (*.md) already in that results folder, and run no sessions")
     parser.add_argument("--show", metavar="REGEX", help="without the-failing.md: print only the passages of each answer that match")
     parser.add_argument("--keep-in", metavar="FOLDER", help="where the results go, instead of a new temporary folder")
-    parser.add_argument("--timeout-minutes", type=int, default=20)
+    parser.add_argument("--timeout-minutes", type=int, default=20, help="how long all the sessions together may take, and then the judging")
     return parser.parse_args()
 
 
@@ -292,13 +332,15 @@ def copy_the_rules(source: Path, destination: Path, arm: Arm) -> None:
 def print_the_verdicts(answers: dict[str, str], the_failing: str, arguments: argparse.Namespace) -> None:
     """Has a fresh session judge each answer against the description of the failing, and prints the count for each arm."""
     judgings = [started_judging(name, answer, the_failing, arguments) for name, answer in answers.items()]
-    failings_of_each_arm: dict[str, list[bool | None]] = {}
+    verdict_on_each: dict[str, Verdict] = {}
     print()
-    for judging in judgings:
-        result = judging.result(arguments.timeout_minutes)
+    for judging, result in results_as_they_come(judgings, arguments.timeout_minutes):
         verdict = Verdict.parsed_from(result["result"] if result else None)
-        failings_of_each_arm.setdefault(re.sub(r"-\d+$", "", judging.name), []).append(verdict.shows_the_failing)
+        verdict_on_each[judging.name] = verdict
         print(f"   {judging.name}: {verdict.in_a_word}  > {verdict.what_decides_it}")
+    failings_of_each_arm: dict[str, list[bool | None]] = {}
+    for name in answers:
+        failings_of_each_arm.setdefault(re.sub(r"-\d+$", "", name), []).append(verdict_on_each[name].shows_the_failing)
     print()
     for arm_name, failings in failings_of_each_arm.items():
         without_a_verdict = failings.count(None)
@@ -349,5 +391,5 @@ def passages_of(answer: str) -> list[str]:
 
 if __name__ == "__main__":
     if isinstance(sys.stdout, io.TextIOWrapper):
-        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
     main()
