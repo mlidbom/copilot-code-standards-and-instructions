@@ -25,7 +25,17 @@ do." Exception-swallowing (below) is one specific case of this same rule.
 ## Exceptions: don't swallow them
 
 **Never preemptively swallow exceptions.** Do not write a catch block "just in case" or "because the called
-code might throw." A catch is only justified when both of these hold: (1) we have **empirical evidence** of
+code might throw."
+
+**Where a failure is surfaced, catch everything.** Code whose job is to surface failures catches broadly: an
+application's top-level handler, a request handler that answers with the error, a thread's entry point, a plugin's
+entry points into the host it runs in, and the guard around one unit of a walk or a batch whose other units must go
+on. It ends what it guards, the whole operation or the one unit, and reports the failure with the result: in the
+response to the caller, to the user, or in the log when nothing else waits for the result. That isn't swallowing,
+and the conditions below are not for it. Once, at the boundary: a catch-all further in, in front of a boundary that
+already reports, only loses what that boundary would have said.
+
+Anywhere else, a catch is only justified when both of these hold: (1) we have **empirical evidence** of
 the specific exception in real usage *and* characterized it as non-bug, AND (2) there is **no other option**
 — we cannot recover or surface the failure any other way. If either condition fails, delete the catch and
 let the exception propagate. If it crashes, we now have empirical evidence and can add a narrow, justified

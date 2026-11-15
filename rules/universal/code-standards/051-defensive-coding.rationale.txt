@@ -1,32 +1,59 @@
-# Rationale — `03-defensive-coding.md`
+# Rationale — `051-defensive-coding.md`
 
 Read before weakening this rule.
 
 ## Why "never preemptively swallow exceptions" is stated so absolutely
 
-We've observed time and time again how coders, both human and agents, "fix" things this way and it causes nothing 
+We've observed time and time again how coders, both human and agents, "fix" things this way and it causes nothing
 but trouble over the long run.
 
+Tested on a sibling codebase: every `catch (Exception)` was deleted. Across real use, exactly one removal surfaced a
+crash, and that catch had been *masking a real wrong-desktop bug*, not handling a legitimate non-bug failure. Removing
+it didn't cause the failure; it revealed a latent one we then fixed properly. Zero of the catches were motivated.
 
-Moreover, this was tested on a sibling codebase. Every `catch (Exception)` was deleted. Across real use, exactly one
-removal surfaced a crash — and that catch had been *masking a real wrong-desktop bug*, not handling a
-legitimate non-bug failure. Removing it didn't cause the failure; it revealed a latent one we then fixed
-properly. Net result: zero of the catches were motivated, and the single "regression" was the rule working
-as designed.
+Found again on 2026-11-15, in the .NET Analysis&Refactoring MCP, a Rider plugin much of whose code came from its
+upstream. Of its 89 catch blocks, 43 logged and carried on or swallowed, and none of those named an observed case.
+Several hid real failures:
+- an `IOException` reading a file made it count as in sync with Rider's copy, so the stale-file refusal of the edit
+  tools never fired;
+- a failing daemon setup answered "0 diagnostics" and blamed headless mode;
+- about 20 caught cancellation too, which turns ReSharper's interrupt-and-retry of a read into an answer.
 
-So the rule is **empirically grounded, not aspirational.** If a future you is tempted to add a "just in
-case" catch — or to soften the rule to permit them — this is the evidence that says don't: delete the catch
-and let it crash until you have your own empirical evidence of a specific, characterized non-bug exception.
+The one catch there that looked needless and wasn't, around a listener's `Stop`, was found by measuring what throws,
+not by keeping the catch: the listener is now closed in a way that can't throw. The user, on the audit: "And this is
+why we have the rule. It consistently time after time, project after project, points right at really bad code :)"
+
+So the rule is **empirically grounded, not aspirational.** If a future you is tempted to add a "just in case" catch,
+or to soften the rule to permit them, this is the evidence that says don't.
+
+## Where a failure is surfaced, 2026-11-15
+
+Read literally, the rule forbade the catch at a boundary: a request handler catches bugs too, so it fails the first
+condition, and the rule calls `catch (Exception)` the obvious case of bug-hiding. The user: "Obviously code whose
+purpose in life is to surface errors in the right way are allowed to catch things broadly. Every non-library project
+we have does so. If the rules really forbid that they absolutely need to change."
+
+The paragraph names the boundaries the plugin above has: its request handler and its thread entry points, where an
+unhandled exception would end Rider's backend, and the guards around one element of a solution-wide walk or one item
+of a batch call, which report what they skipped in the answer. "Once, at the boundary"
+came from the same audit: catch-alls inside the tools, in front of the host's request handler, answered with ordinary
+results and logged nothing, losing what the handler would have reported.
+
+None of the evidence above is about boundaries: it is all catches inside code, which the paragraph leaves forbidden.
+
+**Tested only for what it might loosen:** the replay `code-where-a-guard-or-a-catch-is-tempting` in the catalog, a
+class whose network call can fail, with and without the paragraph. Opus 5.5: no answer of 12 caught or guarded
+anything, 6 with and 6 without. Claude Fable 5.2: the same, of 8, 4 and 4. Whether the paragraph keeps an agent from removing a
+boundary handler is untested: no replay has such a case.
 
 ## The title, 2026-11-14
 
 Until then the title was `"Defensive coding" is BANNED`. The guide on writing rules keeps absolute wording for hard
 limits, and the user's measure for the rules is how well the agent works as a whole, not "hard adherence to the rules
-in every situation". The title now says what to do. Nothing else in the rule changed: "never preemptively swallow
-exceptions" stays as absolute as the evidence above makes it.
+in every situation". The title now says what to do. "Never preemptively swallow exceptions" stays as absolute as the
+evidence above makes it.
 
-**Not tested with any signal.** The change was replayed with Opus 5.5 and Claude Fable 5.2
-(`rule-testing/replays/code-where-a-guard-or-a-catch-is-tempting` in the catalog). No answer coped quietly with a
-state that shouldn't happen: not with the old title, not with the new, not with this rule taken away, and for Opus not
-with no shared rules at all, 32 answers in all. The code around the task was already written this way, and the models
-went on as it did. Whether the title matters where the surrounding code is defensive is not known.
+**Not tested with any signal.** The replay above found no answer that coped quietly with a state that shouldn't
+happen: not with the old title, not with the new, not with this rule taken away, and for Opus not with no shared rules
+at all, 32 answers in all. The code around the task was already written this way, and the models went on as it did.
+Whether the title matters where the surrounding code is defensive is not known.
