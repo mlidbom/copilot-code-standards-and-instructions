@@ -4,6 +4,7 @@ comes.
 
     python .claude-shared/rule-testing/see-which-skills-a-task-loads.py <tasks folder>
         [--runs <how many for each task>]   default: 2
+        [--tool-calls <how many a session makes before it is stopped>]   default: 8, and 0 lets it finish its plan
         [--model <model>] [--in <folder the sessions run in>] [--keep-in <folder>]
 
 A tasks folder holds a .txt file for each task: what the user would write to have it done, and nothing about skills.
@@ -14,9 +15,14 @@ its rules, its skills and its code. It is in plan mode: it sees the tools for re
 wants, changes nothing, and answers with its plan. It gets no shell and no MCP servers, and Claude Code keeps no
 transcript of it. The plan file it writes under ~/.claude/plans is removed again.
 
+A session is stopped once it has made --tool-calls tool calls. A session that loads a skill for its task does so at
+once: of the 20 that loaded one when this was first used (2026-11-15), all had by their third tool call. Planning the
+whole task took them 30 to 50 calls more, which cost several times as much and showed nothing more about the loading.
+Let them finish, with --tool-calls 0, to read whether the plans follow the skill.
+
 For each session the script prints the skills it loaded, each with the number of tool calls the session made before
 it, and how many edits the session tried. What each session wrote and did is kept in the results folder, as a file to
-read: a plan may name a skill, or follow its process, without the session having loaded it.
+read.
 
 Every run is a fresh session, since a session keeps the rules and the list of skills it started with.
 """
@@ -29,6 +35,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -46,6 +53,7 @@ class FreshSession:
     name: str
     events_file: Path
     process: subprocess.Popen
+    was_stopped: bool = False
 
     @staticmethod
     def started(task: Path, run: int, runs_in: Path, results: Path, model: str | None) -> FreshSession:
@@ -62,12 +70,18 @@ class FreshSession:
             process = subprocess.Popen(command, cwd=runs_in, stdin=the_task, stdout=its_events, stderr=its_errors)
         return FreshSession(task.stem, name, events_file, process)
 
-    def what_it_did(self, timeout_minutes: int) -> WhatASessionDid:
-        try:
-            self.process.wait(timeout=timeout_minutes * 60)
-        except subprocess.TimeoutExpired:
-            self.process.kill()
+    @property
+    def is_running(self) -> bool:
+        return self.process.poll() is None
+
+    @property
+    def what_it_did(self) -> WhatASessionDid:
         return WhatASessionDid.read_from(self.events_file)
+
+    def stop(self) -> None:
+        self.process.kill()
+        self.process.wait()
+        self.was_stopped = True
 
 
 @dataclass
@@ -79,7 +93,6 @@ class WhatASessionDid:
     """Not counting what it wrote to its plan file."""
     plan_files: list[Path] = field(default_factory=list)
     """The files the session wrote its plan to, which plan mode lets it write."""
-    finished: bool = False
     as_text: list[str] = field(default_factory=list)
     """What the session wrote, and a line for each tool call, in order."""
 
@@ -91,8 +104,6 @@ class WhatASessionDid:
                 event = json.loads(line)
             except ValueError:
                 continue
-            if event.get("type") == "result":
-                it.finished = True
             if event.get("type") == "assistant":
                 for part in event.get("message", {}).get("content", []):
                     it.take_in(part)
@@ -119,8 +130,7 @@ class WhatASessionDid:
     @property
     def in_a_line(self) -> str:
         loaded = ", ".join(f"{skill} (after {calls_before} tool calls)" for skill, calls_before in self.skills_loaded.items()) or "no skill"
-        the_rest = f"{self.tool_calls} tool calls, {self.edits_tried} edits tried" + ("" if self.finished else ", DID NOT FINISH")
-        return f"loaded {loaded}; {the_rest}"
+        return f"loaded {loaded}; {self.tool_calls} tool calls, {self.edits_tried} edits tried"
 
 
 def main() -> None:
@@ -136,15 +146,16 @@ def main() -> None:
 
     print(f"{len(tasks)} tasks, {arguments.runs} sessions each, in {runs_in}")
     sessions = [FreshSession.started(task, run, runs_in, results, arguments.model) for task in tasks for run in range(1, arguments.runs + 1)]
+    wait_for(sessions, stopping_each_after=arguments.tool_calls, timeout_minutes=arguments.timeout_minutes)
 
     sessions_that_loaded: dict[str, Counter] = {task.stem: Counter() for task in tasks}
     for session in sessions:
-        it = session.what_it_did(arguments.timeout_minutes)
+        it = session.what_it_did
         (results / f"{session.name}.md").write_text("\n\n".join(it.as_text), encoding="utf-8")
         for plan_file in it.plan_files:
             plan_file.unlink(missing_ok=True)
         sessions_that_loaded[session.task].update(it.skills_loaded.keys())
-        print(f"   {session.name}: {it.in_a_line}")
+        print(f"   {session.name}: {it.in_a_line}" + (", then stopped" if session.was_stopped else ""))
 
     print("\nSessions that loaded each skill, of", arguments.runs, "for each task:")
     for task, loaded in sessions_that_loaded.items():
@@ -152,10 +163,24 @@ def main() -> None:
     print(f"\nWhat each session wrote and did: {results}")
 
 
+def wait_for(sessions: list[FreshSession], stopping_each_after: int, timeout_minutes: int) -> None:
+    """Waits until every session has ended, stopping each once it has made that many tool calls: 0 for no limit."""
+    give_up_at = time.monotonic() + timeout_minutes * 60
+    while any(session.is_running for session in sessions) and time.monotonic() < give_up_at:
+        time.sleep(3)
+        for session in sessions:
+            if session.is_running and 0 < stopping_each_after <= session.what_it_did.tool_calls:
+                session.stop()
+    for session in sessions:
+        if session.is_running:
+            session.stop()
+
+
 def parsed_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("tasks", help="a folder with a .txt file for each task")
     parser.add_argument("--runs", type=int, default=2, help="sessions for each task")
+    parser.add_argument("--tool-calls", type=int, default=8, help="a session is stopped once it has made this many tool calls: 0 lets it finish its plan")
     parser.add_argument("--model", help="the model the sessions run on")
     parser.add_argument("--in", dest="runs_in", help="the folder the sessions run in: by default the repository the catalog is a submodule of")
     parser.add_argument("--keep-in", help="the folder for what the sessions wrote and did: by default a new temporary one")
