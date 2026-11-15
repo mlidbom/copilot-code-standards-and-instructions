@@ -71,9 +71,9 @@ Two rewordings were replayed against the rule as it is, on that replay and on th
 
 | The rule | Opus 5.5: the build left out, without the heading | Claude Fable 5.2: the heading, for the script |
 |---|---|---|
-| As it is | 1 of 4 | 2 of 2 |
-| The paragraph replaced by a test of cost | 4 of 4 | 2 of 2 |
-| The paragraph kept, with a sentence after it on a rule that names a way | 3 of 4 | 0 of 2 |
+| As it is | 1 of 4 | 4 of 4 |
+| The paragraph replaced by a test of cost | 4 of 4 | 4 of 4 |
+| The paragraph kept, with a sentence after it on a rule that names a way | 3 of 4 | 0 of 4 |
 
 - **The test of cost,** which the user had approved before it was replayed: "It has got in the way when following it
   costs something that buys nothing, whether you pay that cost or break the rule to avoid paying it. A rule you read as
@@ -85,7 +85,7 @@ Two rewordings were replayed against the rule as it is, on that replay and on th
   It stops Fable's heading, and undoes for Opus 5.5 what the paragraph before it does.
 - **Neither went into the rule.** What would hold for both models is not found yet. The two replays are its test: one
   fails when the heading is missing, the other when it is there.
-- Fable's column has two answers for each wording: six of its twelve sessions hadn't answered after twenty minutes.
+- Fable's sessions were slow: six of the twelve took more than twenty minutes to answer, and all twelve answered.
 
 ## What it doesn't catch
 
