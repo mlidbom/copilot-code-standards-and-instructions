@@ -34,3 +34,11 @@ A carve-out exempting `NativeMethods` / CA1060. **Rejected.** The owner chose sp
 live with or behind the domain type they serve. Grouping-by-technical-property has **no** exception in this
 codebase. Pairs with a deferred code refactor (split `NativeMethods`; stop framing Interop as a confinement
 bucket).
+
+## Tevent declarations: one file per taggregate (2026-11-16)
+
+The user, on JAStudio's notes as Compze taggregates, after an agent had split a vocab's tevents into one file per nested
+type, 22 files: "For tevent declarations, the usual model of using as small files as possible does not apply IMO. Having
+the full nested model of what can happen to a taggregate in a single file is hugely helpful to me when reading code."
+The classes beside the interfaces are boilerplate that Compze's planned analyzer with a code fix will write; whether
+they should join the interfaces' file is untested with him.

@@ -34,6 +34,10 @@ place local methods last in the method declaring them.
 As the general rule, create one file for each type, so that types are easy to browse and find in the filesystem.
 For nested typed, use partial types and OuterType.NestedType.cs as the file names. 
 
+**Except a taggregate's tevent declarations:** the whole nested model of a taggregate's tevent interfaces goes in one file,
+and their classes in one file beside it. What can happen to a taggregate is read in one place: "Having the full nested
+model of what can happen to a taggregate in a single file is hugely helpful to me when reading code" (the user).
+
 ## Small cohesive namespaces.
 Split up a namespace into multiple whenever you can find clear categories/groups of types in the namespace.
 
