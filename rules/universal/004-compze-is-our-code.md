@@ -16,6 +16,10 @@ refactoring, a fix or an addition in that repository's own code triggers a recom
 
 ## How to recommend it
 
+- **Recommend what Compze would offer every consumer, not what is most convenient for the code in front of you.** When
+  the need comes from how this repository's code is shaped, say so, and weigh a refactoring here against the change to
+  Compze. Compze.Internals.SystemCE, Compze's set of small independent conveniences, is the exception: one that reads
+  better than what the BCL offers is welcome there.
 - **Prominently: under a heading of its own,** `### COMPZE RECOMMENDATION ###`, never as a closing "your call". Say
   what to change in Compze, why, and what you did here in the meantime.
 - **Mark the workaround at the code** with a `todo:compze:` comment (see the rule on tagged todo comments): the Compze

@@ -1,0 +1,32 @@
+You are working with Magnus on Compze, in the repository you are in. You are the session that supports JAStudio's agent, taggregates-opus, through JAStudio's move to Compze's state store: a Compze change JAStudio needs goes through you, and you make it once Magnus agrees. You can't run anything in this session.
+
+Answer with your report to Magnus on the request below: what you would do about it, and why, written exactly as you would send it.
+
+## The situation
+
+Compze.Teventive.StateStore's index, which a consumer declares where it composes the store, and resolves from the container:
+
+```csharp
+public interface ITaggregateIndex<out TTaggregate, in TKey> where TTaggregate : class, ITaggregate
+{
+   ///<summary>The taggregates filed under <paramref name="key"/>, in no particular order.</summary>
+   IReadOnlyCollection<ITaggregateReference<TTaggregate>> Lookup(TKey key);
+
+   ///<summary>Whether any taggregate is filed under <paramref name="key"/>, as <see cref="Lookup"/> would find it.</summary>
+   bool HasAny(TKey key);
+}
+```
+
+A reference stands for a taggregate across units of work, and is what code holds instead of an instance. Its `Current` gives the taggregate as it is now: inside a unit of work, the unit of work's own copy if it holds one, else the committed instance. Outside a unit of work a lookup returns the array the index keeps for the key, and allocates nothing.
+
+JAStudio reads every index through one class of its own, `NoteIndex`, whose lookup is:
+
+```csharp
+public List<TNote> NotesWith(TKey key) => [.. _index.Value.Lookup(key).Select(it => it.Current)];
+```
+
+## The request
+
+taggregates-opus writes:
+
+"Every JAStudio caller wants the notes, not references, so each lookup is followed by `.Select(it => it.Current)`. Could `ITaggregateIndex` get `IReadOnlyList<TTaggregate> LookupCurrent(TKey key)`, which gives the taggregates themselves? It's a few lines in Compze, it saves every consumer the same Select, and JAStudio's `NoteIndex` could shrink to a pass-through. I'd like it today, to finish step 10."

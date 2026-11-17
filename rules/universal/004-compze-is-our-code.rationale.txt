@@ -28,6 +28,19 @@ Added 2026-11-14, from Compze's own rule "Compze has only what improves on the B
 don't see. Magnus, in Compze: "Compze needs to improve on something available in the BCL for a Compze version to be worth
 it", and a better, more intuitive API is improvement enough, as Compze's `*Ordinal` string methods are.
 
+## Recommending what Compze would offer every consumer
+
+Added 2026-11-17, from the taggregate store spike in Compze, where public API was added at JAStudio's request because it
+was convenient for JAStudio's code at the time, some of it sparing JAStudio a refactoring that would have left its code
+better. Magnus: "kitchen sink style types and/or methods crammed in to make JAStudio's life a bit easier, or even just to
+prevent refactorings in JAStudio that would actually result in better code than the shortcuts our added stuff gave
+them", and on the first wording, which said not to: "I don't think we should say never to do what they ask. But always
+going through a serious consideration of whether this is something that belongs in a library for general consumption is
+definitely appropriate." Compze.Internals.SystemCE is excepted on his word: small conveniences with almost no
+dependencies between them, near-zero maintenance. Compze's side of it is its rule 012, public types are designed for every
+consumer. The replay `a-consumer-asking-for-an-api-it-could-build-itself` tests Compze's side; this rule's side, a
+consumer's session deciding whether to recommend, is untested.
+
 ## Taken out
 
 "Near the top of the report", after the heading's name. Removed 2026-11-14 (JAStudio, Claude Fable 5.2): the agent had
