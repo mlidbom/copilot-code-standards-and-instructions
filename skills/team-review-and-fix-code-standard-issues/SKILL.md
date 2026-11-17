@@ -12,6 +12,14 @@ description: >-
 
 # Code-standards violation hunt
 
+> **todo: not usable on Magnus's machine, since 2026-11-17 (Magnus).** It runs through Claude Code's Workflow tool,
+> and workflows are off there (`"enableWorkflows": false` in `~/.claude/settings.json`), so the skill is turned off
+> too (`skillOverrides`, which `/skills` shows as off). Why: workflows cost every session about 2k tokens, none had
+> run since this skill was built, and building it was nothing but trouble with the script that connects its agents
+> (`review-workflow.js`). Agents working together, using their own judgment, are expected to do better than a script.
+> To use it again: rewrite it so that one session runs the hunters, the judge and the skeptics as ordinary agents
+> (the Agent tool), or turn workflows back on for the run.
+
 A structured, multi-agent pass that searches the codebase for violations of the project's own coding-standard
 rules and converges on a vetted set of fixes. It exists because a single read misses things and a single
 reviewer rubber-stamps: it turns the rules into concrete checks, fans the search out so each agent hunts one

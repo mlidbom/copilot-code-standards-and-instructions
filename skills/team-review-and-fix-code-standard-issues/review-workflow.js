@@ -9,6 +9,8 @@ export const meta = {
   ],
 }
 
+//todo: not usable on Magnus's machine, where workflows are off since 2026-11-17: see the note at the top of SKILL.md.
+
 // ---- args (all optional) ----
 // args may arrive as an object or as a JSON string depending on how the workflow was invoked; normalize once.
 let A = args
