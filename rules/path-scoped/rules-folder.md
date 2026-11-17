@@ -25,7 +25,8 @@ wrong does its harm each time it applies, and the user only sees the result. So:
   evidence; what agents do in real use is (below).
 - **A one-off is not worth a rule.** An accident that happened once, and never before, rarely comes back, while a rule
   written for it costs every session and may well make things worse. The user, 2026-11-17: "A one off rare accident
-  that has never happened before is probably not worth a rule. Quite possibly the rule will make things worse."
+  that has never happened before is probably not worth a rule. Quite possibly the rule will make things worse." Nor is
+  a tool's occasional glitch: "Some tools sometimes glitch. If we make a rule for every one how many will we have?"
 - **A rule, or a skill.** Every session loads a rule whole, and only a skill's description:
   - **A skill, when it's a how-to for a task that announces itself,** such as profiling, or upgrading a project's
     packages. Its description says when to use it, in the words the task arrives in, and its body loads next to the
