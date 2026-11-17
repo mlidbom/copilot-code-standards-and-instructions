@@ -12,3 +12,9 @@ rules too, such as Compze's 013 on spending nothing that callers can do as well.
 
 Run it from a Compze checkout whose rules include 011, 012 and 013, or give them as documents at their paths under
 `.claude/rules/02-universal-compze/01-strategy/`.
+
+**What it showed, 2026-11-17, Opus 5.5, four runs each:** nothing. With the rules as they were (013 given as a
+document) and with 011, 012 and 004 changed, every answer declined `LookupCurrent`. A fresh session declines a
+convenience this plain by itself; the spike's failings came late in a long session, on requests with better reasons.
+It stays as a guard: a later change that makes sessions add such conveniences shows here. A harder case, from one of the
+spike's real requests, would be the test the rules lack.
