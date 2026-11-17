@@ -22,7 +22,7 @@ wrong does its harm each time it applies, and the user only sees the result. So:
   him. A rule that gets followed and makes the work worse has failed.
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
   the agent can't know or wouldn't choose by itself. An agent's own account of what it would do without the rule is not
-  evidence: replay the case without the rule, as below.
+  evidence; what agents do in real use is (below).
 - **Know which kind of rule it is,** since that decides how it's worded:
   - **A hard limit:** breaking it does harm that can't be undone, such as changing an external environment without
     approval. Absolute wording belongs here, and only here.
@@ -53,10 +53,19 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 The always-on rule `000-tell-me-when-a-rule-gets-in-the-way.md` is how a rule that does harm gets noticed. How this
 came about is in its sidecar.
 
-## Testing a change to a rule: replay the case in fresh sessions
+## Checking a change to a rule: in real use, and by replay only when that is cheap and decisive
 
-`rule-testing/replay-a-rule-change.py` in the catalog replays a situation in which a rule went wrong, under two or more
-versions of the catalog's rules, and prints what each fresh session answered on the point. Its own help says how.
+**Check a change to a rule in real use.** Replay a case only when that is cheap and decisive: the case fits in one
+short prompt, the failing shows in a single answer, and the rule as it stands fails nearly every time. Each fresh
+session spends its whole loaded context out of the user's weekly quota, and the user, 2026-11-17: "constructing a
+realistic recreation is probably quite hard and any small difference in how it runs could make it result in something
+else. So when you iterate around that over and over it gobbles up my ability to work with you, and the result is still
+uncertainty". A replay also counts answers against its own description of the failing, which can be wrong: the add-on
+case, tuned over dozens of replays, was a right answer (the sidecar of the rule on the ubiquitous language).
+
+When a replay is worth it, `rule-testing/replay-a-rule-change.py` in the catalog replays a situation in which a rule
+went wrong, under two or more versions of the catalog's rules, and prints what each fresh session answered on the
+point. Its own help says how.
 
 - **Why fresh sessions:** a session, and the agents it starts, keep the rules they started with. A changed rule
   reaches only the sessions started after the change.
