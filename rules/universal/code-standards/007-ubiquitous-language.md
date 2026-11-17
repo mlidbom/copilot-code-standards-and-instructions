@@ -12,12 +12,7 @@ has to mean one thing.
 ## A word that two names share is not a collision
 
 A name is read with what qualifies it, as the `Importing` namespace and an `Import` action are, or a build server
-and a card server. Don't rename either for the shared word, and don't propose to: in code, in documents or in
-conversation.
-
-The same argument comes in other words: that the word "already means" something here, that it "would then mean two
-things", that one name "will be read as" the other, that the word is best "kept free". None of them is a reason to
-rename, or to pass over the obvious word for a rarer one.
+and a card server. Don't rename either for the shared word.
 
 ## Why:
 

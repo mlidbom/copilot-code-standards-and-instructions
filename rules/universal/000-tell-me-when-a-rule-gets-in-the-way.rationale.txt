@@ -4,8 +4,8 @@ Written 2026-11-14 in JAStudio, in a session of Claude Fable 5.2.
 
 ## What is behind it
 
-The agent stopped a design to ask which of two terms that share the word "add-on" should be renamed, though nobody had
-been confused: the naming rules had told it not to trust its own reading
+The agent stopped a design to ask which of two terms that share the word "add-on" should be renamed. It was taken then
+for a rule overriding the agent's judgment; on 2026-11-17 the user found that the question had been right
 (`code-standards/007-ubiquitous-language.rationale.txt`). Going through the session, it found three more places where
 a rule had it do something it thought worse. In two of the four it had complied and said nothing: there was nowhere to
 say it.
