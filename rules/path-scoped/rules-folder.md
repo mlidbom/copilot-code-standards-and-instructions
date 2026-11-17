@@ -23,6 +23,15 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
   the agent can't know or wouldn't choose by itself. An agent's own account of what it would do without the rule is not
   evidence; what agents do in real use is (below).
+- **A rule, or a skill.** Every session loads a rule whole, and only a skill's description:
+  - **A skill, when it's a how-to for a task that announces itself,** such as profiling, or upgrading a project's
+    packages. Its description says when to use it, in the words the task arrives in, and its body loads next to the
+    work, not once at the start of a long session.
+  - **A rule, when it's about how to work at all times, or a trap:** something that goes wrong in the middle of other
+    work, with nothing to announce it, such as a Unicode escape arriving as the character itself. Give a trap's rule no
+    more words than the trap takes.
+  - **A rule that matters only around certain files** gets `paths:` frontmatter (below), so it loads only when they're
+    touched.
 - **Know which kind of rule it is,** since that decides how it's worded:
   - **A hard limit:** breaking it does harm that can't be undone, such as changing an external environment without
     approval. Absolute wording belongs here, and only here.
