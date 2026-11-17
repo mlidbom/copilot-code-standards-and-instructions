@@ -185,12 +185,14 @@ class Verdict:
 
     @staticmethod
     def parsed_from(the_judges_answer: str | None) -> Verdict:
+        # The verdict comes last, after the passage it rests on: a judge that gave it first sometimes argued itself out of it
+        # in the passage that followed, and the first word stood (2026-11-17, two verdicts of eight).
         lines = [line.strip() for line in (the_judges_answer or "").splitlines() if line.strip()]
-        first_line = lines[0].upper().strip("*# .:") if lines else ""
-        what_decides_it = " ".join(lines[1:])
-        if first_line.startswith("NOT FAILING"):
+        last_line = lines[-1].upper().strip("*# .:") if lines else ""
+        what_decides_it = " ".join(lines[:-1])
+        if last_line.startswith("NOT FAILING"):
             return Verdict(False, what_decides_it)
-        if first_line.startswith("FAILING"):
+        if last_line.startswith("FAILING"):
             return Verdict(True, what_decides_it)
         return Verdict(None, " ".join(lines) or "The judge gave no answer.")
 
@@ -363,8 +365,8 @@ def started_judging(name: str, answer: str, the_failing: str, arguments: argpars
 ## How to reply
 
 Reply with exactly two lines, and nothing else.
-Line 1: FAILING or NOT FAILING.
-Line 2: the passage of the answer that decides it, quoted word for word; or, when nothing in the answer is on the matter, a few words saying so.
+Line 1: the passage of the answer that decides it, quoted word for word; or, when nothing in the answer is on the matter, a few words saying so.
+Line 2: FAILING or NOT FAILING.
 """, encoding="utf-8")
     an_empty_folder = workplace / "empty"
     an_empty_folder.mkdir()
