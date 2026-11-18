@@ -33,7 +33,9 @@ else. Rules at user level are loaded in every arm: this script can't take them o
 
 A session is told its working directory, and the name of that folder changes what it answers: folders named after the
 arms, such as with-the-sentence, gave results that folders with plain names did not (2026-11-14). So every arm's folder
-is named after the consuming repository, under a temporary folder with a random name.
+is named after the consuming repository, under a temporary folder with a random name. That folder is outside any git
+repository, since a session in one is told the repository's status and recent commits. Where the home folder is a
+repository, the usual temporary folder is in it, and Temp or tmp at the root of the drive is used instead.
 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
 sessions have only the tools --tools names, read-only ones by default, the judges none, and none of them MCP servers.
@@ -228,7 +230,7 @@ def main() -> None:
     sessions: list[FreshSession] = []
     where_each_arm_ran: dict[str, Path] = {}
     for arm in arms:
-        folder = Path(tempfile.mkdtemp()) / (repository.name if repository else "project")
+        folder = a_new_folder_outside_any_repository() / (repository.name if repository else "project")
         build_the_folder_a_session_runs_in(folder, arm, replay, repository)
         where_each_arm_ran[arm.name] = folder
         for number in range(1, arguments.runs + 1):
@@ -283,6 +285,20 @@ def copy_the_file_or_folder(source: Path, destination: Path) -> None:
     elif source.is_file():
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+
+
+def a_new_folder_outside_any_repository() -> Path:
+    """A new temporary folder with a random name, in the usual temporary folder unless that is in a git repository."""
+    usual = Path(tempfile.gettempdir())
+    for candidate in (usual, Path(usual.anchor) / "Temp", Path(usual.anchor) / "tmp"):
+        if candidate.is_dir() and not is_in_a_repository(candidate):
+            return Path(tempfile.mkdtemp(dir=candidate))
+    sys.exit(f"{usual} is in a git repository, and a session there is told its status and recent commits."
+             f" Make a folder {Path(usual.anchor) / 'Temp'} for the sessions to run in.")
+
+
+def is_in_a_repository(folder: Path) -> bool:
+    return subprocess.run(["git", "-C", str(folder), "rev-parse", "--is-inside-work-tree"], capture_output=True).returncode == 0
 
 
 def remove_the_empty_folder_claude_code_made_for(where_sessions_ran: Path) -> None:
@@ -353,7 +369,7 @@ def print_the_verdicts(answers: dict[str, str], the_failing: str, arguments: arg
 
 
 def started_judging(name: str, answer: str, the_failing: str, arguments: argparse.Namespace) -> FreshSession:
-    workplace = Path(tempfile.mkdtemp())
+    workplace = a_new_folder_outside_any_repository()
     question = workplace / "question.txt"
     question.write_text(f"""You are judging one answer from a test of a rule. Decide whether the answer shows the failing described below.
 
