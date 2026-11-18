@@ -57,8 +57,9 @@ repository, the usual temporary folder is in it, and Temp or tmp at the root of 
 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
 sessions have only the tools --tools names, read-only ones by default, the judges none, and none of them MCP servers.
-Claude Code keeps no transcript of them. The whole answers are kept in the results folder: read some of them beside the
-judge's verdicts, since the judge is a model too.
+Claude Code keeps no transcript of them, and the script removes the empty folders it makes for them in the user's
+.claude. The whole answers are kept in the results folder: read some of them beside the judge's verdicts, since the
+judge is a model too.
 
 The sessions of a run all start at once, and each is reported, and its answer written to the results folder, as it
 finishes. They share one deadline: the sessions still running when it passes are stopped, and reported as having given
@@ -145,6 +146,7 @@ class Arm:
 class FreshSession:
     """A claude session started for one prompt, which writes its result as JSON to a file."""
     name: str
+    runs_in: Path
     result_file: Path
     process: subprocess.Popen
     started_at: float = field(default_factory=time.monotonic)
@@ -165,7 +167,7 @@ class FreshSession:
             command += ["--model", model]
         with prompt.open("rb") as the_prompt, result_file.open("wb") as the_result, result_file.with_suffix(".errors.txt").open("wb") as its_errors:
             process = subprocess.Popen(command, cwd=runs_in, stdin=the_prompt, stdout=the_result, stderr=its_errors)
-        return FreshSession(name, result_file, process)
+        return FreshSession(name, runs_in, result_file, process)
 
     @property
     def has_finished(self) -> bool:
@@ -182,11 +184,19 @@ class FreshSession:
 
     def result(self) -> dict | None:
         """What the session returned, once it has finished or was stopped, or None when it gave no answer."""
+        returned = self.what_it_wrote()
+        return returned if "result" in returned else None
+
+    @property
+    def session_id(self) -> str | None:
+        """Claude Code's id of the session, once it has finished, or None when it wrote no result."""
+        return self.what_it_wrote().get("session_id")
+
+    def what_it_wrote(self) -> dict:
         try:
-            result = json.loads(self.result_file.read_text(encoding="utf-8"))
-            return result if "result" in result else None
+            return json.loads(self.result_file.read_text(encoding="utf-8"))
         except (ValueError, OSError):
-            return None
+            return {}
 
 
 def results_as_they_come(sessions: list[FreshSession], timeout_minutes: int) -> Iterator[tuple[FreshSession, dict | None]]:
@@ -275,8 +285,7 @@ def main() -> None:
         (results / f"{session.name}.md").write_text(result["result"], encoding="utf-8")
         print(f"   {session.name} answered after {session.time_taken}")
     answers = {session.name: answer_of_each[session.name] for session in sessions if session.name in answer_of_each}
-    for folder in where_each_arm_ran.values():
-        remove_the_empty_folder_claude_code_made_for(folder)
+    remove_the_empty_folders_claude_code_made_for(sessions)
 
     if the_failing is not None:
         print_the_verdicts(answers, the_failing, arguments)
@@ -330,11 +339,20 @@ def is_in_a_repository(folder: Path) -> bool:
     return subprocess.run(["git", "-C", str(folder), "rev-parse", "--is-inside-work-tree"], capture_output=True).returncode == 0
 
 
-def remove_the_empty_folder_claude_code_made_for(where_sessions_ran: Path) -> None:
-    """Claude Code makes a folder in the user's .claude/projects for a folder that sessions ran in, also when it keeps no transcript of them."""
-    its_folder = Path.home() / ".claude" / "projects" / re.sub(r"[^A-Za-z0-9]", "-", str(where_sessions_ran))
-    if its_folder.is_dir() and not any(its_folder.iterdir()):
-        its_folder.rmdir()
+def remove_the_empty_folders_claude_code_made_for(finished_sessions: list[FreshSession]) -> None:
+    """Claude Code keeps no transcript of the sessions, but makes folders for them in the user's .claude, and leaves them
+    empty: one in projects for each folder that sessions ran in, with an empty memory folder in it, and one in
+    session-env for each session whose hooks ran."""
+    users_claude_folder = Path.home() / ".claude"
+    for where_sessions_ran in {session.runs_in for session in finished_sessions}:
+        remove_if_it_holds_no_files(users_claude_folder / "projects" / re.sub(r"[^A-Za-z0-9]", "-", str(where_sessions_ran)))
+    for session_id in filter(None, (session.session_id for session in finished_sessions)):
+        remove_if_it_holds_no_files(users_claude_folder / "session-env" / session_id)
+
+
+def remove_if_it_holds_no_files(folder: Path) -> None:
+    if folder.is_dir() and not any(path.is_file() for path in folder.rglob("*")):
+        shutil.rmtree(folder)
 
 
 def consuming_repository() -> Path | None:
@@ -389,6 +407,7 @@ def print_the_verdicts(answers: dict[str, str], the_failing: str, arguments: arg
         verdict = Verdict.parsed_from(result["result"] if result else None)
         verdict_on_each[judging.name] = verdict
         print(f"   {judging.name}: {verdict.in_a_word}  > {verdict.what_decides_it}")
+    remove_the_empty_folders_claude_code_made_for(judgings)
     failings_of_each_arm: dict[str, list[bool | None]] = {}
     for name in answers:
         failings_of_each_arm.setdefault(re.sub(r"-\d+$", "", name), []).append(verdict_on_each[name].shows_the_failing)
