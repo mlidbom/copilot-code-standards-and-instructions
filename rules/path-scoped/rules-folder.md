@@ -86,7 +86,8 @@ point. Its own help says how.
   user's message, the documents the prompt has the session read, and a description of the failing.
   `a-word-another-namespace-already-uses` is one.
 - **Test before committing.** By default it runs the last commit against the working tree: the uncommitted change is
-  one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules.
+  one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules,
+  and `--arm name=bare` what it does with nothing of ours at all: no rules at any level, CLAUDE.md, skills or hooks.
 - **A fresh session judges each answer** against the replay's description of the failing, and the script counts the
   failings for each arm. Read some answers beside the verdicts: the judge is a model too. A difference of one answer
   shows nothing.

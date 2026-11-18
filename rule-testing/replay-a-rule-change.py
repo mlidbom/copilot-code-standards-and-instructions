@@ -4,7 +4,7 @@ shared rules: so that a change to a rule is tested before it is committed, and a
     python .claude-shared/rule-testing/replay-a-rule-change.py <replay folder>
         [--arm <name>=<rules>]...   default: committed=HEAD and working-tree=working-tree
         [--runs <how many for each arm>]   default: 2
-        [--model <model>] [--judge-model <model>] [--tools <allowed tools>] [--keep-in <folder>]
+        [--model <model>] [--judge-model <model>] [--tools <the tools the sessions have>] [--keep-in <folder>]
         [--timeout-minutes <minutes>]   default: 20, for all the sessions together, and again for the judging
         [--judge <results folder>]   judge the answers already there, and run no sessions
         [--show <regular expression>]
@@ -22,14 +22,32 @@ A replay folder holds:
 An arm is a version of the catalog's rules, given as <name>=<rules>, where <rules> is one of:
     working-tree    the catalog as it is on disk, uncommitted changes included: the change under test.
     <commit>        the catalog as of that commit, such as HEAD or a1b2c3d^: the control.
-    none            no shared rules at all: what the model does by itself.
+    none            no shared rules: all the rest of ours, without the catalog's rules.
+    bare            nothing of ours at all: what the model does by itself.
 After working-tree or a commit, +<folder> lays that folder's files over the catalog's, at the same paths. So several
 wordings of a rule are tested at once, each in a folder of its own, with nothing changed in the catalog:
     --arm shorter=HEAD+C:/wordings/shorter    with the wording in C:/wordings/shorter/rules/universal/001-some-rule.md
 
-Each arm gets a folder of its own, holding the replay's documents and the consuming repository's .claude folder, with
-the rules that come from the catalog in the arm's version. So the arms differ in the catalog's rules and in nothing
-else. Rules at user level are loaded in every arm: this script can't take them out.
+Each arm gets a folder of its own, holding the replay's documents and, but for bare, the consuming repository's .claude
+folder, with the rules that come from the catalog in the arm's version. So the arms other than bare differ in the
+catalog's rules and in nothing else, and rules at user level are loaded in all of them.
+
+The arms none and bare differ in what else of ours their sessions have:
+    none    everything but the catalog's rules: the consuming repository's CLAUDE.md and its own rules, and at user
+            level the rules, skills, plugins, hooks and settings. So it shows what the catalog's rules do.
+    bare    none of it. Its sessions run in Claude Code's safe mode, which loads no CLAUDE.md, rules at any level,
+            skills, plugins, hooks, MCP servers or memory, in a folder that holds only the replay's documents. They keep
+            the user's settings, such as the effort level and the permission mode, as the other arms' sessions do, so
+            bare differs from them in what we wrote and in nothing else. So it shows what all of that does together.
+            Checked 2026-11-18 with /context and a session's transcript: a bare session's system prompt was the other
+            arms' without its section on memory. --setting-sources local, the other way to leave our files out, drops
+            the settings too: its sessions ran at medium effort where the other arms' ran at xhigh.
+
+An answer with all our rules, beside one with nothing of ours, to the very same prompt, such as for an opinion free of
+our conventions: a replay folder with only prompt.txt, and
+    --arm with-our-rules=working-tree --arm bare=bare --runs 1
+Neither session runs in the repository, so the prompt holds all they need, and the files they are to read go in
+documents/. Without the-failing.md nothing is judged: both whole answers are printed, one after the other.
 
 A session is told its working directory, and the name of that folder changes what it answers: folders named after the
 arms, such as with-the-sentence, gave results that folders with plain names did not (2026-11-14). So every arm's folder
@@ -58,7 +76,7 @@ import sys
 import tarfile
 import tempfile
 import time
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
@@ -80,9 +98,18 @@ class Arm:
         rules, _, folder = rules.partition("+")
         if not folder:
             return Arm(name, rules)
-        if rules == "none" or not Path(folder).is_dir():
+        if rules in ("none", "bare") or not Path(folder).is_dir():
             sys.exit(f"After working-tree or a commit, + takes a folder that exists. Got: {text}")
         return Arm(name, rules, Path(folder).resolve())
+
+    @property
+    def has_nothing_of_ours(self) -> bool:
+        """The bare arm: no rules at any level, no CLAUDE.md, skills, plugins, hooks or memory."""
+        return self.rules == "bare"
+
+    @property
+    def flags_for_its_sessions(self) -> list[str]:
+        return ["--safe-mode"] if self.has_nothing_of_ours else []
 
     @property
     def described(self) -> str:
@@ -123,12 +150,14 @@ class FreshSession:
     started_at: float = field(default_factory=time.monotonic)
 
     @staticmethod
-    def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str) -> FreshSession:
+    def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str,
+                flags_of_its_arm: Sequence[str] = ()) -> FreshSession:
         """tools are the only tools the session has, comma separated, or "" for none."""
         claude = shutil.which("claude")
         if not claude:
             sys.exit("claude isn't on the PATH")
-        command = [claude, "-p", "--strict-mcp-config", "--no-session-persistence", "--output-format", "json", "--tools", tools]
+        command = [claude, "-p", "--strict-mcp-config", "--no-session-persistence", "--output-format", "json", "--tools", tools,
+                   *flags_of_its_arm]
         if tools:
             # --tools makes them the only ones, and --allowedTools lets the session use them without a permission prompt.
             command += ["--allowedTools", tools]
@@ -235,7 +264,7 @@ def main() -> None:
         where_each_arm_ran[arm.name] = folder
         for number in range(1, arguments.runs + 1):
             name = f"{arm.name}-{number}"
-            sessions.append(FreshSession.started(name, prompt, folder, results / f"{name}.json", arguments.model, arguments.tools))
+            sessions.append(FreshSession.started(name, prompt, folder, results / f"{name}.json", arguments.model, arguments.tools, arm.flags_for_its_sessions))
 
     answer_of_each: dict[str, str] = {}
     for session, result in results_as_they_come(sessions, arguments.timeout_minutes):
@@ -262,7 +291,7 @@ def main() -> None:
 def parsed_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("replay", help="the replay folder: prompt.txt, and optionally documents/, the-failing.md and passages-to-show.txt")
-    parser.add_argument("--arm", action="append", default=[], metavar="NAME=RULES", help="RULES is working-tree, none, or a commit of the catalog; +FOLDER lays a folder's files over it")
+    parser.add_argument("--arm", action="append", default=[], metavar="NAME=RULES", help="RULES is working-tree, none, bare, or a commit of the catalog; +FOLDER lays a folder's files over it")
     parser.add_argument("--runs", type=int, default=2, help="fresh sessions for each arm")
     parser.add_argument("--model", help="the model the sessions use, such as the one that got it wrong")
     parser.add_argument("--judge-model", help="the model that judges the answers. Default: --model")
@@ -316,7 +345,8 @@ def consuming_repository() -> Path | None:
 
 def build_the_folder_a_session_runs_in(folder: Path, arm: Arm, replay: Path, repository: Path | None) -> None:
     folder.mkdir(parents=True)
-    put_the_rules_in(folder, arm, repository)
+    if not arm.has_nothing_of_ours:
+        put_the_rules_in(folder, arm, repository)
     documents = replay / "documents"
     if documents.is_dir():
         shutil.copytree(documents, folder, dirs_exist_ok=True)
