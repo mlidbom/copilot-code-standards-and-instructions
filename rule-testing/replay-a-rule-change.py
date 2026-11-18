@@ -36,8 +36,9 @@ arms, such as with-the-sentence, gave results that folders with plain names did 
 is named after the consuming repository, under a temporary folder with a random name.
 
 Every run is a fresh session, since a session, and the agents it starts, keep the rules they started with. The
-sessions get read-only tools and no MCP servers, and Claude Code keeps no transcript of them. The whole answers are kept
-in the results folder: read some of them beside the judge's verdicts, since the judge is a model too.
+sessions have only the tools --tools names, read-only ones by default, the judges none, and none of them MCP servers.
+Claude Code keeps no transcript of them. The whole answers are kept in the results folder: read some of them beside the
+judge's verdicts, since the judge is a model too.
 
 The sessions of a run all start at once, and each is reported, and its answer written to the results folder, as it
 finishes. They share one deadline: the sessions still running when it passes are stopped, and reported as having given
@@ -120,12 +121,14 @@ class FreshSession:
     started_at: float = field(default_factory=time.monotonic)
 
     @staticmethod
-    def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str | None) -> FreshSession:
+    def started(name: str, prompt: Path, runs_in: Path, result_file: Path, model: str | None, tools: str) -> FreshSession:
+        """tools are the only tools the session has, comma separated, or "" for none."""
         claude = shutil.which("claude")
         if not claude:
             sys.exit("claude isn't on the PATH")
-        command = [claude, "-p", "--strict-mcp-config", "--no-session-persistence", "--output-format", "json"]
+        command = [claude, "-p", "--strict-mcp-config", "--no-session-persistence", "--output-format", "json", "--tools", tools]
         if tools:
+            # --tools makes them the only ones, and --allowedTools lets the session use them without a permission prompt.
             command += ["--allowedTools", tools]
         if model:
             command += ["--model", model]
@@ -261,7 +264,7 @@ def parsed_arguments() -> argparse.Namespace:
     parser.add_argument("--runs", type=int, default=2, help="fresh sessions for each arm")
     parser.add_argument("--model", help="the model the sessions use, such as the one that got it wrong")
     parser.add_argument("--judge-model", help="the model that judges the answers. Default: --model")
-    parser.add_argument("--tools", default="Read,Grep,Glob", help="the tools the sessions may use")
+    parser.add_argument("--tools", default="Read,Grep,Glob", help="the only tools the sessions have")
     parser.add_argument("--judge", metavar="FOLDER", help="judge the answers (*.md) already in that results folder, and run no sessions")
     parser.add_argument("--show", metavar="REGEX", help="without the-failing.md: print only the passages of each answer that match")
     parser.add_argument("--keep-in", metavar="FOLDER", help="where the results go, instead of a new temporary folder")
@@ -370,7 +373,7 @@ Line 2: FAILING or NOT FAILING.
 """, encoding="utf-8")
     an_empty_folder = workplace / "empty"
     an_empty_folder.mkdir()
-    return FreshSession.started(name, question, an_empty_folder, workplace / "verdict.json", arguments.judge_model or arguments.model, tools=None)
+    return FreshSession.started(name, question, an_empty_folder, workplace / "verdict.json", arguments.judge_model or arguments.model, tools="")
 
 
 def print_the_passages(answers: dict[str, str], passages_to_show: str | None) -> None:
