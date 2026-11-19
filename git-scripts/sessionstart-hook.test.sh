@@ -64,9 +64,10 @@ set_up_the_upstream_and_the_publisher() {
 }
 
 # Makes a consuming repository at $1 that ignores .claude-shared and keeps the current copy of the hook, unless $2 is
-# 'not-ignoring-the-catalog'.
+# 'not-ignoring-the-catalog'. Like every consuming repository, it keeps its shell scripts LF in every checkout.
 make_a_consumer() {
    git init --quiet "$1"
+   echo '*.sh text eol=lf' > "$1/.gitattributes"
    mkdir "$1/.claude"
    cp "$publisher/git-scripts/copy-into-consuming-repository/$name_of_the_hook" "$1/.claude/$name_of_the_hook"
    [ "${2:-}" = not-ignoring-the-catalog ] || echo '/.claude-shared' > "$1/.gitignore"
@@ -78,6 +79,7 @@ make_a_consumer() {
 make_a_consumer_that_mounts_the_catalog_as_a_submodule() {
    git init --quiet "$1"
    git -C "$1" submodule --quiet add -b main "$upstream" .claude-shared 2>/dev/null
+   echo '*.sh text eol=lf' > "$1/.gitattributes"
    mkdir "$1/.claude"
    cp "$publisher/git-scripts/copy-into-consuming-repository/$name_of_the_hook" "$1/.claude/$name_of_the_hook"
    git -C "$1" add --all
@@ -155,6 +157,7 @@ must_have_committed_nothing_in() {
 }
 branch_must_exist() { git -C "$machine_clone" show-ref --verify --quiet "refs/heads/$1" || went_wrong "the machine clone has no branch $1"; }
 branch_must_not_exist() { git -C "$machine_clone" show-ref --verify --quiet "refs/heads/$1" && went_wrong "the machine clone still has the branch $1"; }
+the_catalog_submodules_section_in_the_config_of() { git -C "$1" config --local --get-regexp '^submodule\.\.claude-shared\.' >/dev/null; }
 
 # ---- The cases ----
 
@@ -321,6 +324,7 @@ must_not_say "is no longer the shared Claude config's current one"
 the_catalog_of_must_be_at "$mounting" "$(upstream_commit)"
 must_have_committed_nothing_in_but_the_catalog() { [ "$(git -C "$1" rev-list --count HEAD)" -eq 1 ] || went_wrong "the consuming repository $1 has a new commit"; }
 must_have_committed_nothing_in_but_the_catalog "$mounting"
+the_catalog_submodules_section_in_the_config_of "$mounting" || went_wrong "the repository's config lost the submodule's section while the branch still mounts it"
 end_case
 
 start_case 'The branch takes the commit that removes the submodule: the clone it leaves, with no work of its own, is replaced by a worktree'
@@ -334,6 +338,8 @@ must_say 'was a clone of the shared Claude config of its own'
 must_list_every_always_on_rule
 must_be_a_worktree_of_the_machine_clone_on_its_branch "$mounting"
 [ ! -e "$mounting/.git/modules/.claude-shared" ] || went_wrong "the submodule's git folder is still there"
+the_catalog_submodules_section_in_the_config_of "$mounting" && went_wrong "the repository's config still has the submodule's section"
+[ ! -e "$mounting/.git/modules" ] || went_wrong 'the empty modules folder is still there'
 end_case
 
 start_case 'A checkout whose catalog is already a worktree switches back to a branch that still mounts it as a submodule: the hook says not to commit .claude-shared'
@@ -344,6 +350,61 @@ must_say "Don't commit .claude-shared on this branch"
 must_be_a_worktree_of_the_machine_clone_on_its_branch "$mounting"
 end_case
 git -C "$mounting" checkout --quiet - 2>/dev/null
+
+start_case "A checkout whose catalog is a worktree, its repository's config still holding the submodule's section: the hook removes that, and an empty modules folder, keeps another submodule's, and says nothing"
+git -C "$consumer" config --local submodule..claude-shared.url "$the_github_address"
+git -C "$consumer" config --local submodule..claude-shared.active true
+git -C "$consumer" config --local submodule.another.url "$the_github_address"
+mkdir -p "$consumer/.git/modules/another"
+start_a_session_in "$consumer"
+must_say_nothing
+the_catalog_submodules_section_in_the_config_of "$consumer" && went_wrong "the repository's config still has the catalog submodule's section"
+git -C "$consumer" config --local --get submodule.another.url >/dev/null || went_wrong "another submodule's section is gone"
+[ -d "$consumer/.git/modules/another" ] || went_wrong "another submodule's git folder is gone"
+git -C "$consumer" config --local --remove-section submodule.another
+rm -r "$consumer/.git/modules/another"
+start_a_session_in "$consumer"
+[ ! -e "$consumer/.git/modules" ] || went_wrong 'the empty modules folder is still there'
+end_case
+
+# Puts the repository of a clone of the catalog, as an old submodule's, into the git folder of the linked worktree $1,
+# with a commit that is not published when $2 is 'with-a-commit-not-published'.
+put_the_old_submodules_repository_into() {
+   git clone --quiet --no-checkout "$upstream" "$scratch/old-submodule"
+   if [ "${2:-}" = with-a-commit-not-published ]; then
+      git -C "$scratch/old-submodule" commit --quiet --allow-empty -m 'A commit that is not published'
+   fi
+   mkdir "$(git -C "$1" rev-parse --absolute-git-dir)/modules"
+   mv "$scratch/old-submodule/.git" "$(git -C "$1" rev-parse --absolute-git-dir)/modules/.claude-shared"
+   rm -rf "$scratch/old-submodule"
+}
+linked="$scratch/consumer-linked"
+
+start_case "A linked worktree whose git folder holds the old submodule's repository, all of it published: the hook removes that and its modules folder, and git can remove the worktree"
+git -C "$consumer" worktree add --quiet --detach "$linked"
+start_a_session_in "$linked"
+linked_git_folder=$(git -C "$linked" rev-parse --absolute-git-dir)
+put_the_old_submodules_repository_into "$linked"
+start_a_session_in "$linked"
+must_say_nothing
+[ ! -e "$linked_git_folder/modules" ] || went_wrong "the linked worktree's git folder still has its modules folder"
+git -C "$consumer" worktree remove "$linked" 2>/dev/null || went_wrong 'git refuses to remove the linked worktree'
+end_case
+start_a_session_in "$consumer"
+
+start_case "A linked worktree whose git folder holds the old submodule's repository, with a commit that is not published: the hook keeps it, and says so"
+git -C "$consumer" worktree add --quiet --detach "$linked"
+start_a_session_in "$linked"
+linked_git_folder=$(git -C "$linked" rev-parse --absolute-git-dir)
+put_the_old_submodules_repository_into "$linked" with-a-commit-not-published
+start_a_session_in "$linked"
+must_say "still holds the repository of the shared Claude config's old submodule"
+must_say 'holds 1 commit(s) that are not published upstream'
+[ -d "$linked_git_folder/modules/.claude-shared" ] || went_wrong 'the old repository is gone'
+end_case
+rm -rf "$linked_git_folder/modules"
+git -C "$consumer" worktree remove --force "$linked"
+start_a_session_in "$consumer"
 
 start_case 'A clone left by the submodule with an uncommitted edit: it is left in place, and the hook says why'
 with_work="$scratch/left-with-work"

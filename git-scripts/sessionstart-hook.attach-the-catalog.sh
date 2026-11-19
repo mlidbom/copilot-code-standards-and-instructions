@@ -11,6 +11,7 @@
 #   - while the checkout's branch still mounts it so, it is left as it is, and the agent told not to commit it;
 #   - once the branch no longer does, it is replaced by a worktree, unless it holds work of its own, which is reported.
 # A checkout of the machine clone on such a branch, as when a checkout switches to an old branch, is told the same.
+# Once the branch no longer mounts it, what the submodule left in the repository's git folders goes too.
 #
 # Everything is said on stdout with exit 0: the only way a SessionStart hook reaches the agent. Run by
 # sessionstart-hook.sh, with the consuming checkout's root as $1.
@@ -25,6 +26,7 @@ main() {
       if the_branch_mounts_the_catalog_as_a_submodule; then
          echo "This checkout's branch still mounts .claude-shared as a git submodule, from before each checkout's .claude-shared became a git worktree of the machine's one clone of the catalog, $machine_clone, as this checkout's already is. Don't commit .claude-shared on this branch: git shows it as changed whenever the catalog moves past the commit the branch records. That ends once the branch takes main's commit that removes the submodule."
       fi
+      forget_the_submodule_once_the_branch_no_longer_mounts_it
       tell_when_the_catalog_is_not_ignored
       if [ "${SHARED_CLAUDE_CONFIG_WAS_JUST_CLONED:-}" = yes ]; then
          tell_the_agent_to_read_every_always_on_rule "This machine had no clone of the shared Claude config, so this session started without the shared rules and skills. It is now cloned, at $machine_clone."
@@ -58,6 +60,7 @@ main() {
       rmdir "$catalog"
    fi
    attach_a_worktree_of_the_machine_clone || return
+   forget_the_submodule_once_the_branch_no_longer_mounts_it
    tell_when_the_catalog_is_not_ignored
    tell_the_agent_to_read_every_always_on_rule "$how_the_session_started It now has one: a git worktree of the machine's clone, $machine_clone, $on_which_branch."
 }
@@ -141,6 +144,47 @@ remove_the_clone_of_its_own() {
    case "$git_folder" in
       "$git_folder_of_the_consuming_repository"/*modules/.claude-shared) rm -rf "$git_folder" ;;
    esac
+}
+
+# What a repository that mounted the catalog as a git submodule keeps of it, once this checkout's branch no longer
+# mounts it and .claude-shared is a checkout of the machine clone:
+#   - The submodule's section in the repository's git config, shared by all its worktrees. With it there, git takes the
+#     submodule for initialized on a checkout of an old branch that still has the gitlink, and `git submodule update`,
+#     or a checkout or pull with --recurse-submodules, would check that branch's old commit of the catalog out inside
+#     the catalog's worktree.
+#   - The submodule's repository in this checkout's own git folder, modules/.claude-shared, which nothing uses.
+#   - The modules folder that held it: this checkout's own and the common git folder's. While a linked worktree's git
+#     folder has one, even an empty one, `git worktree remove` refuses: "working trees containing submodules cannot be
+#     moved or removed".
+# All of it goes, but for a repository that holds commits not published upstream, which is reported.
+forget_the_submodule_once_the_branch_no_longer_mounts_it() {
+   the_branch_mounts_the_catalog_as_a_submodule && return
+   is_a_checkout_of_the_machine_clone "$catalog" || return
+   if git -C "$consuming_checkout" config --local --get-regexp '^submodule\.\.claude-shared\.' >/dev/null 2>&1; then
+      # Sessions starting at once in worktrees of the same repository take turns with its config's lock, and the one
+      # that comes second finds the section gone: either way the next session start finds what is left.
+      git -C "$consuming_checkout" config --local --remove-section submodule..claude-shared 2>/dev/null
+   fi
+   own_git_folder=$(git -C "$consuming_checkout" rev-parse --absolute-git-dir)
+   remove_the_submodules_repository "$own_git_folder/modules/.claude-shared"
+   remove_the_folder_when_empty "$own_git_folder/modules"
+   remove_the_folder_when_empty "$(git_common_dir_of "$consuming_checkout")/modules"
+}
+
+# Removes the submodule's repository $1, unless it holds commits that aren't published upstream, on a branch or in a
+# stash. Its working tree, the submodule's checkout, is gone: .claude-shared is a checkout of the machine clone now.
+remove_the_submodules_repository() {
+   [ -d "$1" ] || return 0
+   unpublished=$(git --git-dir="$1" rev-list --count --all --not --remotes 2>/dev/null) || unpublished=''
+   if [ "$unpublished" = 0 ]; then
+      rm -rf "$1"
+      return
+   fi
+   echo "This checkout's git folder still holds the repository of the shared Claude config's old submodule, $1, and it ${unpublished:+holds $unpublished commit(s) that are not published upstream}${unpublished:-could not be read}, so it is kept. While it is there, git refuses to remove or move this worktree. Push what is worth keeping from it, then delete it."
+}
+
+remove_the_folder_when_empty() {
+   if [ -d "$1" ] && [ -z "$(ls -A "$1")" ]; then rmdir "$1"; fi
 }
 
 tell_when_the_catalog_is_not_ignored() {

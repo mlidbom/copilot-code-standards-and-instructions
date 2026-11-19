@@ -197,6 +197,13 @@ moves past the commit the branch records: don't commit that. Once the branch tak
 submodule, the next session start replaces the submodule's checkout with a worktree of the machine clone. A checkout
 whose `.claude-shared/` is already such a worktree, and which switches to such a branch, is told the same.
 
+Once a checkout's branch no longer mounts it, its session start also removes what the submodule left in the git
+folders: the submodule's section in the repository's git config, its repository in the checkout's own git folder, and
+the `modules` folders left empty. With the section there, git takes the submodule for initialized on an old branch,
+and `git submodule update` would check that branch's old commit out inside the catalog's worktree. While a linked
+worktree's git folder has a `modules` folder, even an empty one, `git worktree remove` refuses. An old repository that
+holds commits not published upstream is kept, and reported.
+
 To remove the submodule from a branch by hand: `git rm --cached .claude-shared`, delete its section from
 `.gitmodules` (or the file, when it has no other), ignore `/.claude-shared`, and commit the index as staged. Don't
 commit by path naming `.claude-shared`: `git commit -- .claude-shared` stages the folder on disk again, as a gitlink to
