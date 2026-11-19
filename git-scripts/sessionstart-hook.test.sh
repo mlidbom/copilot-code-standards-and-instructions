@@ -42,7 +42,7 @@ showing_what_the_hook_said=false
 rule_the_test_changes='rules/universal/900-a-rule-the-test-changes.md'
 rule_the_test_removes='rules/universal/901-a-rule-the-test-removes.md'
 rule_the_test_adds='rules/universal/902-a-rule-the-test-adds.md'
-name_of_the_hook='verify-shared-claude-config.sessionstart-hook.sh'
+name_of_the_hook='attach-shared-claude-config.sessionstart-hook.sh'
 
 # ---- The scratch repositories ----
 
@@ -372,12 +372,25 @@ echo '# An older copy.' >> "$consumer/.claude/$name_of_the_hook"
 git -C "$consumer" commit --quiet -m 'An older copy of the hook' -- .claude
 start_a_session_in "$consumer"
 must_say "is no longer the shared Claude config's current one"
-must_say '/git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh over it'
+must_say '/git-scripts/copy-into-consuming-repository/attach-shared-claude-config.sessionstart-hook.sh over it'
 cp "$publisher/git-scripts/copy-into-consuming-repository/$name_of_the_hook" "$consumer/.claude/$name_of_the_hook"
 start_a_session_in "$consumer"
 must_say_nothing
 end_case
 git -C "$consumer" commit --quiet -m 'The current hook' -- .claude
+
+start_case 'A repository whose own hook still has the name it had until 2026-11-19: it runs as before, and the hook says to rename it'
+the_name_it_had_before='verify-shared-claude-config.sessionstart-hook.sh'
+git -C "$consumer" mv ".claude/$name_of_the_hook" ".claude/$the_name_it_had_before"
+git -C "$consumer" commit --quiet -m 'The hook under the name it had before' -- .claude
+said=$(sh "$consumer/.claude/$the_name_it_had_before" 2>&1)
+hook_exit_code=$?
+must_say "is still .claude/$the_name_it_had_before"
+must_say "git mv it to .claude/$name_of_the_hook"
+must_not_say 'STOP'
+end_case
+git -C "$consumer" mv ".claude/$the_name_it_had_before" ".claude/$name_of_the_hook"
+git -C "$consumer" commit --quiet -m 'The hook under its name' -- .claude
 
 start_case 'A symlink into the catalog that the checkout left as a plain file: the hook tells the agent to stop'
 symlink="$consumer/.claude/the-shared-universal-rules"

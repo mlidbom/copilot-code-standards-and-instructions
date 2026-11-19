@@ -24,12 +24,12 @@ How the rules loader works — include order, the sidecar convention, what loads
 ## Adding to a repository
 
 1. Ignore the catalog's checkout: add `/.claude-shared` to the repository's `.gitignore`.
-2. Copy [git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh](git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh)
-   to `.claude/verify-shared-claude-config.sessionstart-hook.sh`, and wire it as the repository's `SessionStart` hook
+2. Copy [git-scripts/copy-into-consuming-repository/attach-shared-claude-config.sessionstart-hook.sh](git-scripts/copy-into-consuming-repository/attach-shared-claude-config.sessionstart-hook.sh)
+   to `.claude/attach-shared-claude-config.sessionstart-hook.sh`, and wire it as the repository's `SessionStart` hook
    (see [Verifying](#verifying)).
 3. In the repository's `.gitattributes`, add `*.sh text eol=lf`, so the hook script keeps LF line endings on
    Windows checkouts — CRLF breaks it under `bash`.
-4. Start a session, or run the hook by hand: `sh .claude/verify-shared-claude-config.sessionstart-hook.sh`. It
+4. Start a session, or run the hook by hand: `sh .claude/attach-shared-claude-config.sessionstart-hook.sh`. It
    attaches the catalog at `.claude-shared/`.
 5. Symlink the parts the repository adopts into its `.claude/` (next section).
 
@@ -106,19 +106,21 @@ Wire one into the consuming repo so a degraded checkout fails loudly:
 - **`SessionStart` hook** — catches a degraded checkout the moment a session starts, before the agent acts on
   garbage rules. The hook must work while the checkout has no catalog yet, and nothing stored inside the
   catalog can run then — so each consuming repository keeps its own copy of
-  [git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh](git-scripts/copy-into-consuming-repository/verify-shared-claude-config.sessionstart-hook.sh)
-  at `.claude/verify-shared-claude-config.sessionstart-hook.sh`. It clones the machine clone when the machine
+  [git-scripts/copy-into-consuming-repository/attach-shared-claude-config.sessionstart-hook.sh](git-scripts/copy-into-consuming-repository/attach-shared-claude-config.sessionstart-hook.sh)
+  at `.claude/attach-shared-claude-config.sessionstart-hook.sh`. It clones the machine clone when the machine
   has none, and hands over to the catalog's session-start hook, which attaches the catalog. Claude Code only merges settings from a
   project's own `.claude/settings.json` (never from `.claude-shared/`), so add it there. Keep it
   project-level, not user-level: a degraded checkout happens on fresh clones, cloud agents, and teammates,
-  which user settings don't reach.
+  which user settings don't reach. Until 2026-11-19 the file was named
+  `verify-shared-claude-config.sessionstart-hook.sh`. A copy under that name works as before, and the session start
+  says to rename it.
 
   ```json
   "hooks": {
     "SessionStart": [
       { "hooks": [
           { "type": "command",
-            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/verify-shared-claude-config.sessionstart-hook.sh\"" }
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/attach-shared-claude-config.sessionstart-hook.sh\"" }
       ] }
     ]
   }
