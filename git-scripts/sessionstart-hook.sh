@@ -9,12 +9,20 @@
 # worktree of the machine clone runs this from the checkout's own .claude-shared, with no argument: the consuming
 # checkout is then the folder that .claude-shared is in.
 #
+# Only the attach step runs from where this file is, since the checkout may have no catalog yet. The others run from
+# the checkout's own catalog once it has one: so an edit in progress to the scripts in one checkout, ~/.claude's
+# included, runs in that checkout's sessions only, and each checkout runs the scripts it was just brought up to date
+# with.
+#
 # The steps are run through sh, not executed directly, so they work whether or not the checkout kept their
 # executable bit.
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 consuming_checkout=${1:-$(dirname -- "$(git -C "$dir" rev-parse --show-toplevel)")}
 sh "$dir/sessionstart-hook.attach-the-catalog.sh" "$consuming_checkout"
-sh "$dir/sessionstart-hook.pull-when-behind.sh" "$consuming_checkout"
-sh "$dir/sessionstart-hook.clean-up-after-deleted-checkouts.sh"
-sh "$dir/sessionstart-hook.verify-claude-symlinks.sh" "$consuming_checkout"
-sh "$dir/sessionstart-hook.report-an-outdated-copy-of-the-repositorys-hook.sh" "$consuming_checkout"
+
+steps="$consuming_checkout/.claude-shared/git-scripts"
+[ -f "$steps/sessionstart-hook.pull-when-behind.sh" ] || steps=$dir
+sh "$steps/sessionstart-hook.pull-when-behind.sh" "$consuming_checkout"
+sh "$steps/sessionstart-hook.clean-up-after-deleted-checkouts.sh"
+sh "$steps/sessionstart-hook.verify-claude-symlinks.sh" "$consuming_checkout"
+sh "$steps/sessionstart-hook.report-an-outdated-copy-of-the-repositorys-hook.sh" "$consuming_checkout"

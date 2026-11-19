@@ -421,6 +421,26 @@ must_say 'has uncommitted edits'
 end_case
 git -C "$consumer/.claude-shared" checkout --quiet -- README.md
 
+start_case 'A checkout moved to another folder: its catalog stays attached, at its next session start and the one after'
+make_a_consumer "$scratch/to-be-moved"
+start_a_session_in "$scratch/to-be-moved"
+mv "$scratch/to-be-moved" "$scratch/moved"
+start_a_session_in "$scratch/moved"
+must_say_nothing
+start_a_session_in "$scratch/moved"
+must_say_nothing
+is_a_checkout_of_the_machine_clone "$scratch/moved/.claude-shared" || went_wrong 'the moved checkout lost its catalog'
+end_case
+
+start_case "An edit in progress to the steps in ~/.claude's catalog: it runs in ~/.claude's session starts only"
+echo 'echo "AN EDIT IN PROGRESS TO THE CLEAN-UP STEP"' >> "$machine_clone/git-scripts/sessionstart-hook.clean-up-after-deleted-checkouts.sh"
+start_a_session_in "$consumer"
+must_not_say 'AN EDIT IN PROGRESS TO THE CLEAN-UP STEP'
+start_a_session_in "$home_claude"
+must_say 'AN EDIT IN PROGRESS TO THE CLEAN-UP STEP'
+end_case
+git -C "$machine_clone" checkout --quiet -- git-scripts/sessionstart-hook.clean-up-after-deleted-checkouts.sh
+
 start_case 'Sessions starting at once in eight checkouts, the upstream ahead: every hook attaches or pulls, and none fails'
 publish_a_change_to_an_always_on_rule 'the change the sessions starting at once pull'
 at_once="$consumer $scratch/one/Deskmancer $scratch/another/Deskmancer $deleted"

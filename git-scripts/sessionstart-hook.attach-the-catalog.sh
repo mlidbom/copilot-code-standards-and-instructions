@@ -20,6 +20,7 @@ catalog="$consuming_checkout/.claude-shared"
 
 main() {
    if is_a_checkout_of_the_machine_clone "$catalog"; then
+      keep_the_registration_of_a_moved_checkout
       tell_when_the_catalog_is_not_ignored
       if [ "${SHARED_CLAUDE_CONFIG_WAS_JUST_CLONED:-}" = yes ]; then
          tell_the_agent_to_read_every_always_on_rule "This machine had no clone of the shared Claude config, so this session started without the shared rules and skills. It is now cloned, at $machine_clone."
@@ -85,6 +86,15 @@ attach_a_worktree_of_the_machine_clone() {
       sleep "$attempt"
       attempt=$((attempt + 1))
    done
+}
+
+# A checkout that was moved or renamed keeps its worktree, which still finds the machine clone. But the machine clone's
+# registration of it names the old path, so the clean-up step would prune it, and the worktree would be broken from
+# the next session start on. Repairing points the registration at where the worktree is now, and does nothing when
+# nothing moved. The machine clone itself has no registration.
+keep_the_registration_of_a_moved_checkout() {
+   [ "$(git -C "$catalog" rev-parse --show-toplevel)" != "$(git -C "$machine_clone" rev-parse --show-toplevel)" ] || return 0
+   git -C "$machine_clone" worktree repair "$catalog" >/dev/null 2>&1
 }
 
 # The branch for this checkout's worktree: catalog_branch_for its path, with a number added when another checkout's

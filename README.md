@@ -164,6 +164,11 @@ starts. It runs five steps, each of which tells the agent what it needs to know 
 Sessions started at once, as when they are all reloaded, fetch into the machine clone's one set of refs at the same
 moment: a fetch that fails on a lock is retried.
 
+Only the attach step runs from the machine clone, since the checkout may have no catalog yet; the other steps run from
+the checkout's own `.claude-shared/`. So an edit to `sessionstart-hook.sh`, `sessionstart-hook.attach-the-catalog.sh`
+or `catalog-checkouts.sh` in `~/.claude/.claude-shared` runs in every session start on the machine as soon as it is
+saved: edit those in another checkout's worktree.
+
 [git-scripts/sessionstart-hook.test.sh](git-scripts/sessionstart-hook.test.sh) runs the hook in scratch repositories
 through each of those situations. Run it after changing the hook or the sync scripts.
 

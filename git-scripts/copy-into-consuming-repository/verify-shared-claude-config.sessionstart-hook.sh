@@ -14,7 +14,11 @@ checkout=$(git -C "$(dirname -- "$0")" rev-parse --show-toplevel)
 machine_clone="$HOME/.claude/.claude-shared"
 catalog_hook="$machine_clone/git-scripts/sessionstart-hook.sh"
 if [ ! -f "$catalog_hook" ]; then
-   GIT_TERMINAL_PROMPT=0 git clone --quiet https://github.com/mlidbom/copilot-code-standards-and-instructions.git "$machine_clone" >/dev/null 2>&1
+   # No prompt for credentials: nobody is there to answer one. Bounded where `timeout` exists (Git Bash, Linux), so a
+   # connection that hangs doesn't hold up the session's start.
+   clone='git clone --quiet https://github.com/mlidbom/copilot-code-standards-and-instructions.git'
+   if command -v timeout >/dev/null 2>&1; then clone="timeout 60 $clone"; fi
+   GIT_TERMINAL_PROMPT=0 $clone "$machine_clone" >/dev/null 2>&1
    # Another session's hook may have cloned it at the same moment, so what is checked is the clone, not the exit code.
    if [ ! -f "$catalog_hook" ]; then
       echo "STOP: the shared rules and skills are missing: this machine has no clone of the shared Claude config at $machine_clone, and cloning it failed. Do NOT trust loaded rules or skills. Tell Magnus."
