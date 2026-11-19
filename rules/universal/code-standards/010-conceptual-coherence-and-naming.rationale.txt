@@ -3,19 +3,27 @@
 Five files until 2026-11-14: this one, `011-naming-and-conceptual-fit-are-preeminent.md`,
 `012-renaming-is-the-most-important-refactoring.md`, `013-name-for-the-human-who-must-look-it-up.md` and
 `032-naming.md`. They and their sidecars, with the cases in full, are in the catalog's history: its commit `deeee39` is
-the last that has them.
+the last that has them. Rewritten on 2026-11-19 as a concise statement of the user's taste: what other code standards
+say (extraction in `031-everything-in-its-place.md`, a type's doc comment in `060-documentation-comments.md`) went.
 
 ## What is behind it
 
-All from June 2026, in the vdgs-live-view project (Vantage). The agent: most likely Opus 4.8, the latest Opus then.
+From June 2026, in the vdgs-live-view project (Vantage). The agent: most likely Opus 4.8, the latest Opus then.
 
 - **The `Monitor` case:** a `record struct Monitor(ScreenRect Bounds)`. Asked whether the name and the kind of type
   fitted the concept, the agent answered twice with how the implementation used it. The fix was the rename: it's the
-  area a monitor covers, not the device. Behind "When the user remarks on code" and the section on renaming.
+  area a monitor covers, not the device. Behind "What the user means" and the section on renaming.
 - **"Simple, maintainable":** the agent read the words as minimalism and YAGNI. So the standard is stated without the
   word "simple", and the rule says what the user means by the three words.
 - **`GlobalHotkeys`:** the agent shortened it to `Hotkeys`, and argued that "Global" was redundant. The user: "make the
   naming universal. not hotkeys, globalHotkeys. Do not fear typing. Readability and being unambiguous is king."
+
+From 2026-11-18, in Compze's end review of the taggregate-store spike (Opus 5.5):
+
+- **`SnapshotRoundTrip.DifferencesOf(taggregate, createEmpty)`:** an agent with our rules and one with nothing of ours
+  both kept it, as reading as a phrase with its class name. The user chose `DifferencesBetweenItAndItsCopy`. Behind the
+  first bullet under "Names". The example is in the rule, not here, because it is the threshold both agents missed: a
+  name that is true once you know what it does. The user approved it there, 2026-11-19.
 
 ## Taken out, and not to put back
 
@@ -26,10 +34,13 @@ All from June 2026, in the vdgs-live-view project (Vantage). The agent: most lik
 - **The force:** "The king of all concerns", "a fatal design error", "you have already lost the thread". Removed the
   same day. The ranking is kept, in the title and in the user's own words.
 - **A reader "new to the code", or to the domain:** who the reader is belongs to the rules on comments. In names it
-  was the agent's addition, in for one commit.
+  was the agent's addition, in for one commit. "A reader who hasn't read its doc comment or its body", in the rule since
+  2026-11-19, is narrower: it is about the one member, and is the user's own test.
 
 ## Not tested
 
-- **Whether names now come out shorter or less telling.** Look first at "As long as it takes to be understood with no
-  lookup".
+- **Whether the no-lookup bullet makes names over-long, or has agents flag names nobody had trouble with.** It is the
+  sentence closest to what was taken out above.
+- **Whether names come out shorter or less telling** after the rewrite of 2026-11-19. Look first at "As long as that
+  takes".
 - **Whether the agent again answers a question about a name with how the implementation works.**
