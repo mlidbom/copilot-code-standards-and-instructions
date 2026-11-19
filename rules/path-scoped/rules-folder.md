@@ -23,10 +23,14 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
   the agent can't know or wouldn't choose by itself. An agent's own account of what it would do without the rule is not
   evidence; what agents do in real use is (below).
-- **A one-off is not worth a rule.** An accident that happened once, and never before, rarely comes back, while a rule
-  written for it costs every session and may well make things worse. The user, 2026-11-17: "A one off rare accident
-  that has never happened before is probably not worth a rule. Quite possibly the rule will make things worse." Nor is
-  a tool's occasional glitch: "Some tools sometimes glitch. If we make a rule for every one how many will we have?"
+- **A one-off is not worth a rule.** A rule written for one incident costs every session and may well make things
+  worse. A correction of behavior waits until the same thing goes wrong again and again, and is then talked over with
+  the user: "In dealing with other intelligent beings, I don't start crafting new rules/laws for every mistake that
+  happens" (2026-11-19). A fact about the environment that is costly to rediscover may be written down once, short. A
+  tool's occasional glitch gets nothing.
+- **Facts, not instructions.** Give the agent what it can't derive, and leave what to do with it to its judgment.
+  Instructions are for hard limits, the user's taste where it isn't the mainstream's, and protocols between several
+  parties. Write as a concise brief to a capable colleague, not a conversation.
 - **A rule, or a skill.** Every session loads a rule whole, and only a skill's description:
   - **A skill, when it's a how-to for a task that announces itself,** such as profiling, or upgrading a project's
     packages. Its description says when to use it, in the words the task arrives in, and its body loads next to the
@@ -66,37 +70,16 @@ wrong does its harm each time it applies, and the user only sees the result. So:
 The always-on rule `000-tell-me-when-a-rule-gets-in-the-way.md` is how a rule that does harm gets noticed. How this
 came about is in its sidecar.
 
-## Checking a change to a rule: in real use, and by replay only when that is cheap and decisive
+## Checking a change to a rule: in real use
 
-**Check a change to a rule in real use.** Replay a case only when that is cheap and decisive: the case fits in one
-short prompt, the failing shows in a single answer, and the rule as it stands fails nearly every time. Each fresh
-session spends its whole loaded context out of the user's weekly quota, and the user, 2026-11-17: "constructing a
-realistic recreation is probably quite hard and any small difference in how it runs could make it result in something
-else. So when you iterate around that over and over it gobbles up my ability to work with you, and the result is still
-uncertainty". A replay also counts answers against its own description of the failing, which can be wrong: the add-on
-case, tuned over dozens of replays, was a right answer (the sidecar of the rule on the ubiquitous language).
+Make the change and work as usual; when something misfires, the user or an agent says so (the rule on telling him when
+a rule gets in the way). A few test prompts can't show how a rule changes an agent's behavior in practice (the user,
+2026-11-19), and each fresh session spends its whole loaded context out of his weekly quota. A changed rule reaches
+only the sessions started after it.
 
-When a replay is worth it, `rule-testing/replay-a-rule-change.py` in the catalog replays a situation in which a rule
-went wrong, under two or more versions of the catalog's rules, and prints what each fresh session answered on the
-point. Its own help says how.
-
-- **Why fresh sessions:** a session, and the agents it starts, keep the rules they started with. A changed rule
-  reaches only the sessions started after the change.
-- **A replay** is a folder under `rule-testing/replays`: the prompt, which gives the situation as it stood and the
-  user's message, the documents the prompt has the session read, and a description of the failing.
-  `a-word-another-namespace-already-uses` is one.
-- **Test before committing.** By default it runs the last commit against the working tree: the uncommitted change is
-  one arm, and the rules without it are the control. `--arm name=none` adds what the model does with no shared rules,
-  and `--arm name=bare` what it does with nothing of ours at all: no rules at any level, CLAUDE.md, skills or hooks.
-- **A fresh session judges each answer** against the replay's description of the failing, and the script counts the
-  failings for each arm. Read some answers beside the verdicts: the judge is a model too. A difference of one answer
-  shows nothing.
-- **Test with each model that will work under the rule.** What one model does by itself, another may not.
-- **A session sees the name of the folder it runs in.** Folders named after what was tested, such as
-  `with-the-sentence`, once made a sentence look as if it worked, ten answers of ten. The script gives the folders
-  plain names. Do the same when replaying by hand.
-- **Run the control at the same time as the change,** not from memory of an earlier run.
-- **Keep the replay** when the case may come back. It is the rule's test.
+`rule-testing/replay-a-rule-change.py` in the catalog runs one prompt under several versions of the rules, or with none
+of ours (the skill what-our-rules-do-to-an-answer): useful for an answer free of our conventions, not as proof that a
+rule works.
 
 ## What loads, and when
 
