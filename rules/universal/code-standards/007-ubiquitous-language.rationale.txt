@@ -1,6 +1,6 @@
 # Provenance
 
-## What is behind the section "A word that two names share is not a collision"
+## What is behind the section "A word that other names use is no collision"
 
 **2026-11-11, in JAStudio's code** (Opus 5.5). The agent avoided "import", because the `Importing` namespace already
 used the word, and named the action "keep", then "archive". It also put the namespace's word in front of every type in
@@ -8,13 +8,21 @@ a namespace. The user: "this feels like we are trying to apply the impossible ru
 very common in computer science, such as import or store or save", and of the prefixes: "this feels to me like intAge,
 strName".
 
-Replayed in fresh sessions on 2026-11-14 (`rule-testing/replays/a-word-another-namespace-already-uses` in the catalog).
-Answers that showed the failing:
+Replayed in fresh sessions on 2026-11-14 (`rule-testing/replays/a-word-another-namespace-already-uses` in the catalog),
+with the section's wording of then. Answers that showed the failing:
 
 | The rule | Fable 5.2 | Opus 5.5 |
 |---|---|---|
 | With nothing on the matter | 1 of 4 | 7 of 10 |
 | With the section's first paragraph | 0 of 4 | 1 of 6 |
+
+**2026-11-18, in Compze's taggregate-store spike** (Opus 5.5). Asked to name observers that come and go while the
+application runs, an agent with our rules rejected "transient", a dependency-injection lifestyle in Compze, and
+"dynamic", the C# keyword, and chose "temporary". An agent with nothing of ours rejected only "transient", and chose
+"dynamic". The user chose "dynamic": "Words do not need to be absolutely distinct without context. I think both
+Transient and Dynamic is perfectly usable." The section then spoke only of renaming one of two names in the code; on
+2026-11-19 it was widened to a new name, and to words the language and its frameworks use. One run each, and the two
+differed in effort and brief too, so the case shows a gap in the wording, not that the rules made the name worse.
 
 ## A shared word that was a collision: the add-on case
 
@@ -24,12 +32,10 @@ until agents stopped asking. The agent was right. The user, 2026-11-17: "It was 
 fully qualified name will disambiguate the sections of the name. In this case add-on was not actually disambiguated.
 This is very rare though and only happened because of a mutual two way relationship between the disambiguating parts.
 jastudio has an add-on running in anki, and there is an anki add-on running in. jastudio. Suddenly anki addon does not
-help. Which? It fits both." The agent couldn't say why, and gave in when told it was wrong.
+help. Which? It fits both."
 
-So on 2026-11-17 what had been written for that case went: the paragraph naming the argument's other forms ("will be
-read as" the other, "would then mean two things", and the rest), "and don't propose to", and "in code, in documents or
-in conversation". The rule's own line covers the case: only a fully qualified name has to mean one thing, and there the
-qualified names didn't.
+The rule's own line covers the case: only a fully qualified name has to mean one thing, and there the qualified names
+didn't. What had been written for it, naming the argument's other forms, went on 2026-11-17.
 
 ## Tried and rejected
 
@@ -43,6 +49,7 @@ qualified names didn't.
 
 ## Not tested
 
-- **Whether the first paragraph still keeps an agent from raising a shared word that is a collision.** It did with
-  Fable 5.2 in the add-on case while it also said "don't propose to". That case is rare, and the answer is a sentence:
-  say which qualified name fits both.
+- **The section's wording of 2026-11-19,** widened to new names and to the language and its frameworks. The replay above
+  measured the wording before it; its core sentence, on what qualifies a name, is unchanged.
+- **Whether the section keeps an agent from raising a shared word that is a collision,** as in the add-on case. That
+  case is rare, and the answer is a sentence: say which qualified name fits both.
