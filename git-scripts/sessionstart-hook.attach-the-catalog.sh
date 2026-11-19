@@ -10,6 +10,7 @@
 # A .claude-shared that is a clone of its own dates from when each repository mounted the catalog as a git submodule:
 #   - while the checkout's branch still mounts it so, it is left as it is, and the agent told not to commit it;
 #   - once the branch no longer does, it is replaced by a worktree, unless it holds work of its own, which is reported.
+# A checkout of the machine clone on such a branch, as when a checkout switches to an old branch, is told the same.
 #
 # Everything is said on stdout with exit 0: the only way a SessionStart hook reaches the agent. Run by
 # sessionstart-hook.sh, with the consuming checkout's root as $1.
@@ -21,6 +22,9 @@ catalog="$consuming_checkout/.claude-shared"
 main() {
    if is_a_checkout_of_the_machine_clone "$catalog"; then
       keep_the_registration_of_a_moved_checkout
+      if the_branch_mounts_the_catalog_as_a_submodule; then
+         echo "This checkout's branch still mounts .claude-shared as a git submodule, from before each checkout's .claude-shared became a git worktree of the machine's one clone of the catalog, $machine_clone, as this checkout's already is. Don't commit .claude-shared on this branch: git shows it as changed whenever the catalog moves past the commit the branch records. That ends once the branch takes main's commit that removes the submodule."
+      fi
       tell_when_the_catalog_is_not_ignored
       if [ "${SHARED_CLAUDE_CONFIG_WAS_JUST_CLONED:-}" = yes ]; then
          tell_the_agent_to_read_every_always_on_rule "This machine had no clone of the shared Claude config, so this session started without the shared rules and skills. It is now cloned, at $machine_clone."

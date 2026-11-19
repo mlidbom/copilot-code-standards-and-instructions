@@ -336,6 +336,15 @@ must_be_a_worktree_of_the_machine_clone_on_its_branch "$mounting"
 [ ! -e "$mounting/.git/modules/.claude-shared" ] || went_wrong "the submodule's git folder is still there"
 end_case
 
+start_case 'A checkout whose catalog is already a worktree switches back to a branch that still mounts it as a submodule: the hook says not to commit .claude-shared'
+git -C "$mounting" checkout --quiet -b still-mounting-it HEAD~1 2>/dev/null
+start_a_session_in "$mounting"
+must_say 'still mounts .claude-shared as a git submodule'
+must_say "Don't commit .claude-shared on this branch"
+must_be_a_worktree_of_the_machine_clone_on_its_branch "$mounting"
+end_case
+git -C "$mounting" checkout --quiet - 2>/dev/null
+
 start_case 'A clone left by the submodule with an uncommitted edit: it is left in place, and the hook says why'
 with_work="$scratch/left-with-work"
 make_a_consumer_that_mounts_the_catalog_as_a_submodule "$with_work"

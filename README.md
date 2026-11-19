@@ -192,7 +192,13 @@ Until 2026-11-19 each consuming repository mounted the catalog as a git submodul
 branch from before then still does, and its own copy of the hook runs the catalog's hook from its `.claude-shared/`,
 the submodule's checkout. That checkout is kept up to date like any other, and git shows it as changed whenever it
 moves past the commit the branch records: don't commit that. Once the branch takes `main`'s commit that removes the
-submodule, the next session start replaces the submodule's checkout with a worktree of the machine clone.
+submodule, the next session start replaces the submodule's checkout with a worktree of the machine clone. A checkout
+whose `.claude-shared/` is already such a worktree, and which switches to such a branch, is told the same.
+
+To remove the submodule from a branch by hand: `git rm --cached .claude-shared`, delete its section from
+`.gitmodules` (or the file, when it has no other), ignore `/.claude-shared`, and commit the index as staged. Don't
+commit by path naming `.claude-shared`: `git commit -- .claude-shared` stages the folder on disk again, as a gitlink to
+the commit checked out in it, and so commits it moved, not removed.
 
 ## Why one clone per machine, and neither a submodule nor a git subtree
 
