@@ -356,9 +356,8 @@ def remove_if_it_holds_no_files(folder: Path) -> None:
 
 
 def consuming_repository() -> Path | None:
-    """The repository the catalog is a submodule of, or None when the catalog is a clone of its own."""
-    superproject = subprocess.run(["git", "-C", str(CATALOG), "rev-parse", "--show-superproject-working-tree"], capture_output=True, text=True).stdout.strip()
-    return Path(superproject) if superproject else None
+    """The checkout that consumes the catalog: the folder its .claude-shared is in. None when the catalog is checked out on its own."""
+    return CATALOG.parent if CATALOG.name == ".claude-shared" else None
 
 
 def build_the_folder_a_session_runs_in(folder: Path, arm: Arm, replay: Path, repository: Path | None) -> None:

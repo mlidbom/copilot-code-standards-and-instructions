@@ -140,7 +140,7 @@ def main() -> None:
         sys.exit(f"No .txt files in {arguments.tasks}")
     runs_in = Path(arguments.runs_in).resolve() if arguments.runs_in else consuming_repository()
     if not runs_in or not runs_in.is_dir():
-        sys.exit("Give the folder the sessions run in, with --in: the catalog isn't a submodule of a repository here.")
+        sys.exit("Give the folder the sessions run in, with --in: the catalog isn't checked out as a repository's .claude-shared here.")
     results = Path(arguments.keep_in).resolve() if arguments.keep_in else Path(tempfile.mkdtemp(prefix="skills-a-task-loads-"))
     results.mkdir(parents=True, exist_ok=True)
 
@@ -182,16 +182,15 @@ def parsed_arguments() -> argparse.Namespace:
     parser.add_argument("--runs", type=int, default=2, help="sessions for each task")
     parser.add_argument("--tool-calls", type=int, default=8, help="a session is stopped once it has made this many tool calls: 0 lets it finish its plan")
     parser.add_argument("--model", help="the model the sessions run on")
-    parser.add_argument("--in", dest="runs_in", help="the folder the sessions run in: by default the repository the catalog is a submodule of")
+    parser.add_argument("--in", dest="runs_in", help="the folder the sessions run in: by default the checkout whose .claude-shared the catalog is")
     parser.add_argument("--keep-in", help="the folder for what the sessions wrote and did: by default a new temporary one")
     parser.add_argument("--timeout-minutes", type=int, default=30)
     return parser.parse_args()
 
 
 def consuming_repository() -> Path | None:
-    """The repository the catalog is a submodule of, if it is one here."""
-    superproject = subprocess.run(["git", "-C", str(CATALOG), "rev-parse", "--show-superproject-working-tree"], capture_output=True, text=True).stdout.strip()
-    return Path(superproject) if superproject else None
+    """The checkout that consumes the catalog: the folder its .claude-shared is in. None when the catalog is checked out on its own."""
+    return CATALOG.parent if CATALOG.name == ".claude-shared" else None
 
 
 if __name__ == "__main__":

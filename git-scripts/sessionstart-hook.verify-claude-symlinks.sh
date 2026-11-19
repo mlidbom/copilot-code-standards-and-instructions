@@ -8,10 +8,10 @@
 # on stdout (with agent-directed framing) and exits 0, so the warning actually lands in the agent's context at session
 # start.
 #
-# Run by sessionstart-hook.sh. The verifier is run through sh, not executed directly, so it works whether or not the
-# checkout kept the file's executable bit.
+# Run by sessionstart-hook.sh, with the consuming checkout's root as $1. The verifier is run through sh, not executed
+# directly, so it works whether or not the checkout kept the file's executable bit.
 dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-if report=$(sh "$dir/verify-claude-symlinks.sh" 2>&1); then
+if report=$(sh "$dir/verify-claude-symlinks.sh" "$1" 2>&1); then
    exit 0
 fi
 printf '%s\n%s\n' \
