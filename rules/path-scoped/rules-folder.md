@@ -94,8 +94,9 @@ rule works.
   `path-scoped/` would still load always; a globbed file in `universal/` would still be gated.
 - **`agents: [claude]` frontmatter marks a rule only for Claude;** without it, a rule is for Codex too. Codex's
   setup is written from these files by ClaudesSetupForCodex (in `~/.claude`), which leaves out what says
-  `[claude]`: a rule that names tools or commands Codex hasn't got, such as Claude Code's MCP servers. Claude Code
-  ignores the key, `paths:` beside it included (tested 2026-11-21). So it would load a rule only for Codex as well,
+  `[claude]`: a rule that can't work for Codex or means nothing to it, such as one on compacting a Claude Code session.
+  A rule of which only some parts name a tool Codex hasn't got is for Codex too: its setup tells it to skip those
+  parts. Claude Code ignores the key, `paths:` beside it included (tested 2026-11-21). So it would load a rule only for Codex as well,
   where it would mislead: such a rule goes where Claude Code doesn't look, `~/.claude/rules-for-codex/`.
 
 ## Include order
