@@ -92,10 +92,11 @@ rule works.
 - **Frontmatter gates, not the folder.** `universal/` and `path-scoped/` are human signposting only; the
   loader treats every subfolder identically and looks solely at frontmatter. A frontmatter-less file in
   `path-scoped/` would still load always; a globbed file in `universal/` would still be gated.
-- **`agents:` frontmatter names the agent CLIs a rule is for,** `[claude]` or `[codex]`; without it, a rule is for
-  both. Codex's instructions are generated from these files by RulesForCodex (in `~/.claude`), which leaves out what
-  says `[claude]`: a rule that names tools or commands Codex hasn't got, such as Claude Code's MCP servers. Claude
-  Code ignores the key, `paths:` beside it included (tested 2026-11-21), and loads a rule that says `[codex]` too.
+- **`agents: [claude]` frontmatter marks a rule only for Claude;** without it, a rule is for Codex too. Codex's
+  instructions are generated from these files by RulesForCodex (in `~/.claude`), which leaves out what says
+  `[claude]`: a rule that names tools or commands Codex hasn't got, such as Claude Code's MCP servers. Claude Code
+  ignores the key, `paths:` beside it included (tested 2026-11-21). So it would load a rule only for Codex as well,
+  where it would mislead: such a rule goes where Claude Code doesn't look, `~/.claude/rules-for-codex/`.
 
 ## Include order
 
