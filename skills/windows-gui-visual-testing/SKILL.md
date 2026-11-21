@@ -3,15 +3,14 @@ name: windows-gui-visual-testing
 description: >-
   Autonomously verify what a Windows desktop GUI app you are developing (WPF, WinForms, Win32) actually
   RENDERS — without Computer Use. Instrument the app itself with a self-capture channel (a trigger file
-  makes the app screenshot its OWN window to a PNG you read), plus a file log, topmost-and-foreground pinning, a
-  single-instance guard, and a tight edit→build→launch→capture→read loop. Use this whenever you are
+  makes the app screenshot its OWN window to a PNG you read), plus a file log, foreground pinning and a
+  single-instance guard, for a tight edit→build→launch→capture→read loop. Use this whenever you are
   iterating on a Windows desktop app and need to SEE its rendered output — a window's pixels, layout, a
   visual bug, animation or liveness, or DWM/DirectComposition/Direct3D/GPU-composited content such as live
   thumbnails, video, or custom drawing — especially when Computer Use is too slow, masks ungranted windows,
-  or gets occluded. Strongly prefer it over Computer Use for any local build-and-look loop on a native
-  Windows GUI you are building; it lets you iterate solo at build speed instead of one screenshot per
-  round-trip. Not for: CI or packaging builds, diagnosing a crash from a stack trace, unit or logic tests,
-  or screenshotting the whole desktop, a web page, or apps you are not developing.
+  or gets occluded. Prefer it to Computer Use for any build-and-look loop on a native GUI you are building.
+  Not for: CI or packaging builds, diagnosing a crash from a stack trace, unit or logic tests, or
+  screenshotting the whole desktop, a web page, or apps you are not developing.
 ---
 
 # Windows GUI visual testing without Computer Use
