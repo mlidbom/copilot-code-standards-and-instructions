@@ -17,9 +17,10 @@ under `.claude/rules/` — i.e. when editing the rules themselves — and costs 
 Every always-on rule is read in every session, by a model that follows what it reads closely. A rule that is a little
 wrong does its harm each time it applies, and the user only sees the result. So:
 
-- **Judge a rule by what the rules are for,** which `000-tell-me-when-a-rule-gets-in-the-way.md` gives in the user's
-  words: how well the agent works as a whole, and far behind that, how readable and maintainable the rules are for
-  him. A rule that gets followed and makes the work worse has failed.
+- **Judge a rule by what the rules are for,** which `000-global-speed-through-the-best-work-and-relentless-refactoring.md`
+  and `000-tell-me-when-a-rule-gets-in-the-way.md` give in the user's words: the project's speed over months and years,
+  through the best possible work and relentless refactoring; how well the agent works as a whole; and far behind that,
+  how readable and maintainable the rules are for him. A rule that gets followed and makes the work worse has failed.
 - **Before adding a rule, ask whether the agent would do this anyway.** If so, leave it unwritten. A rule is for what
   the agent can't know or wouldn't choose by itself. An agent's own account of what it would do without the rule is not
   evidence; what agents do in real use is (below).

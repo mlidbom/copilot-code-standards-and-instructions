@@ -1,0 +1,29 @@
+# Provenance
+
+Written 2026-11-21 in `~/.claude`, in a session of Claude Opus 5.5, at the user's request.
+
+## What is behind it
+
+Advising him on OpenAI Codex's settings, the agent recommended a lower reasoning effort than the maximum, partly because
+max makes every turn slower for the sessions waiting on it. The user: "Like with you, I'm looking for global speed.
+[...] Our whole process is set up around this belief. Do you disagree with it? If not let's get this meta rationale for
+our rules into the rules prominently since it informs everything and apparently it is not in the rules at present."
+The agent agreed.
+
+In the same conversation he had said: "As always, I'm looking for the optimal results, not the cheapest usage. That is
+why I run you at xhigh. Always." And: "Keeping cost acceptable happens through using two subscriptions, both claude and
+codex, not through hamstringing any of the models." He runs Claude at xhigh rather than max because max wasn't
+consistently better in the benchmarks he had seen: "the effort setting that gives the best results" says that, rather
+than "the highest setting".
+
+## What looks removable but isn't
+
+- **Its place first in the folder.** The user asked for it prominently: it is the reason behind the other rules, and
+  sorts before them for that.
+- **"Local speed is judged by this measure."** The failing it answers was an agent weighing a turn's speed and a
+  subscription's usage as if they were the goal.
+
+## Untested
+
+Whether agents now over-apply it, for instance by gold-plating an experiment whose only purpose is to learn something
+quickly. Best work includes judging what a piece of work deserves; if agents misread it, say so here or in the rule.
