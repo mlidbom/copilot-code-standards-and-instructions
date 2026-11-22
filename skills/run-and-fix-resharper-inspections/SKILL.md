@@ -1,22 +1,18 @@
 ---
 name: run-and-fix-resharper-inspections
 description: >-
-  Run a ReSharper inspection campaign over a .NET solution and systematically correct the findings: find
-  them one inspection id at a time, fix in build-gated batches, dodge the known traps (override chains,
-  Newtonsoft silently losing data on internal getters, making the wrong overload private), then build +
-  full test suite and re-run to confirm zero. With Rider open and the dotnet-analysis-and-refactoring MCP
-  connected it runs live: `inspect_code` finds, `apply_suggestions` fixes at file, folder, project or
-  solution scope. Without Rider (a cloud session, CI), headless `jb inspectcode`. Use for whole-solution
-  sweeps and systematic cleanup campaigns — "fix all MemberCanBeInternal", "clean up inspection warnings",
-  severities below warning. Not for one file's diagnostics: `get_diagnostics` answers that directly.
+  Run and fix ReSharper inspections across a .NET solution, one inspection ID at a time, with build and
+  test checks. Use for whole-solution cleanup such as fixing all MemberCanBeInternal findings. Royder
+  (dotnet-analysis-and-refactoring) opens trusted checkouts on demand even with desktop Rider closed.
+  CI workers without Royder can use jb inspectcode. For one file, use get_diagnostics directly.
 ---
 
 # Run and fix ReSharper inspections
 
 ## Prerequisites
 
-- Rider open with the solution loaded and the `dotnet-analysis-and-refactoring` MCP connected; or, without
-  them, the JetBrains CLI tools (`jb`) on PATH
+- The `dotnet-analysis-and-refactoring` MCP (Royder), or the JetBrains CLI tools (`jb`) on PATH in a
+  CLI-only environment
 - The solution must build cleanly before running inspections
 
 ## The campaign loop
@@ -32,9 +28,10 @@ description: >-
 **Always work one inspection id at a time.** Mixing inspection types in one pass makes it hard to
 apply fixes systematically and verify correctness.
 
-## Finding and fixing live (Rider open)
+## Finding and fixing with Royder
 
-1. **Find:** `inspect_code` with no files for the whole solution (or folders, project files), `minSeverity`
+1. **Find:** `inspect_code` with the absolute `.sln` or `.slnx` in `solutionName` for the whole solution
+   (or absolute paths for individual files and folders), `minSeverity`
    down to `hint`, and `inspectionIds: ['MemberCanBeInternal']` for one at a time. It prints the count per
    inspection, then `line:column severity id: message` lines per file. A whole solution takes seconds.
 2. **Fix what has a quick-fix:** `apply_suggestions` with `inspectionIds`, a `filePath` that has an
@@ -50,7 +47,7 @@ every file the stored results show clean (Rider's setting `MakeUseOfSolutionAnal
 so it changes nothing; its answer says so. Then fix at file scope, with the files in `filePaths`.
 `get_diagnostics` is always fresh, to check a file.
 
-## Running it headless (no Rider)
+## Running the inspection with the JetBrains CLI
 
 ```powershell
 jb inspectcode <path-to-your-solution> `

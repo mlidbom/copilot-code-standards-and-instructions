@@ -1,21 +1,17 @@
 ---
 name: jetbrains-inspect
 description: >-
-  Headless JetBrains code inspections, for when no live IDE can run them: no Rider open (a cloud session,
-  CI, a machine without the MCP), or a non-.NET language (Python / JS-TS / Java-Kotlin / Go / SQL via that
-  IDE's `inspect` CLI; .NET via `jb inspectcode`). FIRST check the live route: with Rider open and the
-  dotnet-analysis-and-refactoring MCP connected, `inspect_code` inspects files, folders, projects or the whole
-  solution in seconds, at any severity down to hint, and `get_diagnostics` (`minSeverity: 'hint'`) checks one
-  file; don't reach for this slower tool then. Not for: navigation or refactor/build (use the
-  code-intelligence MCPs).
+  JetBrains CLI inspections for Python, JS/TS, Java/Kotlin, Go and SQL, and ReSharper CLI inspection in
+  CI or environments without Royder. For local .NET inspections use Royder (dotnet-analysis-and-refactoring)
+  with an absolute file or solution path. It opens trusted checkouts even with desktop Rider closed.
 ---
 
 # JetBrains code inspection (headless, all severities)
 
 ## First — do you even need this?
 
-**With Rider open and the `dotnet-analysis-and-refactoring` MCP connected, .NET needs no headless run.** It
-inspects against Rider's live model, with no temp files and no solution load:
+For .NET, Royder (`dotnet-analysis-and-refactoring`) inspects a trusted checkout on demand. Select it with an
+absolute source path or the full `.sln` or `.slnx` path in `solutionName`. Desktop Rider may be closed.
 - `inspect_code`: files, folders, project files, or the whole solution (pass none), with `minSeverity`
   `error` / `warning` / `suggestion` / `hint` and `inspectionIds` to filter. A whole solution takes seconds.
   The solution-wide inspections, such as `UnusedMember.Global`, are in when Rider's solution-wide analysis is
@@ -29,7 +25,7 @@ inspects against Rider's live model, with no temp files and no solution load:
   errors and warnings on specific files (Rider 2026.2+).
 
 **Reach for this skill when no live route covers it:**
-- **No Rider running:** a cloud session, CI, or a machine without the MCP.
+- **An environment without Royder,** such as a CI worker.
 - **A non-.NET language.**
 - **A check of the live answers against the headless engine,** as when developing that MCP.
 
@@ -37,7 +33,7 @@ inspects against Rider's live model, with no temp files and no solution load:
 
 | Language(s) | Engine | Tool |
 |---|---|---|
-| C# / VB / .NET | ReSharper | `jb inspectcode` (ReSharper Global Tools) — *but prefer `inspect_code` when Rider is open* |
+| C# / VB / .NET | ReSharper | Royder's `inspect_code`, or `jb inspectcode` for a CLI run |
 | Python, JS/TS, Java/Kotlin, Go, PHP, SQL, … | IntelliJ-platform | `<IDE>\bin\inspect.bat` |
 
 `jb inspectcode` is .NET-only. Severity coverage is governed by the inspection profile (`.editorconfig` /
@@ -56,9 +52,7 @@ SQL→DataGrip, .NET→Rider.
 
 ---
 
-## Engine A — .NET via `jb inspectcode`  (no Rider: cloud, CI)
-
-With Rider open, prefer `inspect_code` (above). Use this when no Rider runs.
+## Engine A — .NET via `jb inspectcode` in CI or without Royder
 
 ```powershell
 $sln = "<repo>\Your.slnx"           # *.slnx / *.sln (skip legacy/sample solutions)
