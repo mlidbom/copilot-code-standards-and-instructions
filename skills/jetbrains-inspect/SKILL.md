@@ -2,8 +2,8 @@
 name: jetbrains-inspect
 description: >-
   JetBrains CLI inspections for Python, JS/TS, Java/Kotlin, Go and SQL, and ReSharper CLI inspection in
-  CI or environments without Royder. For local .NET inspections use Royder (dotnet-analysis-and-refactoring)
-  with an absolute file or solution path. It opens trusted checkouts even with desktop Rider closed.
+  CI or environments without Royder. For local .NET, Royder (dotnet-analysis-and-refactoring) offers
+  inspections by absolute file or solution path. It opens trusted checkouts even with desktop Rider closed.
 ---
 
 # JetBrains code inspection (headless, all severities)
