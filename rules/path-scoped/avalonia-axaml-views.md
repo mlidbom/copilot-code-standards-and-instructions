@@ -15,23 +15,7 @@ The labels, dialog copy, and error messages in these views are part of the proje
 code and domain use for a concept, never a UI-only synonym. When a concept is renamed, its on-screen text is
 renamed with it.
 
-## When a view gets a ViewModel — and when honest code-behind is right
-
-A ViewModel earns its place where the view **owns editable state**: a working copy / edit session, computed
-enabled/visible rules, validation, a commit. There it is the missing abstraction, not ceremony — each
-"editable only while X" invariant becomes one computed property the controls bind to, stated once instead of
-re-established in every change handler (`_loading`-style reentrancy guards are the tell that this is being
-done by hand).
-
-Do NOT manufacture a ViewModel for:
-
-- **Window-mechanics views** (flyouts, splash, positioning/bring-to-front/dismiss-on-deactivate chrome with
-  a couple of actions) — the VM would be an anemic command bag; honest code-behind is the truthful model.
-- **Views editing live external state they don't own** (OS settings applied immediately, device state) — a
-  stateful VM there is a mirror of external state with sync/staleness hazards. Read live, refresh in place;
-  per-item VMs for templated children are still fine.
-
-Either way, native interop and window plumbing stay in code-behind even when a ViewModel exists.
+See [When a view gets a ViewModel](../universal/code-standards/032-when-a-view-gets-a-view-model.md) for the state a view owns and shares.
 
 ## Binding & DataContext
 

@@ -1,0 +1,3 @@
+Cloyd's C# views never loaded the AXAML-scoped guidance. Adding a second window for the same session exposed
+the cost of keeping a draft and pending sends inside one editor. Magnus approved selective view models for
+Cloyd and delegated the decision on the scope of the existing standard on 2026-11-22.
