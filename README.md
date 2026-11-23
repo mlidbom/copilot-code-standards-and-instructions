@@ -155,7 +155,9 @@ starts. It runs five steps, each of which tells the agent what it needs to know 
    - **When the upstream can't be reached,** as when offline, the agent is told that the rules may be behind.
 3. **It clears away what deleted checkouts left in the machine clone**
    ([git-scripts/sessionstart-hook.clean-up-after-deleted-checkouts.sh](git-scripts/sessionstart-hook.clean-up-after-deleted-checkouts.sh)):
-   their worktrees' registrations, and their branches when upstream `main` has every commit on them. A branch with
+   their worktrees' registrations, and their branches when upstream `main` has every commit on them.
+   Leaving **Delete local branch** unchecked in Cloyd sets `branch.<name>.cloydKeep=true` in the machine clone and
+   keeps that branch even after it is merged. A branch with
    commits that are not published is kept, and reported at every session start until someone publishes or deletes it.
 4. **It verifies the `.claude/` symlinks** (the adapter under [Verifying](#verifying)).
 5. **It says when the repository's own `SessionStart` hook is no longer the current one**

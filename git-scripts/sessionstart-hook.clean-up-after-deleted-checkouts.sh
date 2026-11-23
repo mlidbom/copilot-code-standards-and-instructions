@@ -3,7 +3,8 @@
 #
 # A consuming checkout that is deleted, as agents' worktrees under .claude/worktrees are all the time, leaves its
 # catalog worktree registered in the machine clone, and its branch there. The registration is pruned. The branch is
-# deleted when upstream main has every commit on it. Otherwise its commits are the one thing of value a deleted
+# deleted when upstream main has every commit on it, unless Magnus kept the local branch in Cloyd.
+# Otherwise its commits are the one thing of value a deleted
 # checkout can leave, so the branch is kept, and reported at every session start until someone publishes or deletes
 # it.
 #
@@ -25,6 +26,7 @@ git -C "$machine_clone" for-each-ref --format='%(refname:short)' refs/heads/chec
    printf '%s\n' "$checked_out" | grep -qxF "$branch" && continue
    unpublished=$(git -C "$machine_clone" rev-list --count "$branch" --not origin/main)
    if [ "$unpublished" -eq 0 ]; then
+      [ "$(git -C "$machine_clone" config --local --bool --get "branch.$branch.cloydKeep")" = true ] && continue
       git -C "$machine_clone" branch --quiet --delete --force "$branch" >/dev/null 2>&1
    else
       echo "The machine's clone of the shared Claude config, $machine_clone, has the branch $branch, left by a checkout that no longer exists, with $unpublished commit(s) that are not published upstream. Publish them, or delete the branch if they aren't wanted. They are: git -C $machine_clone log origin/main..$branch"

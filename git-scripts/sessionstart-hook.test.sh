@@ -311,6 +311,17 @@ must_say_nothing
 branch_must_not_exist "$branch_of_the_deleted"
 end_case
 
+start_case 'Cloyd keeps an explicitly retained local branch after its merged checkout is removed'
+git -C "$machine_clone" branch checkout/kept-by-cloyd origin/main
+git -C "$machine_clone" branch checkout/ordinary-merged origin/main
+git -C "$machine_clone" config --local branch.checkout/kept-by-cloyd.cloydKeep true
+git -C "$machine_clone" config --local branch.checkout/ordinary-merged.cloydKeep false
+start_a_session_in "$consumer"
+must_say_nothing
+branch_must_exist checkout/kept-by-cloyd
+branch_must_not_exist checkout/ordinary-merged
+end_case
+
 start_case 'A branch that still mounts the catalog as a submodule: its old hook runs the catalog in it, which says so, pulls, and asks for no new copy of the hook'
 mounting="$scratch/still-mounting-it"
 make_a_consumer_that_mounts_the_catalog_as_a_submodule "$mounting"
