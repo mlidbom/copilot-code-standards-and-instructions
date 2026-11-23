@@ -16,6 +16,11 @@ codex, not through hamstringing any of the models." He runs Claude at xhigh rath
 consistently better in the benchmarks he had seen: "the effort setting that gives the best results" says that, rather
 than "the highest setting".
 
+On Fable, 2026-11-23, after a measurement showed Fable's own weekly limit counting it at about three times its API
+price (one reading, `~/.claude/dev_docs/usage/what-a-token-costs-of-the-weekly-limit.md`): "I honestly am quite unsure
+if Fable 5.2 actually outperforms you (Opus 5.5) in programming. I would say that unless you have strong reason to do
+it, or I asked for it, you should avoid using Fable at all."
+
 ## What looks removable but isn't
 
 - **Its place first in the folder.** The user asked for it prominently: it is the reason behind the other rules, and
