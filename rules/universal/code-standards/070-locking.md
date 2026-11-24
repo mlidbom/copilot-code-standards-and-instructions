@@ -16,6 +16,11 @@ What it deliberately doesn't have is a gate held across awaits, or released on a
 many requests are in flight: its locks are short, synchronous and tied to the thread that took them. `SemaphoreSlim` does
 that job fully, and is the right tool for it.
 
+Nor does it have yet lock-free sharing between threads of different priorities, where a starved low-priority thread
+holding any lock stalls a high-priority one that must not wait, such as a sampler. Until it does, write that sharing with
+the BCL's lock-free primitives, such as `Interlocked` and `ConcurrentQueue<T>`, marked with a `todo:compze:` comment
+([tagged todo comments](062-tagged-todo-comments.md)).
+
 Apart from that, when it doesn't have what is needed, or using it would make the code worse, write neither the worse
 code nor the raw primitive. Stop, and tell the user:
 

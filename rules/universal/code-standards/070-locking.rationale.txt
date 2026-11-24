@@ -31,10 +31,16 @@ verdict: "I share that, most of all for waiting on a condition." The cross-proce
 - **It covers synchronization only.** Other gaps in Compze go by `../004-compze-is-our-code.md`: work around, mark,
   recommend.
 
-## The exception approved before the stop
+## The exceptions
 
-In Compze, with a `//rationale:` comment: a raw `Monitor` in `DoubleCheckedLockingOnAnExistingObject`. It stays. The
-`SemaphoreSlim` in the named-pipe transport's connection pool was the other one, until the ban went.
+- **Approved before the stop,** in Compze, with a `//rationale:` comment: a raw `Monitor` in
+  `DoubleCheckedLockingOnAnExistingObject`. It stays. The `SemaphoreSlim` in the named-pipe transport's connection pool
+  was the other one, until the ban went.
+- **Lock-free sharing between thread priorities,** added 2026-11-24 at the user's go. The machine stall recorder in
+  `~/.claude` (2026-11-18) samples the machine on a high-priority thread; any lock a starved low-priority thread holds
+  stalls the sampler, which is the stall it exists to record. Its session used `Interlocked` and a `ConcurrentQueue`
+  instead; under the rule as it was, it would have had to stop the build or use a Compze lock. Compze offering such
+  sharing itself was put to the user the same day; the `todo:compze:` marking finds the workarounds when it lands.
 
 ## Not tested
 
