@@ -36,3 +36,9 @@ Analysis&Refactoring MCP) with the approved form in the rule on when to break th
 placement came from that day's first use: a type that holds the plugin's only raw lock, where the approval and the
 `todo:` to replace the type concern the whole type, and the doc comment is what hovering a use of it shows. Not
 checked: whether Rider's TODO window lists a tag inside a `///` comment.
+
+2026-11-25: the doc-comment placement removed. A tagged comment about a whole member or type goes first in its body.
+Doc comments are published: the compiler writes every member's into the package's documentation file, internal ones
+too, and DocFX puts the public ones on the website. Found when a `todo:urgent` for a public member's synchronous wait
+would have gone into its doc comment, and with it into consumers' IntelliSense; 18 tagged comments sat in doc comments
+in Compze then. Magnus: "We do NOT want our todo comments in published docs EVER."

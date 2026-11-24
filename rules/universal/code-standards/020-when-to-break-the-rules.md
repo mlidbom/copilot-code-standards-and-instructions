@@ -20,6 +20,7 @@ When the user has approved an exception, its comment becomes a `rationale:violat
 - **Only the user's approval writes one,** naming him and the date. An agent never writes it on its own, nor turns its
   own `//review:` into one.
 - **At the code it concerns:** on the line before it, inside the member. When the whole member or type is the
-  exception, in that member's or type's doc comment instead, where hovering any use of it shows the approval.
+  exception, first in that member's or type's body: never in its doc comment, which is published (see
+  [tagged todo comments](062-tagged-todo-comments.md)).
 - **What the comment can't hold,** such as an exception wider than one place in the code, or reasoning too long for a
   comment, goes in a document under `dev_docs/code_standard_exceptions`, which the comment points to.

@@ -50,3 +50,9 @@ a design rationale that breaks no rule.
 - **Whether agents now make exceptions too readily.** Look first at the word "defaults".
 - **An exception also raises `### A RULE GOT IN THE WAY ###`,** as the two rules are worded. Left so: exceptions are
   rare, and the heading tells the user that a standard didn't fit.
+
+2026-11-25: the doc-comment placement removed. A tagged comment about a whole member or type goes first in its body.
+Doc comments are published: the compiler writes every member's into the package's documentation file, internal ones
+too, and DocFX puts the public ones on the website. Found when a `todo:urgent` for a public member's synchronous wait
+would have gone into its doc comment, and with it into consumers' IntelliSense; 18 tagged comments sat in doc comments
+in Compze then. Magnus: "We do NOT want our todo comments in published docs EVER."
