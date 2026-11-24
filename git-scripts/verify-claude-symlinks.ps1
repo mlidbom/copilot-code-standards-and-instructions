@@ -11,6 +11,15 @@
 # .claude-shared, is in.
 $repoRoot = Split-Path -Parent (git -C $PSScriptRoot rev-parse --show-toplevel)
 
+# Whether the symlink $link is a file symlink whose target is a folder. Git for Windows makes one when the target is
+# missing at checkout and no symlink=dir attribute says it's a folder; opening it, as ResolveLinkTarget does, is then
+# denied.
+function IsAFileSymlinkToAFolder($link) {
+   if ($link.Attributes -band [System.IO.FileAttributes]::Directory) { return $false }
+   $targetPath = [System.IO.Path]::GetFullPath((Join-Path (Split-Path -Parent $link.FullName) $link.Target))
+   return Test-Path -LiteralPath $targetPath -PathType Container
+}
+
 # The committed tree (HEAD) — not the index — is the source of truth for which paths are symlinks. A degraded
 # checkout can leave the index ALSO recording a path as a plain file (mode 100644, once the materialized plain
 # file is staged); reading the index would then drop that path from the checklist and miss the very corruption
@@ -25,6 +34,10 @@ foreach ($relativePath in $symlinkPaths) {
    $item = Get-Item $fullPath -Force -ErrorAction SilentlyContinue
    if (-not $item -or $item.LinkType -ne 'SymbolicLink') {
       $broken += "$relativePath — git tracks this as a symlink, but the working tree has a plain file/directory"
+      continue
+   }
+   if (IsAFileSymlinkToAFolder $item) {
+      $broken += "$relativePath — a file symlink to a folder, which Windows can't open: git made it before its target existed, with no symlink=dir for it in .gitattributes. Fix: delete it, then git restore --source=HEAD --worktree -- $relativePath ; and add the symlink=dir line that covers it (.claude-shared/README.md)."
       continue
    }
    $target = $item.ResolveLinkTarget($true)

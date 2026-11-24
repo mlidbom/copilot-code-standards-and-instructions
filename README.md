@@ -70,8 +70,15 @@ New-Item -ItemType SymbolicLink .claude\rules\path-scoped\01-shared\csharp-bdd-s
 New-Item -ItemType SymbolicLink .claude\skills\shared-team-review-and-fix-code-standard-issues -Target ..\..\.claude-shared\skills\team-review-and-fix-code-standard-issues
 ```
 
-In the consuming repo's `.gitattributes`, mark committed **directory** symlinks with `symlink=dir` so Git
-for Windows creates them correctly regardless of checkout order.
+In the consuming repo's `.gitattributes`, mark committed **directory** symlinks with `symlink=dir`. A fresh
+clone or worktree is checked out before its `.claude-shared` is attached, so every link's target is missing then,
+and Git for Windows makes a link it has no hint for a file symlink, which Windows can't open as a folder. A glob
+covers every shared skill, those adopted later included:
+
+```gitattributes
+.claude/rules/01-universal-shared symlink=dir
+.claude/skills/shared-* symlink=dir
+```
 
 ### Windows prerequisites (one-time per machine)
 
