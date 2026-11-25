@@ -18,6 +18,10 @@ Many existing specifications don't yet follow this style, but all new specificat
 - If refactoring would be complex or risky, create a new specification class using BDD-style structure for the new specifications instead.
 - Do NOT add new specifications to the old flat structure — this only adds to the technical debt
 
+**A flat class without shared setup isn't the older style.** When its specifications build on no setup that they share, flat is
+its right shape: nesting would only categorize, which is what [folders and namespaces](#foldersnamespaces-vs-nested-classes) are
+for. Add to it as it is.
+
 ## Black-box (integration) specifications, not unit tests
 Specifications should verify that things **actually work correctly together**. They are **not** unit tests
 - No mocking frameworks — use real implementations with the real DI container.
