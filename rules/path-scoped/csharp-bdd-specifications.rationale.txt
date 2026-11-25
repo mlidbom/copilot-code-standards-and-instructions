@@ -1,0 +1,11 @@
+# Why: C# specifications
+
+## Flat classes without shared setup
+
+The paragraph "A flat class without shared setup isn't the older style" was added on 2026-11-26. A review in Mavalonia, by
+Opus 5.5, added specifications to four flat classes whose specifications share no setup (`Rendered_blocks`, `Typing_text`,
+`A_link`, `Clicking_links_in_the_editor`), against "Do NOT add new specifications to the old flat structure", and said so under
+the heading for a rule that got in the way. Nesting them would only have categorized, which the rule itself gives to folders and
+namespaces. Magnus agreed that the rule should allow it.
+
+The older style that the rule means is the flat class whose specifications repeat setup that nesting would share.
