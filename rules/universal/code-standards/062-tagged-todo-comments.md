@@ -35,10 +35,8 @@ The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user
 ## Writing one
 
 - Put it on the line before the code it concerns, inside the member, as for any inline comment; never on a member or a type.
-  When what it concerns is the whole member or type, such as a type to be replaced, it goes first in that member's or
-  type's body; an expression-bodied member gets a block body for it.
-- **Never in a doc comment.** Doc comments are published, in a package's documentation file and on the website, and
-  tagged comments are for us alone. The user, 2026-11-25: "We do NOT want our todo comments in published docs EVER."
+  When what it concerns is the whole member or type, such as a type to be replaced, it goes in that member's or type's
+  doc comment instead, where hovering any use shows it.
 - Write it for someone who doesn't know the context: what is wrong or to be done, and why, in the project's ubiquitous
   language. Name the other code involved, such as the duplicate.
 - One item per comment. Indented lines that follow it are part of the same item, for the IDE too.
