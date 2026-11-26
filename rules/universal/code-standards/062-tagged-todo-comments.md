@@ -56,8 +56,9 @@ The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user
   once it's resolved.
 - **In the summary at the end of a task, list the tagged comments you added and those you resolved.**
 - **To list them all, grep with the IDE's patterns,** such as
-  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|review-naming|wip|hack):" --include=*.cs <source folder>`. It finds what the IDE
-  finds, and also the tags inside string literals, which the IDE skips.
+  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|review-naming|wip|hack):" <source folder>`. It finds what the IDE
+  finds, in every kind of file, scripts and build files included, and also the tags inside string literals, which the
+  IDE skips.
 - **What spans many files, or isn't tied to any code, belongs in the project's documents,** not in a comment.
 
 See also the collaboration rule "The codebase must improve over time, never degrade", whose "anything you noticed was wrong
