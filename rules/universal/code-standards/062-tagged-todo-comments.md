@@ -19,6 +19,10 @@ them in its TODO window (Rider: Settings > Editor > TODO; they're in the user's 
   once it lands. See the rule "Compze is our code".
 - `urgent:` a todo of top priority.
 - `performance:` code that is slow enough to matter, with what was measured or observed.
+- `hack:` code that works around a problem by a fragile way, such as reading another program's screen, typing into its
+  terminal, an undocumented format or a timing: what it depends on, and the project's document of such ways that its
+  entry is in. The user (2026-11-26): "every spot in the code that implements such hacks should have a dedicated todo
+  comment on them", so that one search finds each.
 - `wip:` an aspect of the code that is the way it is because of work in progress, and will or should change when the work
   is done.
 - `review:` something strange or potentially problematic about the code, for the other one to look at or to discuss. The
@@ -52,7 +56,7 @@ The user's other tags, such as `review:rebuttal:` and `todo:docs:`, are the user
   once it's resolved.
 - **In the summary at the end of a task, list the tagged comments you added and those you resolved.**
 - **To list them all, grep with the IDE's patterns,** such as
-  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|review-naming|wip):" --include=*.cs <source folder>`. It finds what the IDE
+  `grep -rniE "(^|\W)(bug|todo|refactor|performance|urgent|review|review-naming|wip|hack):" --include=*.cs <source folder>`. It finds what the IDE
   finds, and also the tags inside string literals, which the IDE skips.
 - **What spans many files, or isn't tied to any code, belongs in the project's documents,** not in a comment.
 
