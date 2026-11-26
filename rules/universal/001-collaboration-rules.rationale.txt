@@ -31,6 +31,14 @@
 - **Commit and push whenever it helps.** Committing: 2026-11-11. Pushing: 2026-11-14, when the agent asked for leave to
   push the branch it was working on, to run CI: "Always OK regardless of branch. Nothing push does is irreversible."
   Asked whether that held in his other repositories: "Yes, now it is, deskmancer no longer publishes on push to main."
+- **Push a branch only to its own remote branch:** a correction, 2026-11-26, of Opus 5.5 in Mavalonia, which released
+  0.10.1 with `git push origin HEAD:main` from a worktree's branch. The local `main`, where the user develops, was left
+  two commits behind `origin/main`, which confused him, and the tooling refused to remove the worktree. The user: "Do
+  NOT push a local branch to anything but the tracked remote branch of the same name. Anything but that is .... well
+  when do you need that and it does not risk causing immense confusion?" It replaced a rule of Mavalonia's own, to bring
+  its `main` to `origin/main` after pushing there, which treated the symptom. A git pre-push hook refusing such pushes
+  was weighed and not taken: it needs `core.hooksPath` set machine-wide, which overrides each repository's own hooks,
+  and it wouldn't reach other machines or cloud agents.
 - **When given full delegation:** from Compze's separation of typermedia and tessaging, 2026-06-10. The case is in
   `code-standards/014-rehome-concepts-before-restructuring.rationale.txt`.
 

@@ -80,6 +80,12 @@ working towards a goal we have agreed on you are always free to commit when that
 - **Pushing is always fine too, whatever the branch:** to have CI run, to share the work, or for any other reason. The
   user (2026-11-14): "Always OK regardless of branch. Nothing push does is irreversible." Publishing a release is not a
   push: see [never change an external environment without approval](003-never-change-external-environments-without-approval.md).
+- **Push a branch only to its own remote branch,** the one of the same name that it tracks: never `HEAD:main`, nor
+  `<branch>:<another branch>`. Such a push moves the remote branch ahead of every local branch of its name, and whoever
+  works in one finds it behind. The user (2026-11-26): "It seems to me not very different from a force push..". To get
+  work onto `main`, bring the local `main` to it first, in the checkout that has `main` checked out (`git worktree
+  list`), and push `main` from there. If that fast-forward fails, as on his uncommitted changes, leave that checkout as
+  it is and tell him.
 - **What still needs the user's word:** a change to what the product does that he hasn't agreed to.
 - **Don't write instructions that gate commits or pushes on the user's word** unless the user asks for one. Such
   gates, added by agents on their own, were the reason agents sat on finished work.
