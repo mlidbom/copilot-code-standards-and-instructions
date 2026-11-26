@@ -12,9 +12,11 @@ What it gives that the built-in primitives don't, which is also where to look fi
 - **The same across processes:** `IMutex`, `IAwaitableMutex`, `IProcessShared<T>`.
 - **Deadlocks diagnosed:** taking a lock times out, and the exception has both threads' stack traces.
 
-What it deliberately doesn't have is a gate held across awaits, or released on another thread, such as a limit on how
-many requests are in flight: its locks are short, synchronous and tied to the thread that took them. `SemaphoreSlim` does
-that job fully, and is the right tool for it.
+Within a process, what it deliberately doesn't have is a gate held across awaits, or released on another thread, such as
+a limit on how many requests are in flight: its locks are short, synchronous and tied to the thread that took them.
+`SemaphoreSlim` does that job fully, and is the right tool for it. Between processes, `IProcessLock` is that gate: a hold
+belongs to no thread, so it may be held across awaits and released on any thread, and the operating system releases it
+when its holder's process dies.
 
 Nor does it have yet lock-free sharing between threads of different priorities, where a starved low-priority thread
 holding any lock stalls a high-priority one that must not wait, such as a sampler. Until it does, write that sharing with

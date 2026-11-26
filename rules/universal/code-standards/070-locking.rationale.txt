@@ -9,6 +9,10 @@ The same day it lost its ban on `SemaphoreSlim`, in Compze, at the user's word: 
 that limits how many requests are in flight, where `SemaphoreSlim` does the job fully. Compze has only what improves on
 the base class library, the user said then; in Compze that is a rule of its own.
 
+`IProcessLock` was named beside it on 2026-11-26, at the user's go, once Compze.Threading.Interprocess 0.8.0-alpha had it.
+Until then the rule sent every gate held across awaits to `SemaphoreSlim`, which works within one process only, and
+resharper-mcp's `SandboxTurn` had built a lock between processes by hand.
+
 ## What is behind it
 
 The user: "Compze.Threading[.InterProcess] is IMO a vastly better API than the built in synchronization primitives. it
