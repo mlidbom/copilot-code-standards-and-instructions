@@ -18,10 +18,9 @@ a limit on how many requests are in flight: its locks are short, synchronous and
 belongs to no thread, so it may be held across awaits and released on any thread, and the operating system releases it
 when its holder's process dies.
 
-Nor does it have yet lock-free sharing between threads of different priorities, where a starved low-priority thread
-holding any lock stalls a high-priority one that must not wait, such as a sampler. Until it does, write that sharing with
-the BCL's lock-free primitives, such as `Interlocked` and `ConcurrentQueue<T>`, marked with a `todo:compze:` comment
-([tagged todo comments](062-tagged-todo-comments.md)).
+Nor does it have lock-free sharing between threads of different priorities, where a starved low-priority thread holding
+any lock stalls a high-priority one that must not wait, such as a sampler. That need is unusual, so Compze leaves it out:
+write that sharing with the BCL's lock-free primitives, such as `Interlocked` and `ConcurrentQueue<T>`.
 
 Apart from that, when it doesn't have what is needed, or using it would make the code worse, write neither the worse
 code nor the raw primitive. Stop, and tell the user:

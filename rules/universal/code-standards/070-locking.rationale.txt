@@ -44,7 +44,10 @@ verdict: "I share that, most of all for waiting on a condition." The cross-proce
   `~/.claude` (2026-11-18) samples the machine on a high-priority thread; any lock a starved low-priority thread holds
   stalls the sampler, which is the stall it exists to record. Its session used `Interlocked` and a `ConcurrentQueue`
   instead; under the rule as it was, it would have had to stop the build or use a Compze lock. Compze offering such
-  sharing itself was put to the user the same day; the `todo:compze:` marking finds the workarounds when it lands.
+  sharing itself was put to the user the same day, with a `todo:compze:` marking on the workarounds. On 2026-11-26 he
+  decided against it, asking whether it was a common need, whether the design was sure enough for Compze.Threading on
+  the verge of going stable, and whether it would make the tooling's life much easier: no to each. So the rule says such
+  sharing is written with the BCL's primitives, unmarked.
 
 ## Not tested
 
