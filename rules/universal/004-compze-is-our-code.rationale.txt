@@ -41,6 +41,15 @@ dependencies between them, near-zero maintenance. Compze's side of it is its rul
 consumer. The replay `a-consumer-asking-for-an-api-it-could-build-itself` tests Compze's side; this rule's side, a
 consumer's session deciding whether to recommend, is untested.
 
+## Unusual needs stay in the repository that has them
+
+Added 2026-11-26, in ~/.claude. LinesFromTheEnd and LinesWrittenAfterAPoint had moved into Compze.Internals.SystemCE on
+2026-11-24 for the tooling's need alone: reading a growing file that others replace meanwhile. The tooling then asked
+for overloads over an open FileStream. Magnus: "Probably not requiring a second user, that is a catch 22, but we
+probably want some sort of guideline for what fits in compze. and unusual needs are probably not it, they probably
+belong in a helper project/namespace in the current repository...." They moved back out into the tooling's FilesInUse.
+A second user is not the test, as the first could then never be written: whether the need is a usual one is.
+
 ## Taken out
 
 "Near the top of the report", after the heading's name. Removed 2026-11-14 (JAStudio, Claude Fable 5.2): the agent had

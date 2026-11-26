@@ -12,7 +12,9 @@ refactoring, a fix or an addition in that repository's own code triggers a recom
 - **Code written here that belongs in one of Compze's libraries:** it fits the domain of a library Compze already has,
   such as a locking primitive for Compze.Threading or an assertion for Compze.Contracts; it does better than what .NET's
   base class library offers, if only by reading better; and it's something we'd publish to the world. Having nothing
-  about this repository in it isn't enough: Compze isn't the home for everything general-purpose.
+  about this repository in it isn't enough: Compze isn't the home for everything general-purpose. A need that is
+  unusual, however general its code, belongs in a helper project or namespace of the repository that has it; that holds
+  for SystemCE too (the user, 2026-11-26: "unusual needs are probably not it").
 
 ## How to recommend it
 
