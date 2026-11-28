@@ -9,3 +9,14 @@ the heading for a rule that got in the way. Nesting them would only have categor
 namespaces. Magnus agreed that the rule should allow it.
 
 The older style that the rule means is the flat class whose specifications repeat setup that nesting would share.
+
+## `[Fact]` in an abstract base class
+
+Added on 2026-11-28, Magnus's go on tooling-owner's offer. In ~/.claude, classes that hold each implementation to the same
+facts, such as `When_the_hub_sees_the_conversation_a_session_runs` (each agent harness's half of a seam) and
+`When_a_terminal_attaches_to_a_session_host`, declare `[Fact]`s in an abstract base that one derived class per
+implementation inherits. Re-running in every descendant, the reason for "never `[Fact]`", is what such a class needs. An
+`[XF]` there runs in no class: xUnitBDD 0.8.0-beta makes it a test that fails in each derived class, saying to make it a
+`[Fact]`. Helpers wrote it so twice against the rule's words, marked with `review:`. Untested: a hierarchy with both, such
+as a `[Fact]` in a class that isn't abstract with `[XF]`s in classes nested in it (Magnus, 2026-11-25: "I honestly do not
+know how Fact and XF mix"; the `todo:compze:` in ~/.claude's SpecificationOfWhatRunsSessions).

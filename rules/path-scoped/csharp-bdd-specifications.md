@@ -133,7 +133,8 @@ OurApplication
 
 ### Key rules for specifications
 
-- **Use `[XF]`**, never `[Fact]`,  — `[Fact]` causes inherited specifications to re-run in every descendant.
+- **Use `[XF]`**, not `[Fact]`: `[Fact]` causes inherited specifications to re-run in every descendant, which only an
+  abstract base's facts that every derived class must run want (see [Specification Attributes](#specification-attributes)).
 - **Class names describe context** using lowercase with underscores: `with_invalid_email`, `that_is_empty`, `After_adding_entity`.
 - **Method names describe expected behavior** using lowercase with underscores: `registration_is_rejected`, `error_mentions_email`.
 - **Each nested class inherits from its parent** to gain access to shared setup.
@@ -177,6 +178,7 @@ Names are the specification — they must precisely match reality:
 | --- | --- |
 | `[XF]` | **Exclusive Fact — the default for new specifications.** Only runs in the declaring class (not inherited), enabling BDD-style nested inheritance. |
 | `[Fact]` / `[Theory]` | Standard xUnit — only for simple utility-level specifications that don't use nesting. |
+| `[Fact]` in an abstract base class | For facts every derived class must run, such as a contract each implementation is held to: each derived class runs them, where an `[XF]` there would run in none. |
 
 ## Assertions
 
